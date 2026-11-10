@@ -15,32 +15,40 @@ When deployed to Streamlit Community Cloud:
 
 ---
 
-## 🧠 Machine Learning Model & Performance
+## 🧠 Machine Learning Model: Stacking Ensemble Architecture
 
-After exploratory data analysis (EDA), data cleaning, feature scaling, and one-hot encoding, multiple classification algorithms were benchmarked:
-- Dummy Classifier (baseline)
-- SGD Classifier
-- Logistic Regression
-- Support Vector Machine (Linear, Polynomial, and RBF Kernels)
+To achieve superior predictive power, this project implements a **Stacking Classifier (`StackingClassifier`)** combining three diverse algorithms as base estimators with an independent meta-learner:
 
-The best-performing model was **SVM with an RBF (Radial Basis Function) Kernel**, optimized using `RandomizedSearchCV` with balanced class weights to maximize recall on minority approved/rejected cases.
+1. **Gradient Boosting Classifier (`GradientBoostingClassifier`):** Captures non-linear feature interactions and high-order patterns.
+2. **Support Vector Machine (`SVC` with RBF Kernel):** Maximizes margin separation in high-dimensional space.
+3. **Logistic Regression (`LogisticRegression`):** Provides a robust linear baseline with calibrated probabilities.
+4. **Final Meta-Estimador:** Logistic Regression combining out-of-fold predictions via 5-fold cross-validation.
 
-### Final Test Metrics
-- **Accuracy:** 87.33%
-- **Precision:** 65.10%
-- **Recall:** 92.70%
-- **F1 Score:** 0.7649
-- **ROC-AUC:** 0.9640
+### ⚙️ Automated Hyperparameter Tuning
+Before stacking, each base model undergoes hyperparameter optimization (`GridSearchCV` and `RandomizedSearchCV`) with stratified cross-validation on the preprocessed feature space.
+
+### Final Performance on Holdout Test Set (20%)
+- **Accuracy:** 93.31%
+- **Precision:** 88.79%
+- **Recall:** 80.00%
+- **F1 Score:** 84.17%
+- **ROC-AUC:** 0.9763
+
+### 🛡️ Two-Tier Credit Decision Architecture
+To prevent high-risk loans from being approved through statistical extrapolation:
+1. **Tier 1: Underwriting Knockout Policies:** Automatic decline if DTI > 45%, Annual Income < $12,000, Credit Score < 550, or Prior Defaults exist.
+2. **Tier 2: Stacking ML Inference:** If hard policies pass, the Stacking Ensemble evaluates the applicant across 18 features with a conservative approval threshold ($\ge 65\%$ projected solvency).
 
 ---
 
 ## 📁 Repository Structure
 
 ```text
-├── app.py              # Streamlit web application
-├── model.joblib        # Pre-trained Scikit-Learn Pipeline (Scaler + OneHotEncoder + SVM)
-├── train_model.py      # Standalone training & model export script
-├── loan_approval.ipynb # Jupyter notebook with full EDA, benchmarks, and visualizations
+├── app.py              # Streamlit web application with two-tier decisioning
+├── features.py         # Financial feature engineering & underwriting policy rules
+├── model.joblib        # Pre-trained Stacking Ensemble pipeline (GB + SVM + LR)
+├── train_model.py      # Standalone training script with cross-validation tuning
+├── loan_approval.ipynb # Jupyter notebook with EDA, benchmarks, and research references
 ├── loan_data.csv       # Dataset (45,000 credit records)
 ├── requirements.txt    # Python dependencies for Streamlit Cloud
 └── README.md           # Documentation
@@ -68,6 +76,6 @@ python train_model.py
 
 ### 4. Run the Streamlit application
 ```bash
-streamlit run app.py
+python -m streamlit run app.py
 ```
 Open your browser at `http://localhost:8501`.
