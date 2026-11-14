@@ -65,6 +65,84 @@ def tune_all_models(
     return best_params_by_model
 
 
+def compute_tuning_heatmaps(
+    specs: dict[str, dict],
+    best_params_by_model: dict[str, dict],
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+    cv,
+) -> dict[str, dict]:
+    """Evalúa grillas 2D de hiperparámetros en 5-fold CV (F1 y ROC-AUC) para los heatmaps."""
+    search_pre = build_preprocessor()
+    X_train_proc = search_pre.fit_transform(X_train)
+
+    heatmaps = {}
+    for name, cfg in specs.items():
+        hm_cfg = cfg.get("heatmap_config")
+        if not hm_cfg:
+            continue
+
+        x_param = hm_cfg["x_param"]
+        y_param = hm_cfg["y_param"]
+        x_values = hm_cfg["x_values"]
+        y_values = hm_cfg["y_values"]
+
+        fixed_params = {
+            k: v
+            for k, v in best_params_by_model.get(name, {}).items()
+            if k not in {x_param, y_param}
+        }
+        estimator = cfg["estimator_cls"](**{**cfg["base_params"], **fixed_params})
+
+        print(f"Generando heatmap CV para {name} ({y_param} vs {x_param})...")
+        grid_search = GridSearchCV(
+            estimator,
+            param_grid={y_param: y_values, x_param: x_values},
+            cv=cv,
+            scoring={"f1": "f1", "roc_auc": "roc_auc"},
+            refit=False,
+            n_jobs=-1,
+        )
+        grid_search.fit(X_train_proc, y_train)
+
+        lookup = {
+            (params[y_param], params[x_param]): (
+                round(float(f1_val), 4),
+                round(float(auc_val), 4),
+            )
+            for params, f1_val, auc_val in zip(
+                grid_search.cv_results_["params"],
+                grid_search.cv_results_["mean_test_f1"],
+                grid_search.cv_results_["mean_test_roc_auc"],
+            )
+        }
+
+        scores_f1 = [[lookup[(yv, xv)][0] for xv in x_values] for yv in y_values]
+        scores_roc_auc = [[lookup[(yv, xv)][1] for xv in x_values] for yv in y_values]
+
+        best_model_params = best_params_by_model.get(name, {})
+        best_x = best_model_params.get(x_param)
+        best_y = best_model_params.get(y_param)
+
+        heatmaps[name] = {
+            "x_param": x_param,
+            "y_param": y_param,
+            "x_label": hm_cfg["x_label"],
+            "y_label": hm_cfg["y_label"],
+            "x_labels": ["None" if v is None else str(v) for v in x_values],
+            "y_labels": ["None" if v is None else str(v) for v in y_values],
+            "fixed_params": fixed_params,
+            "best_pair": {
+                "x": "None" if best_x is None else str(best_x),
+                "y": "None" if best_y is None else str(best_y),
+            },
+            "scores_f1": scores_f1,
+            "scores_roc_auc": scores_roc_auc,
+        }
+
+    return heatmaps
+
+
 def train_and_export_final_models(
     specs: dict[str, dict],
     best_params_by_model: dict[str, dict],

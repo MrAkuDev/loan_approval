@@ -49,7 +49,7 @@ def main() -> None:
     with tab_predict:
         render_tab_predict(models)
     with tab_upload:
-        render_tab_upload(models)
+        render_tab_upload(models, eval_results)
     with tab_eval:
         render_tab_eval(models, eval_results)
     with tab_interp:

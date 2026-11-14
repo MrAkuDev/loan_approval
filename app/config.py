@@ -59,3 +59,19 @@ VALID_CATEGORIES = {
 }
 
 MODEL_PALETTE = ["#1D4ED8", "#059669", "#D97706"]
+
+TOP_BOUNDARY_FEATURES = [
+    "loan_percent_income",
+    "loan_int_rate",
+    "person_income",
+    "loan_amnt",
+    "credit_score",
+]
+
+FEATURE_LABELS = {
+    "loan_percent_income": "Proporción Préstamo / Ingreso (loan_percent_income)",
+    "loan_int_rate": "Tasa de Interés % (loan_int_rate)",
+    "person_income": "Ingreso Anual USD (person_income)",
+    "loan_amnt": "Monto Solicitado USD (loan_amnt)",
+    "credit_score": "Puntaje Crediticio (credit_score)",
+}

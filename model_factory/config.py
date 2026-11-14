@@ -74,6 +74,14 @@ def get_model_specs() -> dict[str, dict[str, Any]]:
                 "gamma": ["scale", "auto", 0.001, 0.01],
                 "class_weight": [None, "balanced"],
             },
+            "heatmap_config": {
+                "x_param": "C",
+                "x_values": [0.01, 0.1, 1.0, 5.0],
+                "x_label": "Regularización (C)",
+                "y_param": "gamma",
+                "y_values": ["scale", "auto", 0.001, 0.01],
+                "y_label": "Coeficiente Kernel (gamma)",
+            },
         },
         "Random Forest": {
             "filename": "random_forest.joblib",
@@ -90,6 +98,14 @@ def get_model_specs() -> dict[str, dict[str, Any]]:
                 "max_features": ["sqrt", "log2"],
                 "class_weight": [None, "balanced"],
             },
+            "heatmap_config": {
+                "x_param": "n_estimators",
+                "x_values": [100, 150, 200, 300],
+                "x_label": "Número de Estimadores (n_estimators)",
+                "y_param": "max_depth",
+                "y_values": [10, 15, 20, 30, None],
+                "y_label": "Profundidad Máxima (max_depth)",
+            },
         },
         "Logistic Regression": {
             "filename": "logistic_regression.joblib",
@@ -102,6 +118,14 @@ def get_model_specs() -> dict[str, dict[str, Any]]:
                 "C": [0.01, 0.1, 0.5, 1.0, 5.0, 10.0],
                 "class_weight": [None, "balanced"],
                 "solver": ["lbfgs"],
+            },
+            "heatmap_config": {
+                "x_param": "C",
+                "x_values": [0.01, 0.1, 0.5, 1.0, 5.0, 10.0],
+                "x_label": "Inversa de Regularización (C)",
+                "y_param": "class_weight",
+                "y_values": [None, "balanced"],
+                "y_label": "Balanceo de Clases (class_weight)",
             },
         },
     }

@@ -1,21 +1,267 @@
-"""Pestaña 3: Upload Database — predicción por lotes sobre archivos CSV."""
+"""Pestaña 3: Upload Database — predicción por lotes y análisis completo estilo Evaluación Experimental."""
+
+import hashlib
 
 import numpy as np
 import pandas as pd
 import streamlit as st
-from sklearn.metrics import accuracy_score, f1_score
 
-from app.services import load_sample_template
+from app.charts import (
+    plot_confusion_matrices_row,
+    plot_test_metrics_and_roc,
+)
+from app.config import FEATURE_ORDER
+from app.services import (
+    balance_binary_target,
+    compute_batch_eval_metrics,
+    load_sample_template,
+)
+from app.tab_eval import (
+    render_correlation_section,
+    render_decision_boundary_section,
+    render_eda_section,
+)
 from app.validation import validate_uploaded_dataframe
 
 
-def render_tab_upload(models: dict) -> None:
-    """Renderiza la pestaña de carga y predicción masiva por CSV."""
-    st.header("📂 Upload Database (Predicción por Lotes en CSV)")
+def _run_batch_inference(models: dict, df_raw: pd.DataFrame, df_features: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
+    """Ejecuta la inferencia por lotes sobre los 3 modelos mostrando animación y progreso."""
+    df_out = df_raw.copy()
+    total_models = len(models)
+
+    with st.status(f"Cargando y procesando {len(df_features):,} registros con {total_models} modelos...", expanded=True) as status:
+        progress_bar = st.progress(0, text="Iniciando predicción por lotes...")
+        for idx, (m_name, pipe) in enumerate(models.items(), start=1):
+            progress_bar.progress((idx - 1) / total_models, text=f"[{idx}/{total_models}] Ejecutando {m_name}...")
+            st.write(f"⏳ Procesando **{m_name}** ({idx}/{total_models})...")
+            preds_arr = pipe.predict(df_features)
+            probs_arr = pipe.predict_proba(df_features)[:, 1]
+            short_key = m_name.lower().replace(" ", "_")
+            df_out[f"pred_{short_key}"] = preds_arr
+            df_out[f"prob1_{short_key}"] = np.round(probs_arr, 4)
+            st.write(f"✅ **{m_name}** completado.")
+            progress_bar.progress(idx / total_models, text=f"[{idx}/{total_models}] {m_name} completado")
+
+        status.update(
+            label=f"✅ Predicción completada para {len(df_out):,} registros.",
+            state="complete",
+            expanded=False,
+        )
+
+    pred_cols = [f"pred_{k.lower().replace(' ', '_')}" for k in models.keys()]
+    df_out["consenso_3_modelos"] = df_out[pred_cols].nunique(axis=1).map(
+        lambda n: "Unánime (3/3)" if n == 1 else "Discrepancia (2/1)"
+    )
+    return df_out, pred_cols
+
+
+def _build_upload_eda_source(
+    df_raw: pd.DataFrame,
+    df_out: pd.DataFrame,
+    model_names: list[str],
+    pred_cols: list[str],
+    has_ground_truth: bool,
+    file_sig: str,
+) -> tuple[pd.DataFrame, str]:
+    """Construye el DataFrame con columna `loan_status` (real o predicha) para EDA y correlaciones."""
+    df_base = df_out[FEATURE_ORDER].copy()
+    if has_ground_truth:
+        df_base["loan_status"] = df_raw["loan_status"].astype(int).values
+        return df_base, "columna real `loan_status` del CSV"
+
+    target_choice = st.radio(
+        "El CSV no incluye `loan_status`. Etiqueta de referencia para las gráficas EDA y Correlación:",
+        options=["Consenso (Voto Mayoritario)"] + model_names,
+        index=0,
+        horizontal=True,
+        key=f"upload_target_src_{file_sig}",
+    )
+    if target_choice == "Consenso (Voto Mayoritario)":
+        df_base["loan_status"] = (df_out[pred_cols].mean(axis=1) >= 0.5).astype(int).values
+    else:
+        short_key = target_choice.lower().replace(" ", "_")
+        df_base["loan_status"] = df_out[f"pred_{short_key}"].astype(int).values
+    return df_base, f"predicción de `{target_choice}`"
+
+
+def _render_model_comparison_section(
+    models: dict,
+    df_out: pd.DataFrame,
+    df_eda: pd.DataFrame,
+    model_names: list[str],
+    pred_cols: list[str],
+    has_ground_truth: bool,
+    batch_eval_metrics: dict[str, dict] | None,
+    use_balanced: bool,
+    file_sig: str,
+    eval_results: dict | None,
+) -> None:
+    """Renderiza Sección 3: tabla comparativa y fronteras de decisión sobre el CSV."""
+    st.subheader("3. Desempeño Comparativo y Fronteras de Decisión sobre el CSV Cargado")
+    majority_preds = (df_out[pred_cols].mean(axis=1) >= 0.5).astype(int).to_numpy()
+    summary_rows = []
+    for m_name, pred_col in zip(model_names, pred_cols):
+        short_key = m_name.lower().replace(" ", "_")
+        n_app = int((df_out[pred_col] == 1).sum())
+        n_den = int((df_out[pred_col] == 0).sum())
+        mean_prob = float(df_out[f"prob1_{short_key}"].mean())
+
+        if has_ground_truth and batch_eval_metrics is not None:
+            m_vals = batch_eval_metrics[m_name]
+            summary_rows.append(
+                {
+                    "Modelo": m_name,
+                    "Aprobados (1)": f"{n_app:,} ({(n_app / len(df_out)) * 100:.1f}%)",
+                    "Denegados (0)": f"{n_den:,} ({(n_den / len(df_out)) * 100:.1f}%)",
+                    "Accuracy": m_vals["accuracy"],
+                    "Precision": m_vals["precision"],
+                    "Recall": m_vals["recall"],
+                    "F1-Score": m_vals["f1"],
+                    "ROC-AUC": m_vals["roc_auc"] if m_vals["roc_auc"] is not None else "N/A",
+                }
+            )
+        else:
+            agree_pct = float((df_out[pred_col].to_numpy(dtype=int) == majority_preds).mean() * 100.0)
+            summary_rows.append(
+                {
+                    "Modelo": m_name,
+                    "Aprobados (1)": f"{n_app:,} ({(n_app / len(df_out)) * 100:.1f}%)",
+                    "Denegados (0)": f"{n_den:,} ({(n_den / len(df_out)) * 100:.1f}%)",
+                    "Prob. Media P(1)": round(mean_prob, 4),
+                    "Acuerdo con Voto Mayoritario": f"{agree_pct:.1f}%",
+                }
+            )
+    st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
+
+    render_decision_boundary_section(
+        df_source=df_eda,
+        models=models,
+        eval_results=eval_results,
+        dataset_tag=f"upload_{file_sig}",
+        source_label=f"CSV Cargado ({len(df_eda):,} registros)",
+        balanced_tag=use_balanced,
+    )
+
+
+def _render_batch_results(
+    models: dict,
+    df_raw: pd.DataFrame,
+    df_out: pd.DataFrame,
+    pred_cols: list[str],
+    file_name: str,
+    file_sig: str,
+    eval_results: dict | None,
+) -> None:
+    """Renderiza el reporte experimental completo usando el CSV cargado y sus predicciones."""
+    model_names = list(models.keys())
+    has_ground_truth = "loan_status" in df_raw.columns and df_raw["loan_status"].isin([0, 1]).all()
+
+    st.markdown(f"### 📊 Evaluación sobre Base Cargada: `{file_name}`")
+    df_base, target_desc = _build_upload_eda_source(
+        df_raw, df_out, model_names, pred_cols, has_ground_truth, file_sig
+    )
+
+    both_classes_in_eda = df_base["loan_status"].nunique() == 2
+    use_balanced = False
+    if both_classes_in_eda:
+        use_balanced = st.checkbox(
+            "Balancear clases 50% / 50% dentro del CSV cargado (igualar Denegado 0 vs Aprobado 1 para EDA)",
+            value=False,
+            key=f"upload_bal_{file_sig}",
+        )
+    df_eda = balance_binary_target(df_base) if use_balanced else df_base
+
+    n_total = len(df_eda)
+    n_c0 = int((df_eda["loan_status"] == 0).sum())
+    n_c1 = int((df_eda["loan_status"] == 1).sum())
+    mc1, mc2, mc3 = st.columns(3)
+    mc1.metric("Registros activos (CSV)", f"{n_total:,}")
+    mc2.metric("Clase 0 — Denegado", f"{n_c0:,} ({(n_c0 / max(n_total, 1)) * 100:.1f}%)")
+    mc3.metric("Clase 1 — Aprobado", f"{n_c1:,} ({(n_c1 / max(n_total, 1)) * 100:.1f}%)")
+    st.caption(f"Fuente de etiquetas en las gráficas EDA y Correlación: {target_desc}.")
+
+    # 1. Mapa de Calor de Correlaciones
+    corr_sub = (
+        f"Correlación de Pearson calculada sobre `{file_name}` (**{n_total:,} registros**) usando {target_desc} "
+        "(**valores positivos en azul** se asocian con **Clase 1: Aprobado**; **valores negativos en rojo** con **Clase 0: No Aprobado**)."
+    )
+    render_correlation_section(
+        df_source=df_eda,
+        eval_results=eval_results,
+        key_prefix=f"upload_{file_sig}",
+        subtitle=corr_sub,
+    )
+
+    # 2. Análisis Exploratorio de Datos (EDA) + Vista 3D + Diagnósticos
+    eda_mode_tag = "Balanceado 50/50" if use_balanced else "Datos Cargados"
+    render_eda_section(
+        df_eda,
+        models,
+        section_title=f"2. Análisis Exploratorio de Datos (EDA — `{file_name}`, {eda_mode_tag})",
+        description=(
+            f"Comportamiento de las principales características respecto a `loan_status` (**1 = Aprobado**, **0 = Denegado**) "
+            f"en los **{n_total:,} registros** activos de `{file_name}`."
+        ),
+    )
+
+    # 3. Métricas / Comparativa de Modelos + Fronteras de Decisión 2D
+    batch_eval_metrics = None
+    has_both_gt = False
+    if has_ground_truth:
+        batch_eval_metrics, has_both_gt = compute_batch_eval_metrics(model_names, df_raw["loan_status"], df_out)
+
+    _render_model_comparison_section(
+        models=models,
+        df_out=df_out,
+        df_eda=df_eda,
+        model_names=model_names,
+        pred_cols=pred_cols,
+        has_ground_truth=has_ground_truth,
+        batch_eval_metrics=batch_eval_metrics,
+        use_balanced=use_balanced,
+        file_sig=file_sig,
+        eval_results=eval_results,
+    )
+
+    # 4 y 5. Gráficas Comparativas / ROC y Matrices de Confusión (cuando existe loan_status real)
+    if has_ground_truth and batch_eval_metrics is not None:
+        if has_both_gt:
+            st.subheader("4. Visualización Comparativa en la Base Cargada (Métricas y Curvas ROC)")
+            plot_test_metrics_and_roc(batch_eval_metrics, model_names)
+        else:
+            st.info("ℹ️ La columna `loan_status` del CSV contiene una sola clase; se requieren ambas clases (`0` y `1`) para trazar curvas ROC.")
+
+        st.subheader("5. Matrices de Confusión — Desempeño Real sobre el CSV Cargado")
+        gt_subtitles = {
+            m: f"CSV Real | Acc: {batch_eval_metrics[m]['accuracy']:.4f} | F1: {batch_eval_metrics[m]['f1']:.4f}"
+            for m in model_names
+        }
+        plot_confusion_matrices_row(batch_eval_metrics, model_names, cmap="Blues", subtitle_map=gt_subtitles)
+    else:
+        st.info(
+            "ℹ️ El CSV cargado no incluye la columna real `loan_status`; "
+            "las secciones **4 (Métricas y Curvas ROC)** y **5 (Matrices de Confusión reales)** se muestran automáticamente cuando el archivo incluye `loan_status`."
+        )
+
+    # 6. Vista Previa y Descarga
+    st.subheader("6. Vista Previa de Resultados (primeras 100 filas) y Descarga")
+    st.dataframe(df_out.head(100), use_container_width=True)
+    st.download_button(
+        label="📥 Descargar CSV con Predicciones de los 3 Modelos",
+        data=df_out.to_csv(index=False).encode("utf-8"),
+        file_name="predicciones_3_modelos.csv",
+        mime="text/csv",
+        key=f"upload_dl_{file_sig}",
+    )
+
+
+def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
+    """Renderiza la pestaña de carga, validación, ejecución bajo demanda y evaluación estilo Tab 4."""
+    st.header("📂 Upload Database (Predicción y Evaluación sobre CSV)")
     st.markdown(
         "Sube un archivo `.csv` con las 13 columnas de entrada en formato compatible con `loan_data.csv` "
-        "(puede incluir opcionalmente la columna real `loan_status` para comparar aciertos). "
-        "Los 3 modelos procesarán el archivo aplicando sus pipelines de preprocesamiento."
+        "(puede incluir opcionalmente la columna real `loan_status` para evaluar métricas, curvas ROC y matrices de confusión). "
+        "Pulsa **Predict** para procesar el lote con los 3 modelos y visualizar el análisis completo."
     )
 
     sample_template = load_sample_template(nrows=5)
@@ -29,66 +275,49 @@ def render_tab_upload(models: dict) -> None:
 
     uploaded_file = st.file_uploader("Upload Database (.csv)", type=["csv"], key="upload_database_csv")
     if uploaded_file is None:
+        st.session_state.pop("upload_batch_results", None)
         return
 
     try:
+        raw_bytes = uploaded_file.getvalue()
+        file_hash = hashlib.md5(raw_bytes).hexdigest()[:10]
+        uploaded_file.seek(0)
         df_raw = pd.read_csv(uploaded_file)
         st.write(f"Archivo cargado: **{uploaded_file.name}** ({len(df_raw):,} filas × {df_raw.shape[1]} columnas)")
 
         is_valid, val_errs, df_features = validate_uploaded_dataframe(df_raw)
         if not is_valid:
+            st.session_state.pop("upload_batch_results", None)
             for e in val_errs:
                 st.error(f"❌ Validación fallida: {e}")
             return
 
         st.success("✅ Validación exitosa: columnas, tipos de datos y categorías verificadas.")
 
-        df_out = df_raw.copy()
-        for m_name, pipe in models.items():
-            preds_arr = pipe.predict(df_features)
-            probs_arr = pipe.predict_proba(df_features)[:, 1]
-            short_key = m_name.lower().replace(" ", "_")
-            df_out[f"pred_{short_key}"] = preds_arr
-            df_out[f"prob1_{short_key}"] = np.round(probs_arr, 4)
+        file_sig = f"{uploaded_file.name}:{uploaded_file.size}:{file_hash}"
+        cached_batch = st.session_state.get("upload_batch_results")
+        if cached_batch and cached_batch.get("file_sig") != file_sig:
+            st.session_state.pop("upload_batch_results", None)
+            cached_batch = None
 
-        pred_cols = [f"pred_{k.lower().replace(' ', '_')}" for k in models.keys()]
-        df_out["consenso_3_modelos"] = df_out[pred_cols].nunique(axis=1).map(
-            lambda n: "Unánime (3/3)" if n == 1 else "Discrepancia (2/1)"
-        )
+        if st.button("Predict", type="primary", key="upload_predict_btn"):
+            df_out, pred_cols = _run_batch_inference(models, df_raw, df_features)
+            st.session_state["upload_batch_results"] = {
+                "file_sig": file_sig,
+                "df_out": df_out,
+                "pred_cols": pred_cols,
+            }
+            cached_batch = st.session_state["upload_batch_results"]
 
-        st.subheader("📈 Resumen de Predicciones sobre la Base Cargada")
-        u_cols = st.columns(4)
-        for idx, (m_name, col_name) in enumerate(zip(models.keys(), pred_cols)):
-            n_app = int((df_out[col_name] == 1).sum())
-            pct_app = (n_app / len(df_out)) * 100
-            u_cols[idx].metric(f"{m_name} — Aprobados", f"{n_app:,} / {len(df_out):,}", f"{pct_app:.1f}%")
-        unanimous_cnt = int((df_out["consenso_3_modelos"] == "Unánime (3/3)").sum())
-        u_cols[3].metric(
-            "Consenso Unánime",
-            f"{unanimous_cnt:,} / {len(df_out):,}",
-            f"{(unanimous_cnt / len(df_out)) * 100:.1f}%",
-        )
-
-        if "loan_status" in df_raw.columns and df_raw["loan_status"].isin([0, 1]).all():
-            st.info("ℹ️ La base subida contiene la columna real `loan_status`. Desempeño de los 3 modelos en esta muestra:")
-            batch_metrics = [
-                {
-                    "Modelo": m_name,
-                    "Accuracy en CSV": round(float(accuracy_score(df_raw["loan_status"], df_out[col_name])), 4),
-                    "F1-Score en CSV": round(float(f1_score(df_raw["loan_status"], df_out[col_name], zero_division=0)), 4),
-                }
-                for m_name, col_name in zip(models.keys(), pred_cols)
-            ]
-            st.dataframe(pd.DataFrame(batch_metrics), use_container_width=True, hide_index=True)
-
-        st.subheader("📋 Vista Previa de Resultados (primeras 100 filas)")
-        st.dataframe(df_out.head(100), use_container_width=True)
-
-        st.download_button(
-            label="📥 Descargar CSV con Predicciones de los 3 Modelos",
-            data=df_out.to_csv(index=False).encode("utf-8"),
-            file_name="predicciones_3_modelos.csv",
-            mime="text/csv",
-        )
+        if cached_batch:
+            _render_batch_results(
+                models=models,
+                df_raw=df_raw,
+                df_out=cached_batch["df_out"],
+                pred_cols=cached_batch["pred_cols"],
+                file_name=uploaded_file.name,
+                file_sig=file_sig,
+                eval_results=eval_results,
+            )
     except Exception as exc:
         st.error(f"Error al procesar el archivo CSV: {exc}")

@@ -3,12 +3,17 @@
 import json
 
 import pandas as pd
+import streamlit as st
 import streamlit.components.v1 as components
 
 
 def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
     """Renderiza una gráfica 3D interactiva con líneas verticales de altura para `loan_int_rate`."""
-    sample = df_3d.sample(n=min(1600, len(df_3d)), random_state=42)
+    if df_3d.empty:
+        st.info("No hay registros disponibles para la combinación de filtros seleccionada en la vista 3D.")
+        return
+
+    sample = df_3d.sample(n=min(4500, len(df_3d)), random_state=42)
     z_min = float(sample["loan_int_rate"].min())
     z_max = float(sample["loan_int_rate"].max())
     y_min = 0.0
@@ -20,6 +25,8 @@ def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
             "y": round(float(r.loan_amnt), 0),
             "z": round(float(r.loan_int_rate), 2),
             "c": int(r.loan_status),
+            "d": str(r.previous_loan_defaults_on_file),
+            "h": str(r.person_home_ownership),
         }
         for r in sample.itertuples(index=False)
     ]
@@ -61,6 +68,25 @@ def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
       }}
       .btn:hover {{ background: #EFF6FF; border-color: #93C5FD; }}
       .btn.active {{ background: #1E3A8A; color: #FFFFFF; border-color: #1E3A8A; }}
+      .sel-lbl {{
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1F2937;
+      }}
+      .sel {{
+        border: 1px solid #D1D5DB;
+        background: #F9FAFB;
+        color: #1F2937;
+        padding: 4px 8px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }}
+      .sel:focus {{ outline: none; border-color: #1E3A8A; }}
       .legend {{ display: flex; gap: 12px; align-items: center; font-size: 12px; color: #374151; }}
       .dot {{ width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }}
       .canvas-box {{ position: relative; width: 100%; height: 520px; cursor: grab; }}
@@ -101,10 +127,29 @@ def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
             <button id="flt-all" class="btn active">Todos</button>
             <button id="flt-1" class="btn">Aprobado (1)</button>
             <button id="flt-0" class="btn">Denegado (0)</button>
+            <label class="sel-lbl">
+              Defaults:
+              <select id="flt-defaults" class="sel">
+                <option value="all">Todos</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </label>
+            <label class="sel-lbl">
+              Vivienda:
+              <select id="flt-home" class="sel">
+                <option value="all">Todas</option>
+                <option value="RENT">RENT</option>
+                <option value="OWN">OWN</option>
+                <option value="MORTGAGE">MORTGAGE</option>
+                <option value="OTHER">OTHER</option>
+              </select>
+            </label>
           </div>
           <div class="legend">
             <span><span class="dot" style="background:#DC2626;"></span>Denegado (0)</span>
             <span><span class="dot" style="background:#059669;"></span>Aprobado (1)</span>
+            <span id="vis-cnt" style="font-weight:600;color:#475569;"></span>
           </div>
         </div>
         <div class="canvas-box" id="box">
@@ -141,6 +186,8 @@ def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
 
         let mode = "cursor";
         let classFilter = "all";
+        let defaultFilter = "all";
+        let homeFilter = "all";
         let showStems = true;
         let maxPoints = 400;
         let baseYaw = -0.58, basePitch = 0.34;
@@ -188,6 +235,8 @@ def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
         document.getElementById("flt-all").onclick = () => setFilter("all");
         document.getElementById("flt-1").onclick = () => setFilter("1");
         document.getElementById("flt-0").onclick = () => setFilter("0");
+        document.getElementById("flt-defaults").onchange = (e) => {{ defaultFilter = e.target.value; }};
+        document.getElementById("flt-home").onchange = (e) => {{ homeFilter = e.target.value; }};
 
         canvas.addEventListener("mousedown", (e) => {{
           dragging = true;
@@ -332,14 +381,19 @@ def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
           ctx.restore();
 
           const projected = [];
-          const limit = Math.min(maxPoints, NORM_PTS.length);
-          for (let i = 0; i < limit; i++) {{
+          let totalMatched = 0;
+          for (let i = 0; i < NORM_PTS.length; i++) {{
             const item = NORM_PTS[i];
             if (classFilter !== "all" && String(item.raw.c) !== classFilter) continue;
+            if (defaultFilter !== "all" && item.raw.d !== defaultFilter) continue;
+            if (homeFilter !== "all" && item.raw.h !== homeFilter) continue;
+            totalMatched++;
+            if (projected.length >= maxPoints) continue;
             const top = project(item.nx, item.ny, item.nz);
             const base = showStems ? project(item.nx, item.ny, -1) : null;
             projected.push({{ top, base, raw: item.raw }});
           }}
+          document.getElementById("vis-cnt").textContent = "(" + projected.length + " / " + totalMatched + " pts)";
           projected.sort((a, b) => a.top.depth - b.top.depth);
 
           let bestDist = 11, bestPt = null;
@@ -398,7 +452,8 @@ def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
               statusTxt + "<br>" +
               "Ingreso: <b>$" + bestPt.raw.x.toLocaleString() + "</b><br>" +
               "Préstamo: <b>$" + bestPt.raw.y.toLocaleString() + "</b><br>" +
-              "Tasa Interés: <b>" + bestPt.raw.z.toFixed(2) + "%</b>";
+              "Tasa Interés: <b>" + bestPt.raw.z.toFixed(2) + "%</b><br>" +
+              "Vivienda: <b>" + bestPt.raw.h + "</b> | Mora previa: <b>" + bestPt.raw.d + "</b>";
           }} else {{
             tip.style.display = "none";
           }}
@@ -410,4 +465,4 @@ def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
     </body>
     </html>
     """
-    components.html(html_code, height=615)
+    components.html(html_code, height=645)

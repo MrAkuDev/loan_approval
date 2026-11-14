@@ -1,11 +1,12 @@
 """Renderizado de gráficas 2D con Matplotlib para predicción, EDA y evaluación."""
 
+from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import streamlit as st
 
-from app.config import MODEL_PALETTE, NUMERICAL_COLUMNS
+from app.config import FEATURE_LABELS, MODEL_PALETTE, NUMERICAL_COLUMNS
 
 
 def plot_single_prediction_confidence(comp_rows: list[dict]) -> None:
@@ -213,7 +214,7 @@ def plot_income_vs_loan_scatter(df_scat: pd.DataFrame, inc_cap: float) -> None:
             color=color_hex,
             label=label_txt,
         )
-    ax_sc.set_xlim(0, inc_cap)
+    ax_sc.set_xlim(0, max(inc_cap, 1.0))
     ax_sc.set_xlabel("Ingreso Anual (USD, hasta percentil 95)")
     ax_sc.set_ylabel("Monto del Préstamo (USD)")
     ax_sc.set_title("Ingreso Anual vs Monto Solicitado por loan_status", fontsize=11, fontweight="bold")
@@ -337,3 +338,182 @@ def plot_test_metrics_and_roc(optimized_test: dict, model_names: list[str]) -> N
         plt.tight_layout()
         st.pyplot(fig_roc)
         plt.close(fig_roc)
+
+
+def _format_params_subtitle(params: dict) -> str:
+    """Formatea los hiperparámetros clave para el subtítulo de cada frontera."""
+    if not params:
+        return ""
+    items = [f"{k}={v}" for k, v in params.items()]
+    mid = (len(items) + 1) // 2
+    if len(items) > 3:
+        return ", ".join(items[:mid]) + "\n" + ", ".join(items[mid:])
+    return ", ".join(items)
+
+
+def plot_model_decision_boundaries(
+    boundary_data: dict,
+    feat_x: str,
+    feat_y: str,
+    eval_results: dict,
+) -> None:
+    """Dibuja las fronteras de decisión 2D reales de los 3 modelos (regiones + puntos + umbral P=0.5)."""
+    prob_grids = boundary_data["prob_grids"]
+    model_names = list(prob_grids.keys())
+    if not model_names:
+        return
+
+    xx = boundary_data["xx"]
+    yy = boundary_data["yy"]
+    df_pts = boundary_data["scatter"]
+    x_bounds = boundary_data["x_bounds"]
+    y_bounds = boundary_data["y_bounds"]
+
+    region_cmap = LinearSegmentedColormap.from_list(
+        "loan_decision_regions",
+        ["#F87171", "#FEE2E2", "#F8FAFC", "#D1FAE5", "#34D399"],
+    )
+
+    fig, axes = plt.subplots(1, len(model_names), figsize=(16.5, 5.0), sharey=True)
+    if len(model_names) == 1:
+        axes = [axes]
+
+    last_cf = None
+    for idx, m_name in enumerate(model_names):
+        ax = axes[idx]
+        z_prob = prob_grids[m_name]
+
+        last_cf = ax.contourf(
+            xx,
+            yy,
+            z_prob,
+            levels=np.linspace(0.0, 1.0, 21),
+            cmap=region_cmap,
+            alpha=0.82,
+            vmin=0.0,
+            vmax=1.0,
+        )
+
+        # Línea de frontera P = 0.50 con halo oscuro para resaltar sobre ambos fondos
+        if float(z_prob.min()) < 0.5 < float(z_prob.max()):
+            ax.contour(xx, yy, z_prob, levels=[0.5], colors=["#1E293B"], linewidths=3.0)
+            ax.contour(xx, yy, z_prob, levels=[0.5], colors=["#FACC15"], linewidths=1.8)
+
+        for cls, lbl, color_hex in [
+            (0, "Denegado (0)", "#991B1B"),
+            (1, "Aprobado (1)", "#065F46"),
+        ]:
+            sub = df_pts[df_pts["loan_status"] == cls]
+            if not sub.empty:
+                ax.scatter(
+                    sub[feat_x],
+                    sub[feat_y],
+                    s=15,
+                    color=color_hex,
+                    edgecolors="white",
+                    linewidths=0.35,
+                    alpha=0.88,
+                    label=lbl if idx == 0 else None,
+                    zorder=3,
+                )
+
+        if idx == 0:
+            ax.plot([], [], color="#FACC15", linewidth=2.2, label="Frontera P = 0.50")
+            ax.legend(loc="upper left", fontsize=8, framealpha=0.92)
+            ax.set_ylabel(FEATURE_LABELS.get(feat_y, feat_y), fontsize=9.5)
+
+        opt_params = eval_results.get("optimized_test", {}).get(m_name, {}).get("best_params", {})
+        param_txt = _format_params_subtitle(opt_params)
+        title = f"{m_name}\n{param_txt}" if param_txt else m_name
+        ax.set_title(title, fontsize=9.8, fontweight="bold")
+        ax.set_xlabel(FEATURE_LABELS.get(feat_x, feat_x), fontsize=9)
+        ax.set_xlim(x_bounds)
+        ax.set_ylim(y_bounds)
+        ax.grid(alpha=0.2, linestyle="--")
+
+    fig.subplots_adjust(right=0.92, wspace=0.14)
+    if last_cf is not None:
+        cbar_ax = fig.add_axes([0.935, 0.16, 0.014, 0.72])
+        cbar = fig.colorbar(last_cf, cax=cbar_ax)
+        cbar.set_label("Probabilidad de Aprobación P(loan_status = 1)", fontsize=9)
+
+    st.pyplot(fig)
+    plt.close(fig)
+
+
+def plot_hyperparameter_heatmaps(
+    tuning_heatmaps: dict,
+    model_names: list[str],
+    metric_key: str,
+    metric_label: str,
+) -> None:
+    """Dibuja 3 heatmaps comparativos (uno por modelo) sobre grillas 2D de hiperparámetros."""
+    available = [m for m in model_names if m in tuning_heatmaps]
+    if not available:
+        st.info("No hay grillas de hiperparámetros disponibles para graficar.")
+        return
+
+    fig, axes = plt.subplots(1, len(available), figsize=(18.5, 4.9))
+    if len(available) == 1:
+        axes = [axes]
+
+    for ax, m_name in zip(axes, available):
+        hm = tuning_heatmaps[m_name]
+        grid = np.array(hm[metric_key], dtype=float)
+        x_labels = hm["x_labels"]
+        y_labels = hm["y_labels"]
+
+        im = ax.imshow(grid, cmap="viridis", aspect="auto")
+        cbar = fig.colorbar(im, ax=ax, fraction=0.048, pad=0.04)
+        cbar.ax.tick_params(labelsize=8.5)
+
+        ax.set_xticks(range(len(x_labels)))
+        ax.set_xticklabels(x_labels, fontsize=9)
+        ax.set_yticks(range(len(y_labels)))
+        ax.set_yticklabels(y_labels, fontsize=9)
+        ax.set_xlabel(hm["x_label"], fontsize=9.5)
+        ax.set_ylabel(hm["y_label"], fontsize=9.5)
+        ax.set_title(
+            f"Heatmap {metric_label}: {m_name}\n({hm['y_param']} vs {hm['x_param']})",
+            fontsize=10.5,
+            fontweight="bold",
+            pad=10,
+        )
+
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+
+        vmin = float(np.nanmin(grid))
+        vmax = float(np.nanmax(grid))
+        span = vmax - vmin
+        best_pair = hm.get("best_pair", {})
+
+        for r in range(grid.shape[0]):
+            for c in range(grid.shape[1]):
+                val = float(grid[r, c])
+                norm_val = (val - vmin) / span if span > 1e-12 else 0.5
+                txt_color = "#111827" if norm_val >= 0.58 else "white"
+                ax.text(
+                    c,
+                    r,
+                    f"{val:.4f}",
+                    ha="center",
+                    va="center",
+                    color=txt_color,
+                    fontsize=9.5,
+                    fontweight="bold",
+                )
+                if y_labels[r] == best_pair.get("y") and x_labels[c] == best_pair.get("x"):
+                    rect = plt.Rectangle(
+                        (c - 0.48, r - 0.48),
+                        0.96,
+                        0.96,
+                        fill=False,
+                        edgecolor="#DC2626",
+                        linewidth=2.5,
+                    )
+                    ax.add_patch(rect)
+
+    plt.tight_layout(w_pad=2.4)
+    st.pyplot(fig)
+    plt.close(fig)
