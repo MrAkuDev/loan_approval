@@ -41,7 +41,21 @@ Los tres pipelines completos (`ColumnTransformer` con `StandardScaler` + `OneHot
 ## 📁 Estructura del Repositorio
 
 ```text
-├── app.py                             # Aplicación principal de Streamlit
+├── app.py                             # Punto de entrada ligero que delega en app/main.py
+├── app/                               # Paquete modular de la interfaz Streamlit
+│   ├── __init__.py
+│   ├── config.py                      # Rutas, esquema de columnas y paleta de colores
+│   ├── validation.py                  # Validación de instancias individuales y CSV
+│   ├── services.py                    # Carga cacheada de modelos/datos e inferencia
+│   ├── frontend.py                    # Configuración de página, CSS, sidebar y tarjetas
+│   ├── charts.py                      # Gráficas 2D (Matplotlib) de predicción, EDA y Test
+│   ├── charts_3d.py                   # Gráfica 3D interactiva HTML5 Canvas
+│   ├── tab_info.py                    # Pestaña 1: Información del proyecto y modelos
+│   ├── tab_predict.py                 # Pestaña 2: Predicción individual
+│   ├── tab_upload.py                  # Pestaña 3: Predicción por lotes (CSV)
+│   ├── tab_eval.py                    # Pestaña 4: Evaluación experimental y EDA (cv_5)
+│   ├── tab_interp.py                  # Pestaña 5: Interpretación y limitaciones
+│   └── main.py                        # Orquestador principal renderizado por app.py
 ├── model_factory/                     # Paquete modular de entrenamiento y evaluación
 │   ├── __init__.py
 │   ├── config.py                      # Rutas, esquema de variables y espacios de búsqueda
