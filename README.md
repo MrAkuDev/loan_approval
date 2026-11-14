@@ -1,81 +1,85 @@
-# 🏦 Loan Approval Prediction — Machine Learning Project
+# 🏦 Predicción de Aprobación de Préstamos Bancarios (Loan Approval ML)
 
-This repository contains an end-to-end Machine Learning practice to predict loan approval status (`loan_status`) based on applicant credit risk, financial indicators, and historical loan data.
+Aplicación web interactiva desarrollada en **Streamlit** como parte del Proyecto Final de **Machine Learning** (Maestría — Facultad de Ingeniería, Universidad Autónoma de Chihuahua).
 
-The project includes an interactive web application built with **Streamlit** ready for one-click deployment on **Streamlit Community Cloud**.
-
----
-
-## 🚀 Live Demo on Streamlit Cloud
-
-When deployed to Streamlit Community Cloud:
-- **Repository:** `MrAkuDev/loan_approval`
-- **Branch:** `main`
-- **Main file path:** `app.py`
+Integra y compara en tiempo real los **tres modelos con mejor desempeño** evaluados en [`loan_approval.ipynb`](loan_approval.ipynb), utilizando el mismo preprocesamiento y orden de características aplicados durante el entrenamiento sobre [`loan_data.csv`](loan_data.csv).
 
 ---
 
-## 🧠 Machine Learning Model: Stacking Ensemble Architecture
+## 🎓 Información Académica
 
-To achieve superior predictive power, this project implements a **Stacking Classifier (`StackingClassifier`)** combining three diverse algorithms as base estimators with an independent meta-learner:
-
-1. **Gradient Boosting Classifier (`GradientBoostingClassifier`):** Captures non-linear feature interactions and high-order patterns.
-2. **Support Vector Machine (`SVC` with RBF Kernel):** Maximizes margin separation in high-dimensional space.
-3. **Logistic Regression (`LogisticRegression`):** Provides a robust linear baseline with calibrated probabilities.
-4. **Final Meta-Estimador:** Logistic Regression combining out-of-fold predictions via 5-fold cross-validation.
-
-### ⚙️ Automated Hyperparameter Tuning
-Before stacking, each base model undergoes hyperparameter optimization (`GridSearchCV` and `RandomizedSearchCV`) with stratified cross-validation on the preprocessed feature space.
-
-### Final Performance on Holdout Test Set (20%)
-- **Accuracy:** 93.31%
-- **Precision:** 88.79%
-- **Recall:** 80.00%
-- **F1 Score:** 84.17%
-- **ROC-AUC:** 0.9763
-
-### 🛡️ Two-Tier Credit Decision Architecture
-To prevent high-risk loans from being approved through statistical extrapolation:
-1. **Tier 1: Underwriting Knockout Policies:** Automatic decline if DTI > 45%, Annual Income < $12,000, Credit Score < 550, or Prior Defaults exist.
-2. **Tier 2: Stacking ML Inference:** If hard policies pass, the Stacking Ensemble evaluates the applicant across 18 features with a conservative approval threshold ($\ge 65\%$ projected solvency).
+- **Alumno:** Joel Arturo Álvarez Hernández (`403233`)
+- **Institución:** Universidad Autónoma de Chihuahua (UACH) — Facultad de Ingeniería
+- **Materia:** Machine Learning (Proyecto Final)
+- **Asesora:** Dra. Olanda Prieto Ordaz
 
 ---
 
-## 📁 Repository Structure
+## 🧠 Modelos Implementados
+
+Los tres modelos seleccionados del proyecto siguen un flujo de dos etapas en [`model_factory/train_model.py`](model_factory/train_model.py):
+1. **Evaluación Baseline:** Entrenamiento y validación cruzada estratificada (5 folds) con parámetros por defecto.
+2. **Ajuste de Hiperparámetros:** Búsqueda mediante `GridSearchCV` / `RandomizedSearchCV` (métrica objetivo `F1-Score`) y entrenamiento final sobre el 80% de entrenamiento (`36,000` registros), evaluando en el 20% de prueba (`9,000` registros).
+
+Los tres pipelines completos (`ColumnTransformer` con `StandardScaler` + `OneHotEncoder` + estimador) se guardan por separado en `models/`:
+- **SVM (Kernel RBF):** `models/svm_rbf.joblib`
+- **Random Forest:** `models/random_forest.joblib`
+- **Regresión Logística:** `models/logistic_regression.joblib`
+
+---
+
+## 🖥️ Funcionalidades de la Aplicación (`app.py`)
+
+1. **Información del Proyecto:** Ficha académica, descripción del problema, base de datos (`loan_data.csv`) y modelos integrados.
+2. **Predicción Individual:** Formulario validado con los 13 atributos del solicitante; muestra las predicciones de los 3 modelos lado a lado, probabilidades estimadas, score de decisión y análisis de consenso/diferencias.
+3. **Upload Database:** Carga de archivos `.csv` con validación de columnas, tipos y categorías, ejecución por lotes de los 3 modelos y descarga de resultados.
+4. **Evaluación Experimental:** Métricas reales (`Accuracy`, `Precision`, `Recall`, `F1-Score`, `ROC-AUC`), curvas ROC y matrices de confusión en el conjunto de prueba (`models/evaluation_results.json`).
+5. **Interpretación y Limitaciones:** Explicación clara de clases, probabilidades y limitaciones del conjunto de datos.
+
+---
+
+## 📁 Estructura del Repositorio
 
 ```text
-├── app.py              # Streamlit web application with two-tier decisioning
-├── features.py         # Financial feature engineering & underwriting policy rules
-├── model.joblib        # Pre-trained Stacking Ensemble pipeline (GB + SVM + LR)
-├── train_model.py      # Standalone training script with cross-validation tuning
-├── loan_approval.ipynb # Jupyter notebook with EDA, benchmarks, and research references
-├── loan_data.csv       # Dataset (45,000 credit records)
-├── requirements.txt    # Python dependencies for Streamlit Cloud
-└── README.md           # Documentation
+├── app.py                             # Aplicación principal de Streamlit
+├── model_factory/                     # Paquete modular de entrenamiento y evaluación
+│   ├── __init__.py
+│   ├── config.py                      # Rutas, esquema de variables y espacios de búsqueda
+│   ├── data.py                        # Carga de CSV, partición Train/Test y correlaciones
+│   ├── preprocessing.py               # ColumnTransformer y ensamblado de Pipeline
+│   ├── evaluation.py                  # Métricas CV baseline y evaluación en Test
+│   ├── tuning.py                      # Búsqueda de hiperparámetros y exportación .joblib
+│   └── train_model.py                 # Punto de entrada principal del entrenamiento
+├── requirements.txt                   # Dependencias para despliegue en Streamlit Community Cloud
+├── loan_approval.ipynb                # Notebook experimental del proyecto final
+├── loan_data.csv                      # Base de datos (45,000 registros, 14 columnas)
+├── models/
+│   ├── svm_rbf.joblib                 # Pipeline entrenado SVM RBF
+│   ├── random_forest.joblib           # Pipeline entrenado Random Forest
+│   ├── logistic_regression.joblib     # Pipeline entrenado Regresión Logística
+│   └── evaluation_results.json        # Métricas experimentales reales (CV y Test Set)
+├── gg.md                              # Especificación de requisitos del proyecto
+└── README.md                          # Documentación del proyecto
 ```
 
 ---
 
-## 💻 Local Setup & Execution
+## 💻 Ejecución Local
 
-### 1. Clone the repository
-```bash
-git clone git@github.com:MrAkuDev/loan_approval.git
-cd loan_approval
-```
-
-### 2. Install dependencies
+### 1. Instalar dependencias
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. (Optional) Re-train the model
+### 2. (Opcional) Re-entrenar y exportar los 3 modelos
 ```bash
-python train_model.py
+python model_factory/train_model.py
 ```
 
-### 4. Run the Streamlit application
+### 3. Ejecutar la aplicación Streamlit
 ```bash
 python -m streamlit run app.py
 ```
-Open your browser at `http://localhost:8501`.
+
+### 4. Despliegue en Streamlit Community Cloud
+Configurar la app vinculada a este repositorio en GitHub (`MrAkuDev/loan_approval`), rama `main`, archivo principal `app.py`.
