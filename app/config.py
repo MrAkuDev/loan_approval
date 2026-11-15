@@ -75,3 +75,19 @@ FEATURE_LABELS = {
     "loan_amnt": "Monto Solicitado USD (loan_amnt)",
     "credit_score": "Puntaje Crediticio (credit_score)",
 }
+
+FEATURE_SHORT_LABELS = {
+    "person_age": "Edad",
+    "person_gender": "Género",
+    "person_education": "Escolaridad",
+    "person_income": "Ingreso Anual",
+    "person_emp_exp": "Exp. Laboral",
+    "person_home_ownership": "Vivienda",
+    "loan_amnt": "Monto Préstamo",
+    "loan_intent": "Propósito",
+    "loan_int_rate": "Tasa Interés",
+    "loan_percent_income": "% Ingreso",
+    "cb_person_cred_hist_length": "Antig. Historial",
+    "credit_score": "Puntaje Créd.",
+    "previous_loan_defaults_on_file": "Mora Previa",
+}

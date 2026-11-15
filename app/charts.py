@@ -6,7 +6,12 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from app.config import FEATURE_LABELS, MODEL_PALETTE, NUMERICAL_COLUMNS
+from app.config import (
+    FEATURE_LABELS,
+    FEATURE_SHORT_LABELS,
+    MODEL_PALETTE,
+    NUMERICAL_COLUMNS,
+)
 
 
 def plot_single_prediction_confidence(comp_rows: list[dict]) -> None:
@@ -515,5 +520,81 @@ def plot_hyperparameter_heatmaps(
                     ax.add_patch(rect)
 
     plt.tight_layout(w_pad=2.4)
+    st.pyplot(fig)
+    plt.close(fig)
+
+
+def _format_feature_value_label(col: str, val) -> str:
+    """Formatea cada característica junto al valor ingresado para los ejes de explicabilidad."""
+    label = FEATURE_SHORT_LABELS.get(col, col)
+    if col in {"person_income", "loan_amnt"}:
+        return f"{label} (${float(val):,.0f})"
+    if col == "loan_int_rate":
+        return f"{label} ({float(val):.2f}%)"
+    if col == "loan_percent_income":
+        return f"{label} ({float(val):.2f})"
+    if col in {"person_age", "person_emp_exp", "cb_person_cred_hist_length", "credit_score"}:
+        return f"{label} ({float(val):.0f})"
+    return f"{label} ({val})"
+
+
+def plot_instance_feature_contributions(
+    attributions: dict[str, dict],
+    X_input: pd.DataFrame,
+) -> None:
+    """Dibuja 3 gráficas horizontales (una por modelo) mostrando cuánto empuja cada variable a aprobar/denegar."""
+    model_names = list(attributions.keys())
+    if not model_names:
+        return
+
+    row_vals = X_input.iloc[0].to_dict()
+    fig, axes = plt.subplots(1, len(model_names), figsize=(19.5, 6.5))
+    if len(model_names) == 1:
+        axes = [axes]
+
+    for ax, m_name in zip(axes, model_names):
+        info = attributions[m_name]
+        contribs = info["contributions"]
+        ordered_cols = sorted(contribs.keys(), key=lambda c: abs(contribs[c]))
+
+        labels = [_format_feature_value_label(c, row_vals[c]) for c in ordered_cols]
+        vals_pp = np.array([contribs[c] * 100.0 for c in ordered_cols], dtype=float)
+        colors = ["#059669" if v >= 0 else "#DC2626" for v in vals_pp]
+
+        bars = ax.barh(labels, vals_pp, color=colors, alpha=0.9)
+        ax.axvline(0.0, color="#0F172A", linewidth=1.1)
+
+        abs_max = max(float(np.max(np.abs(vals_pp))), 2.0)
+        pad = abs_max * 0.04
+        ax.set_xlim(-abs_max * 1.42, abs_max * 1.42)
+
+        for b, v in zip(bars, vals_pp):
+            offset = pad if v >= 0 else -pad
+            ha = "left" if v >= 0 else "right"
+            ax.text(
+                v + offset,
+                b.get_y() + b.get_height() / 2,
+                f"{v:+.1f} pp",
+                va="center",
+                ha=ha,
+                fontsize=8,
+                fontweight="bold",
+                color="#065F46" if v >= 0 else "#991B1B",
+            )
+
+        pred_lbl = "Aprobado (1)" if info["pred_class"] == 1 else "No Aprobado (0)"
+        title_color = "#059669" if info["pred_class"] == 1 else "#DC2626"
+        ax.set_title(
+            f"{m_name}\n{pred_lbl} | Base: {info['base_value'] * 100:.1f}% → Pred: {info['pred_value'] * 100:.1f}%",
+            fontsize=10.5,
+            fontweight="bold",
+            color=title_color,
+            pad=8,
+        )
+        ax.set_xlabel("Impacto en P(Aprobado=1) (pp)", fontsize=9)
+        ax.tick_params(axis="y", labelsize=8.5)
+        ax.grid(axis="x", linestyle="--", alpha=0.35)
+
+    plt.tight_layout(w_pad=2.6)
     st.pyplot(fig)
     plt.close(fig)

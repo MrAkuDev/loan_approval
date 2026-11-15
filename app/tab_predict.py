@@ -1,12 +1,21 @@
 """Pestaña 2: Formulario de predicción individual y comparación entre los 3 modelos."""
 
+import os
+
 import pandas as pd
 import streamlit as st
 
-from app.charts import plot_single_prediction_confidence
-from app.config import FEATURE_ORDER, VALID_CATEGORIES
+from app.charts import (
+    plot_instance_feature_contributions,
+    plot_single_prediction_confidence,
+)
+from app.config import CSV_PATH, FEATURE_ORDER, FEATURE_SHORT_LABELS, VALID_CATEGORIES
 from app.frontend import render_prediction_cards
-from app.services import predict_with_model
+from app.services import (
+    compute_local_feature_contributions,
+    load_explainability_background,
+    predict_with_model,
+)
 from app.validation import build_typed_instance, validate_single_instance
 
 
@@ -31,6 +40,42 @@ def _render_consensus_summary(preds: dict[str, dict]) -> None:
             "la frontera lineal (Regresión Logística), el ensamble de árboles (Random Forest) y la frontera gaussiana (SVM RBF) "
             "ponderan distinto las interacciones entre ingreso, tasa de interés y porcentaje comprometido."
         )
+
+
+def _render_local_explanations(models: dict, X_input: pd.DataFrame) -> None:
+    """Calcula y grafica cuánto empujó cada característica la decisión de cada modelo."""
+    st.subheader("🧠 Contribución de Cada Característica en Esta Predicción (por Modelo)")
+    st.caption(
+        "Atribución local por permutaciones (Shapley) respecto a casos reales de entrenamiento: "
+        "las barras **verdes (+ pp)** empujan la probabilidad hacia **Aprobado (1)** y las **rojas (− pp)** hacia **No Aprobado (0)**."
+    )
+
+    csv_mtime = os.path.getmtime(CSV_PATH) if os.path.exists(CSV_PATH) else 0.0
+    bg_df = load_explainability_background(csv_mtime, n_samples=24)
+    with st.spinner("Calculando impacto de cada característica en los 3 modelos..."):
+        attributions = compute_local_feature_contributions(
+            models=models,
+            X_input=X_input,
+            bg_df=bg_df,
+            bg_sig=f"{csv_mtime}:{len(bg_df)}",
+        )
+
+    plot_instance_feature_contributions(attributions, X_input)
+
+    driver_rows = []
+    for m_name, info in attributions.items():
+        contribs = info["contributions"]
+        top_pos = max(contribs.items(), key=lambda kv: kv[1])
+        top_neg = min(contribs.items(), key=lambda kv: kv[1])
+        driver_rows.append(
+            {
+                "Modelo": m_name,
+                "Principal Factor a Favor (Aprobar +)": f"{FEATURE_SHORT_LABELS.get(top_pos[0], top_pos[0])} ({top_pos[1] * 100:+.1f} pp)",
+                "Principal Factor en Contra (Denegar −)": f"{FEATURE_SHORT_LABELS.get(top_neg[0], top_neg[0])} ({top_neg[1] * 100:+.1f} pp)",
+                "Base Entrenamiento → Predicción": f"{info['base_value'] * 100:.1f}% → {info['pred_value'] * 100:.1f}%",
+            }
+        )
+    st.dataframe(pd.DataFrame(driver_rows), use_container_width=True, hide_index=True)
 
 
 def render_tab_predict(models: dict) -> None:
@@ -187,6 +232,8 @@ def render_tab_predict(models: dict) -> None:
             st.dataframe(df_comp, use_container_width=True, hide_index=True)
         with c_fig:
             plot_single_prediction_confidence(comp_rows)
+
+        _render_local_explanations(models, X_input)
 
         with st.expander("📋 Ver vector de características exacto enviado a los pipelines"):
             st.dataframe(X_input, use_container_width=True, hide_index=True)

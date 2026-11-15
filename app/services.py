@@ -298,3 +298,98 @@ def compute_batch_eval_metrics(
         }
 
     return metrics_by_model, has_both_classes
+
+
+@st.cache_data
+def load_explainability_background(csv_mtime: float, n_samples: int = 24) -> pd.DataFrame:
+    """Obtiene una muestra estratificada de `X_train` como referencia base para explicabilidad local."""
+    if os.path.exists(CSV_PATH):
+        df_all = pd.read_csv(CSV_PATH)
+        X_all = df_all[FEATURE_ORDER]
+        y_all = df_all["loan_status"]
+        X_tr, _, y_tr, _ = train_test_split(X_all, y_all, test_size=0.20, random_state=42, stratify=y_all)
+        _, X_bg = train_test_split(X_tr, test_size=n_samples, random_state=42, stratify=y_tr)
+        return X_bg.reset_index(drop=True)
+
+    fallback = {
+        col: (0.0 if col in NUMERICAL_COLUMNS else VALID_CATEGORIES[col][0])
+        for col in FEATURE_ORDER
+    }
+    return pd.DataFrame([fallback])[FEATURE_ORDER]
+
+
+@st.cache_data
+def _background_base_probs(model_name: str, _pipeline, bg_df: pd.DataFrame, bg_sig: str) -> np.ndarray:
+    """Calcula y cachea las probabilidades base sobre la muestra de referencia."""
+    if hasattr(_pipeline, "predict_proba"):
+        return _pipeline.predict_proba(bg_df)[:, 1]
+    return _pipeline.predict(bg_df).astype(float)
+
+
+def compute_local_feature_contributions(
+    models: dict,
+    X_input: pd.DataFrame,
+    bg_df: pd.DataFrame,
+    bg_sig: str = "default",
+) -> dict[str, dict]:
+    """Calcula atribuciones locales Shapley por permutaciones antitéticas para cada modelo."""
+    n_feat = len(FEATURE_ORDER)
+    n_bg = max(len(bg_df), 1)
+    rng = np.random.default_rng(42)
+
+    perms = []
+    bg_indices = []
+    for i in range(n_bg):
+        perm = rng.permutation(n_feat)
+        perms.append(perm)
+        bg_indices.append(i)
+        perms.append(perm[::-1])
+        bg_indices.append(i)
+
+    x_vals = X_input[FEATURE_ORDER].iloc[0].to_numpy(dtype=object)
+    bg_vals = bg_df[FEATURE_ORDER].to_numpy(dtype=object)
+
+    step_rows = []
+    for p_idx, perm in enumerate(perms):
+        cur = bg_vals[bg_indices[p_idx]].copy()
+        for feat_idx in perm[:-1]:
+            cur = cur.copy()
+            cur[feat_idx] = x_vals[feat_idx]
+            step_rows.append(cur)
+
+    df_steps = pd.DataFrame(step_rows, columns=FEATURE_ORDER)
+    for col in FEATURE_ORDER:
+        df_steps[col] = df_steps[col].astype(X_input[col].dtype)
+
+    total_perms = len(perms)
+    attributions: dict[str, dict] = {}
+    for m_name, pipe in models.items():
+        base_probs = _background_base_probs(m_name, pipe, bg_df, bg_sig)
+        if hasattr(pipe, "predict_proba"):
+            pred_prob = float(pipe.predict_proba(X_input)[0, 1])
+            step_probs = pipe.predict_proba(df_steps)[:, 1]
+        else:
+            pred_prob = float(pipe.predict(X_input)[0])
+            step_probs = pipe.predict(df_steps).astype(float)
+
+        pred_class = int(pipe.predict(X_input)[0])
+        step_probs_2d = step_probs.reshape(total_perms, n_feat - 1)
+        phi = np.zeros(n_feat, dtype=float)
+
+        for p_idx, perm in enumerate(perms):
+            prev_v = float(base_probs[bg_indices[p_idx]])
+            for step_pos in range(n_feat - 1):
+                cur_v = float(step_probs_2d[p_idx, step_pos])
+                phi[perm[step_pos]] += cur_v - prev_v
+                prev_v = cur_v
+            phi[perm[-1]] += pred_prob - prev_v
+
+        phi /= total_perms
+        attributions[m_name] = {
+            "base_value": float(np.mean(base_probs)),
+            "pred_value": pred_prob,
+            "pred_class": pred_class,
+            "contributions": {col: float(phi[idx]) for idx, col in enumerate(FEATURE_ORDER)},
+        }
+
+    return attributions
