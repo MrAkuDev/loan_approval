@@ -1,0 +1,418 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla,es-noshorthands]{babel}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage[hyphens]{url}
+\usepackage[hidelinks]{hyperref}
+
+% Adaptación de encabezados IEEEtran al español
+\addto\captionsspanish{%
+  \renewcommand{\abstractname}{Resumen}%
+  \renewcommand{\IEEEkeywordsname}{Palabras clave}%
+  \renewcommand{\refname}{Referencias}%
+}
+
+\hyphenation{pre-pro-ce-sa-mien-to hi-per-pa-rá-me-tros cla-si-fi-ca-ción es-tra-ti-fi-ca-da}
+
+\begin{document}
+
+\title{Evaluación Experimental y Optimización de Modelos de Aprendizaje Automático para la Clasificación de Aprobación de Préstamos}
+
+\author{%
+\IEEEauthorblockN{Joel Arturo Álvarez Hernández}
+\IEEEauthorblockA{%
+Facultad de Ingeniería, Maestría en Machine Learning\\
+Universidad Autónoma de Chihuahua (UACH)\\
+Matrícula: 403233 --- Asesora: Dra. Olanda Prieto Ordaz\\
+Chihuahua, México\\
+Correo: joelaahdz@hotmail.com}
+}
+
+\maketitle
+
+\begin{abstract}
+La evaluación automatizada de solicitudes crediticias constituye un problema crítico de clasificación binaria debido al impacto financiero de otorgar préstamos incobrables o rechazar solicitantes solventes. El objetivo de este trabajo es diseñar, optimizar y evaluar experimentalmente un flujo reproducible de aprendizaje automático libre de fuga de información para predecir la aprobación de préstamos personales. Utilizando el conjunto público \textit{Loan Approval Classification Dataset} ($45{,}000$ registros y $14$ variables, con $22.22\%$ de clase positiva), se implementó una partición estratificada $80/20$ ($36{,}000$ entrenamiento; $9{,}000$ prueba) y validación cruzada estratificada de $5$ pliegues dentro de arquitecturas \textit{Pipeline} y \textit{ColumnTransformer} con estandarización numérica y codificación \textit{One-Hot}. Se contrastaron tres paradigmas complementarios: Regresión Logística, Máquinas de Vectores de Soporte con núcleo RBF (\textit{SVM RBF}) y \textit{Random Forest}, comparando su desempeño base frente a la optimización de hiperparámetros enfocada en la métrica $F_1$. En el conjunto independiente de prueba, \textit{Random Forest} alcanzó el mejor desempeño global con exactitud de $0.9301$, precisión de $0.8997$, exhaustividad de $0.7715$, $F_1=0.8307$, $\text{ROC-AUC}=0.9750$ y $\text{PR-AUC}=0.9320$, superando a \textit{SVM RBF} ($F_1=0.8036$, $\text{ROC-AUC}=0.9642$) y Regresión Logística ($F_1=0.7674$, $\text{ROC-AUC}=0.9560$). Se concluye que los ensambles basados en árboles capturan con mayor eficacia interacciones no lineales y umbrales determinantes como el historial previo de incumplimiento.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Clasificación de riesgo crediticio, Aprobación de préstamos, Random Forest, Máquinas de Vectores de Soporte, Validación cruzada estratificada.
+\end{IEEEkeywords}
+
+% =========================================================================
+\section{Introducción}
+% =========================================================================
+
+La originación de crédito y la evaluación de solicitudes de préstamo representan procesos medulares dentro del sector bancario y de tecnología financiera (\textit{FinTech}). Históricamente, la decisión de aprobar o rechazar un crédito ha dependido de reglas heurísticas rígidas, comités manuales de análisis y puntuaciones estadísticas tradicionales que resultan lentas para operar a escala y sensibles a sesgos subjetivos. En un entorno caracterizado por volúmenes crecientes de solicitudes digitales y por márgenes estrechos entre rentabilidad y morosidad, automatizar la evaluación crediticia mediante herramientas cuantitativas objetivas constituye una necesidad operativa estratégica~\cite{zhang2025datadriven,gour2025ensemble}.
+
+El problema técnico abordado consiste en la clasificación binaria supervisada de solicitudes de préstamo personal a partir de atributos demográficos, laborales, financieros e históricos del solicitante. Desde la perspectiva de negocio, la tarea conlleva una asimetría de costos considerable: aprobar una solicitud de alto riesgo (falso positivo en escenarios de otorgamiento o falso negativo en detección de incumplimiento) acarrea pérdidas directas de capital, mientras que denegar erróneamente a un cliente solvente implica pérdida de ingresos financieros por intereses y deterioro en la retención comercial~\cite{zhang2025datadriven}. Además, los conjuntos de datos crediticios presentan frecuentemente desbalance natural de clases, colinealidad entre variables demográficas, relaciones no lineales entre ingresos y capacidad de pago, y la exigencia regulatoria de interpretar las decisiones tomadas por el algoritmo~\cite{gultom2026explainable}.
+
+Para enfrentar estos retos, las soluciones computacionales modernas han migrado desde modelos lineales generalizados como la Regresión Logística~\cite{cox1958regression} hacia clasificadores basados en márgenes no lineales como las Máquinas de Vectores de Soporte (\textit{Support Vector Machines}, SVM)~\cite{cortes1995support}, métodos de ensamble como \textit{Random Forest}~\cite{breiman2001random} y \textit{Gradient Boosting}~\cite{zhang2025datadriven,gour2025ensemble}, así como arquitecturas de redes neuronales artificiales~\cite{kirui2025neural}. Si bien múltiples estudios reportan métricas promisorias, un desafío metodológico recurrente en proyectos aplicados radica en garantizar la ausencia de fuga de información (\textit{data leakage}) durante el escalamiento, la codificación categórica y la búsqueda de hiperparámetros, así como evaluar de forma justa la relación entre capacidad predictiva y costo computacional.
+
+El objetivo principal de este proyecto es desarrollar, optimizar y evaluar experimentalmente un sistema modular de aprendizaje automático en Python para predecir la aprobación de préstamos sobre la base de datos \textit{Loan Approval Classification Dataset}~\cite{lo2024loan}, contrastando tres familias algorítmicas representativas: Regresión Logística (modelo lineal interpretable), SVM con kernel RBF (clasificador geométrico no lineal) y \textit{Random Forest} (ensamble paralelo de árboles de decisión). El alcance del trabajo comprende el análisis exploratorio del conjunto de $45{,}000$ registros, el diseño de un flujo encapsulado libre de fuga de datos mediante \texttt{scikit-learn}~\cite{pedregosa2011scikit}, la evaluación \textit{baseline} mediante validación cruzada estratificada de $5$ pliegues, la optimización sistemática de hiperparámetros con generación de mapas de sensibilidad bidimensionales, la evaluación final en un conjunto de prueba independiente, la comparación crítica frente a cinco investigaciones recientes del estado del arte y la publicación del código fuente reproducible en el repositorio del proyecto.\footnote{Código fuente y artefactos experimentales disponibles en \url{https://github.com/MrAkuDev/loan_approval}.}
+
+% =========================================================================
+\section{Antecedentes y Trabajos Relacionados}
+% =========================================================================
+
+La predicción automatizada del riesgo crediticio y la aprobación de préstamos ha recibido amplia atención reciente en la literatura académica e industrial. A continuación se analizan cinco investigaciones relevantes que abordan problemas afines y que permiten situar metodológicamente los experimentos desarrollados.
+
+Zhang \textit{et al.}~\cite{zhang2025datadriven} propusieron en 2025 un enfoque basado en datos para integrar la predicción de incumplimiento crediticio dentro de la gestión de procesos de negocio (\textit{Business Process Management}) en instituciones financieras. Emplearon el conjunto \textit{Credit Risk Dataset} de Kaggle ($32{,}581$ observaciones y $12$ variables), precursor directo del conjunto empleado en nuestro estudio. Evaluaron cuatro algoritmos basados en árboles —\textit{XGBoost}, \textit{Gradient Boosting}, \textit{Random Forest} y \textit{LightGBM}— incorporando sobremuestreo sintético SMOTE~\cite{chawla2002smote}, ponderación de clases y calibración de umbral sensible al costo regulatorio en lugar del corte estándar de $0.5$. Reportaron que \textit{Gradient Boosting} alcanzó la mayor exactitud global ($0.8887$), exhaustividad ($0.8021$) y puntaje $F_1$ ($0.8084$), mientras que \textit{XGBoost} obtuvo la mayor capacidad discriminatoria con $\text{ROC-AUC}=0.9714$. Sus principales limitaciones respecto a una comparación directa radican en el tamaño reducido del dataset original ($32{,}581$ vs.\ $45{,}000$ filas), la ausencia de la variable \textit{credit\_score} y la modificación explícita del umbral de clasificación.
+
+Sobre exactamente la misma base de datos de $45{,}000$ solicitudes (\textit{loan\_data.csv}), Hoo~\cite{hoo2025wqd7004} publicó en 2025 un estudio bajo la metodología OSEMN (\textit{Obtain, Scrub, Explore, Model, Interpret}) en el ecosistema R. Su flujo incorporó ingeniería de características con variables derivadas de interacción (tales como razón préstamo-ingreso binaria e interacciones entre edad, ingreso e historial crediticio) y evaluó Regresión Logística, Árbol de Decisión, \textit{Random Forest}, SVM y \textit{Gradient Boosting Machine} (GBM). De manera llamativa, la Regresión Logística alcanzó el mejor desempeño reportado ($\text{AUC}=0.9490$, $F_1=0.8920$, precisión $=0.9722$, exhaustividad $=0.8240$, exactitud $=0.8448$), mientras que los demás modelos arrojaron métricas idénticas entre sí ($\text{exactitud}=0.729$, $F_1=0.789$), fenómeno atribuible a la falta de ajuste de hiperparámetros o a sesgos de codificación de la clase positiva en el paquete utilizado.
+
+Por su parte, Gour y Soni~\cite{gour2025ensemble} investigaron en diciembre de 2025 el desempeño comparativo de modelos de ensamble (\textit{Random Forest}, \textit{Gradient Boosting}, \textit{XGBoost} y \textit{LightGBM}) sobre un conjunto tabular de referencia de riesgo crediticio. Tras aplicar limpieza, ingeniería de atributos y tratamiento del desbalance de clases, reportaron resultados altamente competitivos en todo el bloque de ensambles: \textit{LightGBM} alcanzó una exactitud de $0.933$ ($F_1=0.841$), \textit{XGBoost} logró $0.932$ ($F_1=0.837$) con $\text{ROC-AUC}=0.979$, \textit{Random Forest} obtuvo exactitud de $0.930$ (precisión $0.896$, exhaustividad $0.773$, $F_1=0.830$) y \textit{Gradient Boosting} registró $0.926$ ($F_1=0.823$). Este trabajo confirma la solidez estructural de los bosques aleatorios y los métodos de refuerzo por gradiente frente a relaciones tabulares heterogéneas.
+
+En la vertiente de aprendizaje profundo, Kirui~\cite{kirui2025neural} evaluó en 2025 una Red Neuronal Artificial (ANN) entrenada durante $10$ épocas con el optimizador Adam sobre el conjunto de Kaggle de $45{,}000$ registros y $14$ variables, contrastándola frente a una Regresión Logística de referencia. La motivación central fue superar las restricciones de separabilidad lineal ante el desbalance de la variable objetivo. Su modelo neuronal alcanzó una exactitud global aproximada de $0.9100$, reportando por clase una precisión de $93\%$ y exhaustividad de $96\%$ para solicitudes rechazadas, y una precisión de $84\%$ con exhaustividad de $74\%$ para préstamos aprobados. Sin embargo, el estudio no reportó una búsqueda sistemática de arquitectura mediante validación cruzada ni métricas agregadas de área bajo la curva ROC o PR.
+
+Más recientemente, Gultom \textit{et al.}~\cite{gultom2026explainable} presentaron en 2026 un marco explicable de aprendizaje por ensambles combinando \textit{XGBoost}, \textit{LightGBM} y \textit{Random Forest} junto con balanceo SMOTE y valores SHAP (\textit{SHapley Additive exPlanations}) para auditoría financiera. En su esquema con datos sobremuestreados, \textit{Random Forest} alcanzó una exactitud de $0.959$ y un $\text{ROC-AUC}$ de $0.9386$, destacando variables como puntaje crediticio, ingresos y carga financiera. No obstante, al aplicar SMOTE previo o durante el entrenamiento y evaluar en particiones distintas, las métricas de exactitud tienden a variar respecto a distribuciones naturales no balanceadas.
+
+En síntesis, la revisión de antecedentes evidencia tres tendencias claras: (i) el predominio de modelos de ensamble basados en árboles sobre modelos lineales clásicos en datos crediticios tabulares; (ii) una amplia heterogeneidad en el tratamiento del desbalance de clases (uso intensivo de SMOTE frente a distribución natural o pesos de clase); y (iii) escasez de análisis sistemáticos sobre sensibilidad de hiperparámetros y fuga de datos. Nuestro proyecto se distingue de los trabajos consultados por encapsular estrictamente el escalamiento y la codificación dentro de objetos \texttt{Pipeline} sin contaminación del conjunto de prueba, evaluar simultáneamente un contraste limpio entre modelos lineal, kernel no lineal y ensamble bajo el mismo protocolo estratificado $80/20$ y $5$-fold CV, estudiar explícitamente si el balanceo de pesos (\texttt{class\_weight="balanced"}) beneficia o perjudica la métrica $F_1$, y publicar superficies completas de validación cruzada 2D junto con el análisis de matrices de confusión y curvas ROC/PR.
+
+% =========================================================================
+\section{Metodología}
+% =========================================================================
+
+La metodología experimental se implementó dentro del paquete modular \texttt{model\_factory}, diseñado para asegurar separación estricta entre entrenamiento y prueba, trazabilidad de semillas aleatorias y persistencia de artefactos reproducibles.
+
+\subsection{Descripción de la Base de Datos}
+
+El estudio emplea la base de datos pública \textit{Loan Approval Classification Dataset} (\texttt{loan\_data.csv}), publicada por Ta-wei Lo en Kaggle en 2024~\cite{lo2024loan} como una versión ampliada y refinada del clásico \textit{Credit Risk Dataset}. Su propósito original es modelar decisiones binarias de aprobación de crédito personal a partir de perfiles sociodemográficos e historial crediticio. El conjunto contiene exactamente $N=45{,}000$ observaciones y $14$ columnas ($13$ variables predictoras y $1$ variable objetivo), sin presencia de valores nulos ni filas duplicadas verificadas tras la inspección integral de los datos.
+
+Las $13$ variables de entrada se agrupan en $8$ atributos numéricos continuos o discretos y $5$ atributos categóricos nominales u ordinales. La Tabla~\ref{tab:dataset_schema} detalla el esquema completo de variables, su tipo, rango observado o categorías válidas y estadísticos descriptivos principales calculados sobre el conjunto total.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\caption{Esquema y Estadísticos Descriptivos de las Variables de \texttt{loan\_data.csv} ($N=45{,}000$, $0$ nulos)}
+\label{tab:dataset_schema}
+\begin{tabular}{@{}llp{2.2cm}p{4.6cm}p{4.5cm}@{}}
+\toprule
+\textbf{Variable} & \textbf{Tipo} & \textbf{Rango / Dominio} & \textbf{Resumen Estadístico / Frecuencia} & \textbf{Descripción Técnica} \\
+\midrule
+\texttt{person\_age} & Numérica & $20.0 - 144.0$ & Media: $27.76 \pm 6.05$ (Mediana: $26$) & Edad del solicitante (años). Presenta valores atípicos extremos ($>100$). \\
+\texttt{person\_income} & Numérica & $8{,}000 - 7{,}200{,}766$ & Media: $\$80{,}319$ (Mediana: $\$67{,}048$) & Ingreso anual declarado en USD. Distribución sesgada a la derecha. \\
+\texttt{person\_emp\_exp} & Numérica & $0 - 125$ & Media: $5.41 \pm 6.06$ (Mediana: $4$) & Años de experiencia laboral continua del solicitante. \\
+\texttt{loan\_amnt} & Numérica & $500 - 35{,}000$ & Media: $\$9{,}583 \pm \$6{,}315$ (Med.: $\$8{,}000$) & Monto monetario principal del préstamo solicitado (USD). \\
+\texttt{loan\_int\_rate} & Numérica & $5.42\% - 20.00\%$ & Media: $11.01\% \pm 2.98\%$ & Tasa de interés anual asignada a la operación crediticia. \\
+\texttt{loan\_percent\_income} & Numérica & $0.00 - 0.66$ & Media: $0.14 \pm 0.09$ (Mediana: $0.12$) & Razón entre monto solicitado e ingreso anual (\texttt{loan\_amnt / person\_income}). \\
+\texttt{cb\_person\_cred\_hist\_length} & Numérica & $2 - 30$ & Media: $5.87 \pm 3.88$ (Mediana: $4$) & Antigüedad del historial crediticio en el buró (años). \\
+\texttt{credit\_score} & Numérica & $390 - 850$ & Media: $632.61 \pm 50.44$ (Med.: $640$) & Puntaje cuantitativo de solvencia crediticia. \\
+\midrule
+\texttt{person\_gender} & Categórica & 2 categorías & \texttt{male} ($24{,}841$), \texttt{female} ($20{,}159$) & Género reportado en la solicitud. \\
+\texttt{person\_education} & Categórica & 5 categorías & \texttt{Bachelor} ($13{,}399$), \texttt{Associate} ($12{,}028$), \texttt{High School} ($11{,}972$), \texttt{Master} ($6{,}980$), \texttt{Doctorate} ($621$) & Máximo nivel educativo alcanzado por el solicitante. \\
+\texttt{person\_home\_ownership} & Categórica & 4 categorías & \texttt{RENT} ($23{,}443$), \texttt{MORTGAGE} ($18{,}489$), \texttt{OWN} ($2{,}951$), \texttt{OTHER} ($117$) & Situación de tenencia de vivienda actual. \\
+\texttt{loan\_intent} & Categórica & 6 categorías & \texttt{EDUCATION} ($9{,}153$), \texttt{MEDICAL} ($8{,}548$), \texttt{VENTURE} ($7{,}819$), \texttt{PERSONAL} ($7{,}552$), \texttt{DEBTCONSOLIDATION} ($7{,}145$), \texttt{HOMEIMPROVEMENT} ($4{,}783$) & Propósito financiero declarado del crédito solicitado. \\
+\texttt{previous\_loan\_defaults\_on\_file} & Categórica & 2 categorías & \texttt{Yes} ($22{,}858$), \texttt{No} ($22{,}142$) & Registro binario de incumplimientos crediticios previos. \\
+\midrule
+\texttt{loan\_status} & Objetivo & $\{0, 1\}$ & \texttt{0}: $35{,}000$ ($77.78\%$), \texttt{1}: $10{,}000$ ($22.22\%$) & Estado de la solicitud ($0$: No Aprobado, $1$: Aprobado). \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+La variable objetivo binaria \texttt{loan\_status} presenta un desbalance moderado de $3.5:1$, compuesto por $35{,}000$ instancias de clase negativa (\texttt{0}, No Aprobado, $77.78\%$) y $10{,}000$ de clase positiva (\texttt{1}, Aprobado, $22.22\%$), ilustrado en la Fig.~\ref{fig:dataset_eda}(a). El análisis exploratorio revela dos particularidades críticas del dataset que condicionan el modelado. En primer lugar, la variable \texttt{previous\_loan\_defaults\_on\_file} exhibe una frontera determinista perfecta para la clase negativa: en los $22{,}858$ registros con antecedente de mora (\texttt{Yes}), la tasa de clase positiva es exactamente $0.00\%$ ($0$ aprobaciones), mientras que en los $22{,}142$ solicitantes sin mora previa (\texttt{No}), el porcentaje asciende a $45.16\%$ ($10{,}000$ casos), como se muestra en la Fig.~\ref{fig:dataset_eda}(b). En segundo lugar, el conjunto incluye registros sintéticos o anómalos extremos —como edades de hasta $144$ años, experiencia laboral de $125$ años e ingresos de $\$7.20$ millones— además de reflejar la convención estructural de su dataset base, donde las instancias con \texttt{loan\_status=1} muestran promedios mayores de \texttt{loan\_percent\_income} ($0.2025$ vs.\ $0.1218$) y tasa de interés ($12.86\%$ vs.\ $10.48\%$) frente a ingresos medios inferiores ($\$59{,}886$ vs.\ $\$86{,}157$), mientras que el promedio de \texttt{credit\_score} resulta prácticamente indistinguible ($631.89$ vs.\ $632.81$). Esta estructura subraya la naturaleza sintética/derivada del conjunto de Kaggle y la necesidad de no confiar exclusivamente en reglas lineales simples.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/fig1_dataset_eda.pdf}
+\caption{Análisis exploratorio de \texttt{loan\_data.csv} ($N=45{,}000$): (a) distribución desbalanceada de \texttt{loan\_status} ($77.78\%$ vs.\ $22.22\%$); (b) tasa empírica de \texttt{loan\_status=1} condicionada al antecedente de mora previa, evidenciando una regla excluyente perfecta cuando existe incumplimiento previo.}
+\label{fig:dataset_eda}
+\end{figure*}
+
+\subsection{Análisis Exploratorio y Preprocesamiento}
+
+Para garantizar integridad estadística y evitar cualquier fuga de información hacia el conjunto de evaluación, todas las transformaciones dependientes de parámetros muestrales fueron encapsuladas dentro de un objeto \texttt{ColumnTransformer} integrado como primer paso (\texttt{"preprocesamiento"}) del \texttt{Pipeline} de \texttt{scikit-learn}~\cite{pedregosa2011scikit}, ajustado exclusivamente sobre la partición de entrenamiento ($X_{\text{train}}$). Las decisiones aplicadas fueron las siguientes:
+
+\begin{itemize}
+\item \textbf{Valores faltantes y duplicados:} Mediante auditoría directa del archivo fuente se confirmó la existencia de $0$ valores nulos en las $14$ columnas y $0$ registros duplicados exactos, por lo que no se requirieron etapas de imputación ni deduplicación.
+\item \textbf{Tratamiento de valores atípicos:} Aunque se detectaron valores extremos en \texttt{person\_age} (máximo $144$), \texttt{person\_emp\_exp} (máximo $125$) y \texttt{person\_income} (máximo $\$7{,}200{,}766$), se decidió conservar la totalidad de las $45{,}000$ observaciones sin recorte o eliminación artificial. Esta decisión preserva la integridad del benchmark comparativo frente a la literatura y permite evaluar experimentalmente cómo toleran los extremos un modelo basado en particiones ortogonales (\textit{Random Forest}, naturalmente invariante a transformaciones monótonas de escala) frente a clasificadores basados en distancias y producto interno (SVM RBF y Regresión Logística).
+\item \textbf{Escalamiento numérico:} Las $8$ variables numéricas fueron transformadas mediante estandarización $z$-score (\texttt{StandardScaler}), expresada en \eqref{eq:standard_scaler}:
+\begin{equation}
+z_{i,j} = \frac{x_{i,j} - \mu_j^{\text{train}}}{\sigma_j^{\text{train}}},
+\label{eq:standard_scaler}
+\end{equation}
+donde $\mu_j^{\text{train}}$ y $\sigma_j^{\text{train}}$ representan la media y desviación estándar estimadas únicamente en $X_{\text{train}}$. Esta normalización resulta indispensable para evitar que atributos de gran magnitud monetaria como \texttt{person\_income} dominen los cálculos de distancia euclidiana del kernel RBF o impidan la convergencia rápida del optimizador L-BFGS en Regresión Logística.
+\item \textbf{Codificación de variables categóricas:} Las $5$ variables categóricas fueron transformadas mediante \texttt{OneHotEncoder} con los parámetros \texttt{drop="first"} (eliminando una categoría de referencia por variable para evitar colinealidad perfecta en modelos lineales), \texttt{handle\_unknown="ignore"} (asegurando tolerancia ante categorías inéditas durante inferencia o pliegues de validación) y \texttt{sparse\_output=False}, generando en conjunto con las variables numéricas un espacio unificado de $22$ características procesadas.
+\item \textbf{Análisis de correlaciones:} Para evitar fuga de información incluso en el análisis exploratorio lineal, la matriz de correlación de Pearson se calculó exclusivamente sobre $X_{\text{train}}$ ($36{,}000$ filas) tras codificación \textit{dummy} con \texttt{drop\_first=True}. Como ilustra la Fig.~\ref{fig:correlaciones}, las correlaciones lineales más intensas respecto a \texttt{loan\_status} corresponden a \texttt{previous\_loan\_defaults\_on\_file\_Yes} ($r=-0.5424$), \texttt{loan\_percent\_income} ($r=+0.3835$), \texttt{loan\_int\_rate} ($r=+0.3346$), \texttt{person\_home\_ownership\_RENT} ($r=+0.2553$) y \texttt{person\_income} ($r=-0.1286$). Asimismo, la matriz completa revela colinealidad muy elevada entre \texttt{person\_age} y \texttt{person\_emp\_exp} ($r=0.9544$), así como entre \texttt{person\_age} y \texttt{cb\_person\_cred\_hist\_length} ($r=0.8644$).
+\item \textbf{Selección de características y manejo del desbalance:} Dado que el espacio posterior a codificación comprende únicamente $22$ dimensiones y $36{,}000$ muestras de entrenamiento (razón muestras/parámetros $>1{,}600:1$), se conservaron los $13$ atributos originales sin aplicar PCA ni filtrado univariado, evitando descartar interacciones no lineales útiles para \textit{Random Forest} y \textit{SVM RBF} (como en el caso de \texttt{credit\_score}, cuya correlación lineal marginal es $-0.0030$ pese a su relevancia contextual). Respecto al desbalance $77.78\% / 22.22\%$, en lugar de alterar la distribución empírica con sobremuestreo sintético SMOTE (que puede generar observaciones fuera de variedad o distorsionar probabilidades calibradas), se incluyó el hiperparámetro \texttt{class\_weight} $\in \{\texttt{None}, \texttt{"balanced"}\}$ directamente dentro del espacio de búsqueda de los tres modelos para decidir empíricamente bajo validación cruzada si la reponderación de errores mejora el compromiso $F_1$.
+\item \textbf{Prevención de fuga de datos:} Durante la búsqueda de hiperparámetros (Etapa 2), el preprocesador se ajustó exclusivamente sobre $X_{\text{train}}$ sin acceder jamás a $X_{\text{test}}$. Posteriormente, en el entrenamiento final (Etapa 3) y la evaluación \textit{baseline} (Etapa 1), cada ajuste (\textit{.fit}) ejecutó el \texttt{ColumnTransformer} encapsulado dentro del \texttt{Pipeline} sobre el subconjunto de entrenamiento correspondiente de cada pliegue o sobre el $100\%$ de $X_{\text{train}}$, manteniendo a $X_{\text{test}}$ completamente aislado hasta la evaluación única final.
+\end{itemize}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig2_correlaciones.pdf}
+\caption{Correlaciones lineales de Pearson calculadas exclusivamente sobre $X_{\text{train}}$ ($36{,}000$ muestras) respecto a \texttt{loan\_status}. Destacan la asociación negativa del historial de mora ($-0.5424$) y positiva de la razón préstamo-ingreso ($+0.3835$) y tasa de interés ($+0.3346$).}
+\label{fig:correlaciones}
+\end{figure}
+
+\subsection{Modelos de Machine Learning}
+
+Se seleccionaron tres clasificadores supervisados de distinta naturaleza geométrica y estadística para contrastar fronteras lineales, separadores no lineales basados en núcleo y particionamiento jerárquico por ensamble:
+
+\subsubsection{Regresión Logística}
+La Regresión Logística~\cite{cox1958regression} modela directamente la probabilidad posterior de pertenencia a la clase positiva mediante la función sigmoide~\eqref{eq:logreg} aplicada a una combinación lineal de los atributos estandarizados $\mathbf{x} \in \mathbb{R}^{22}$:
+\begin{equation}
+P(y = 1 \mid \mathbf{x}) = \sigma(\mathbf{w}^\top \mathbf{x} + b) = \frac{1}{1 + \exp\big(-(\mathbf{w}^\top \mathbf{x} + b)\big)},
+\label{eq:logreg}
+\end{equation}
+estimando los parámetros $(\mathbf{w}, b)$ mediante minimización de la entropía cruzada binaria con penalización $L_2$ controlada por el inverso de regularización $C$. Fue seleccionada como línea base paramétrica por su rapidez computacional, calibración probabilística nativa e interpretabilidad directa de los pesos. En nuestra implementación (\texttt{LogisticRegression}) se utilizó el solucionador \texttt{lbfgs} con un límite ampliado de \texttt{max\_iter=1000} para asegurar convergencia numérica estable.
+
+\subsubsection{Máquina de Vectores de Soporte con Kernel RBF (SVM RBF)}
+Las SVM~\cite{cortes1995support} buscan el hiperplano de margen máximo en un espacio de características de dimensión elevada inducido implícitamente mediante una función núcleo. Al emplear el kernel de Función de Base Radial (RBF o gaussiano) definido en~\eqref{eq:svm_rbf}:
+\begin{equation}
+K(\mathbf{x}_i, \mathbf{x}_j) = \exp\big(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2\big), \quad \gamma > 0,
+\label{eq:svm_rbf}
+\end{equation}
+el clasificador construye fronteras suaves y altamente no lineales gobernadas por la penalización de holgura $C$ y el ancho del núcleo $\gamma$. Se seleccionó \textit{SVM RBF} para evaluar si una frontera continua en el espacio estandarizado mejora la separación respecto al hiperplano rígido de la Regresión Logística. Como consideración práctica de implementación en \texttt{scikit-learn}, el escalado de Platt para estimar probabilidades (\texttt{probability=True}) se desactivó durante la validación cruzada y búsqueda de hiperparámetros para evitar el costo de una CV interna adicional por cada candidato, habilitándose únicamente mediante \texttt{final\_extra\_params} en el ajuste final para permitir curvas ROC, Precision-Recall e inferencia probabilística.
+
+\subsubsection{Random Forest}
+\textit{Random Forest}~\cite{breiman2001random} es un algoritmo de ensamble basado en \textit{bagging} que entrena $B$ (\texttt{n\_estimators}) árboles de decisión profundos sobre muestras \textit{bootstrap} del conjunto de entrenamiento, restringiendo la evaluación de candidatos en cada nodo a un subconjunto aleatorio de $m$ características (\texttt{max\_features}). La calidad de cada división en el nodo $t$ se evalúa minimizando la impureza de Gini ponderada~\eqref{eq:gini}:
+\begin{equation}
+G(t) = 1 - \sum_{k \in \{0,1\}} p_{t,k}^2,
+\label{eq:gini}
+\end{equation}
+donde $p_{t,k}$ es la proporción de muestras de la clase $k$ en el nodo $t$, agregando posteriormente las predicciones por votación probabilística promediada entre los $B$ árboles. Se seleccionó por su capacidad demostrada en literatura crediticia~\cite{gour2025ensemble,gultom2026explainable} para modelar interacciones de orden superior y umbrales ortogonales sin requerir transformaciones paramétricas ni verse afectado por valores atípicos extremos, ejecutándose en paralelo con \texttt{n\_jobs=-1}.
+
+\subsection{Configuración Experimental}
+
+El protocolo experimental consta de tres etapas secuenciales ejecutadas por el orquestador \texttt{model\_factory/train\_model.py}, resumidas visualmente en el diagrama metodológico de la Fig.~\ref{fig:methodology_diagram}.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+    node distance=0.45cm and 0.55cm,
+    box/.style={rectangle, rounded corners=3pt, draw=black!75, fill=blue!6, thick, minimum height=1.05cm, text width=3.1cm, align=center, font=\footnotesize},
+    stage/.style={rectangle, rounded corners=3pt, draw=teal!80!black, fill=teal!7, thick, minimum height=1.1cm, text width=3.4cm, align=center, font=\footnotesize},
+    outbox/.style={rectangle, rounded corners=3pt, draw=orange!80!black, fill=orange!8, thick, minimum height=1.05cm, text width=3.5cm, align=center, font=\footnotesize},
+    arrow/.style={-{Stealth[length=2.3mm]}, thick, draw=black!75}
+]
+\node[box] (data) {\textbf{Dataset Fuente}\\ \texttt{loan\_data.csv}\\ $N=45{,}000$, $13$ vars};
+\node[box, right=of data] (split) {\textbf{Partición Estratificada}\\ $80\%$ Train ($36{,}000$)\\ $20\%$ Test ($9{,}000$)\\ \texttt{random\_state=42}};
+\node[stage, right=of split] (stage1) {\textbf{Etapa 1: Baseline}\\ \texttt{StratifiedKFold(5)}\\ \texttt{Pipeline} sin ajuste\\ Métricas CV base};
+\node[stage, below=0.75cm of stage1] (stage2) {\textbf{Etapa 2: Optimización}\\ Preproc. en $X_{\text{train}}$\\ \texttt{Grid} / \texttt{RandomSearchCV}\\ Objetivo: $F_1$ + Heatmaps};
+\node[stage, left=of stage2] (stage3) {\textbf{Etapa 3: Ajuste Final}\\ Entreno $100\%$ $X_{\text{train}}$\\ con \texttt{best\_params}\\ Eval. única en $X_{\text{test}}$};
+\node[outbox, left=of stage3] (export) {\textbf{Exportación}\\ $3$ archivos \texttt{.joblib}\\ (\texttt{compress=3}) y\\ \scriptsize\texttt{evaluation\_results.json}};
+
+\draw[arrow] (data) -- (split);
+\draw[arrow] (split) -- (stage1);
+\draw[arrow] (stage1) -- (stage2);
+\draw[arrow] (stage2) -- (stage3);
+\draw[arrow] (stage3) -- (export);
+\end{tikzpicture}
+\caption{Diagrama general del flujo experimental implementado en \texttt{model\_factory}: separación estratificada inicial, evaluación \textit{baseline} en 5 pliegues, búsqueda de hiperparámetros libre de fuga de datos, ajuste final sobre $X_{\text{train}}$ y evaluación única en $X_{\text{test}}$.}
+\label{fig:methodology_diagram}
+\end{figure*}
+
+La partición inicial se efectuó mediante \texttt{train\_test\_split} con $80\%$ para entrenamiento ($36{,}000$ registros) y $20\%$ reservado para prueba ($9{,}000$ registros: $7{,}000$ clase \texttt{0} y $2{,}000$ clase \texttt{1}), manteniendo exactamente las proporciones de \texttt{loan\_status} mediante \texttt{stratify=y} y semilla global \texttt{RANDOM\_STATE=42}. Para las etapas de validación \textit{baseline} y ajuste de hiperparámetros se construyó un único divisor \texttt{StratifiedKFold(n\_splits=5, shuffle=True, random\_state=42)}.
+
+En la \textbf{Etapa 1 (Evaluación Baseline)}, cada estimador se configuró exclusivamente con sus parámetros base reproducibles (\texttt{kernel="rbf"} en SVM; \texttt{n\_jobs=-1} en \textit{Random Forest}; \texttt{max\_iter=1000} en Regresión Logística; todos con \texttt{random\_state=42}) y valores por defecto de \texttt{scikit-learn}, evaluándose vía \texttt{cross\_validate} y \texttt{cross\_val\_predict} sobre $X_{\text{train}}$ para obtener matrices de confusión fuera de pliegue. En la \textbf{Etapa 2 (Optimización de Hiperparámetros)}, se empleó búsqueda exhaustiva (\texttt{GridSearchCV}) para los $12$ candidatos de Regresión Logística y búsqueda aleatoria~\cite{bergstra2012random} (\texttt{RandomizedSearchCV}, \texttt{n\_iter=12}, \texttt{random\_state=42}) para \textit{SVM RBF} y \textit{Random Forest}, optimizando siempre el puntaje $F_1$ en $5$-fold CV. Adicionalmente, mediante \texttt{compute\_tuning\_heatmaps} se evaluaron grillas bidimensionales completas (\texttt{refit=False}) fijando los restantes hiperparámetros ganadores para cuantificar simultáneamente $F_1$ y $\text{ROC-AUC}$ en cada combinación. La Tabla~\ref{tab:hyperparams_space} concentra las configuraciones base, los espacios explorados y los valores óptimos seleccionados.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\caption{Configuración Base, Espacios de Búsqueda y Hiperparámetros Seleccionados en Validación Cruzada ($5$-fold CV)}
+\label{tab:hyperparams_space}
+\begin{tabular}{@{}lp{2.95cm}p{2.9cm}p{5.4cm}p{3.8cm}@{}}
+\toprule
+\textbf{Modelo} & \textbf{Estrategia} & \textbf{Parámetros Base} & \textbf{Espacio Explorado} & \textbf{Configuración Óptima Seleccionada} \\
+\midrule
+SVM RBF & \texttt{RandomizedSearchCV} (\texttt{n\_iter=12}) & \texttt{kernel="rbf"}, \texttt{random\_state=42} (+ \texttt{probability=True} final) & \texttt{C}: $[0.01, 0.1, 1.0, 5.0]$; \texttt{gamma}: $[\texttt{"scale"}, \texttt{"auto"}, 0.001, 0.01]$; \texttt{class\_weight}: $[\texttt{None}, \texttt{"balanced"}]$ & \texttt{C=5.0}, \texttt{gamma="scale"}, \texttt{class\_weight=None} \\
+\midrule
+Random Forest & \texttt{RandomizedSearchCV} (\texttt{n\_iter=12}) & \texttt{random\_state=42}, \texttt{n\_jobs=-1} & \texttt{n\_estimators}: $[100, 150, 200, 300]$; \texttt{max\_depth}: $[\texttt{None}, 10, 15, 20, 30]$; \texttt{min\_samples\_split}: $[2, 5, 10]$; \texttt{min\_samples\_leaf}: $[1, 2, 4]$; \texttt{max\_features}: $[\texttt{"sqrt"}, \texttt{"log2"}]$; \texttt{class\_weight}: $[\texttt{None}, \texttt{"balanced"}]$ & \texttt{n\_estimators=200}, \texttt{max\_depth=30}, \texttt{min\_samples\_split=2}, \texttt{min\_samples\_leaf=1}, \texttt{max\_features="sqrt"}, \texttt{class\_weight=None} \\
+\midrule
+Logistic Regression & \texttt{GridSearchCV} ($12$ comb.) & \texttt{random\_state=42}, \texttt{max\_iter=1000} & \texttt{C}: $[0.01, 0.1, 0.5, 1.0, 5.0, 10.0]$; \texttt{class\_weight}: $[\texttt{None}, \texttt{"balanced"}]$; \texttt{solver}: $[\texttt{"lbfgs"}]$ & \texttt{C=0.1}, \texttt{class\_weight=None}, \texttt{solver="lbfgs"} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Finalmente, en la \textbf{Etapa 3 (Entrenamiento Final y Prueba)}, cada modelo optimizado se reentrenó dentro de un \texttt{Pipeline} completo sobre el $100\%$ de $X_{\text{train}}$, se exportó comprimido mediante \texttt{joblib.dump(..., compress=3)} y se evaluó una única vez sobre $X_{\text{test}}$. Dado el desbalance $77.78\%/22.22\%$, la exactitud aislada puede resultar engañosa; por ello, el desempeño se midió mediante cinco métricas complementarias definidas en \eqref{eq:acc}--\eqref{eq:f1}: Exactitud (\textit{Accuracy}, \eqref{eq:acc}), Precisión y Exhaustividad (\eqref{eq:pr_rec}), $F_1$-Score (\eqref{eq:f1}) y Área Bajo la Curva ROC ($\text{ROC-AUC}$), complementadas posteriormente con el Área Bajo la Curva Precision-Recall ($\text{PR-AUC}$ o \textit{Average Precision}):
+\begin{align}
+\text{Accuracy} &= \frac{VP + VN}{VP + VN + FP + FN}, \label{eq:acc} \\
+\text{Precision} &= \frac{VP}{VP + FP}, \qquad \text{Recall} = \frac{VP}{VP + FN}, \label{eq:pr_rec} \\
+F_1 &= \frac{2 \cdot \text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}, \label{eq:f1}
+\end{align}
+donde $VP$, $VN$, $FP$ y $FN$ denotan verdaderos positivos, verdaderos negativos, falsos positivos y falsos negativos respecto a \texttt{loan\_status=1}. Los experimentos fueron ejecutados en Python $3.13$ utilizando \texttt{scikit-learn}~$1.9$, \texttt{pandas}, \texttt{numpy} y \texttt{joblib} bajo semilla determinista \texttt{RANDOM\_STATE=42}.
+
+% =========================================================================
+\section{Resultados y Discusión}
+% =========================================================================
+
+Los resultados completos de validación cruzada, optimización y evaluación final se almacenaron en \texttt{models/evaluation\_results.json} y se analizan a continuación por etapa.
+
+\subsection{Resultados de los Modelos Base}
+
+La Tabla~\ref{tab:baseline_cv} resume el rendimiento \textit{baseline} promedio en los $5$ pliegues estratificados de entrenamiento ($36{,}000$ observaciones). Desde la configuración por defecto se aprecian diferencias sustanciales tanto en eficacia predictiva como en eficiencia computacional.
+
+\begin{table*}[t]
+\centering
+\caption{Desempeño de Modelos Base en Validación Cruzada Estratificada ($5$-fold CV sobre $X_{\text{train}}$, $n=36{,}000$)}
+\label{tab:baseline_cv}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Modelo Base} & \textbf{Accuracy ($\mu \pm \sigma$)} & \textbf{Precision} & \textbf{Recall} & \textbf{$F_1$-Score ($\mu \pm \sigma$)} & \textbf{ROC-AUC} & \textbf{Tiempo CV (s)} \\
+\midrule
+SVM RBF (por defecto) & $0.9146 \pm 0.0026$ & $0.8464$ & $0.7520$ & $0.7964 \pm 0.0067$ & $0.9620$ & $25.59$ \\
+Random Forest (por defecto) & $\mathbf{0.9277 \pm 0.0041}$ & $\mathbf{0.8936}$ & $\mathbf{0.7656}$ & $\mathbf{0.8247 \pm 0.0101}$ & $\mathbf{0.9731}$ & $3.72$ \\
+Logistic Regression (por defecto) & $0.8951 \pm 0.0014$ & $0.7745$ & $0.7450$ & $0.7594 \pm 0.0041$ & $0.9536$ & $\mathbf{0.58}$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+El modelo \textit{Random Forest} base dominó todas las métricas de evaluación, obteniendo una ventaja de $+0.0283$ en $F_1$ ($0.8247$ vs.\ $0.7964$) y de $+0.0111$ en $\text{ROC-AUC}$ ($0.9731$ vs.\ $0.9620$) sobre \textit{SVM RBF}, y superando por $+0.0653$ en $F_1$ a Regresión Logística. Resulta particularmente notable que la mayor brecha se concentra en la precisión de la clase positiva ($0.8936$ en \textit{Random Forest} frente a $0.8464$ en SVM y $0.7745$ en Regresión Logística), indicando que el modelo lineal genera más del doble de falsas aprobaciones fuera de pliegue ($1{,}736$ $FP$ frente a $729$ en \textit{Random Forest} sobre $28{,}000$ negativos de entrenamiento) al intentar separar linealmente combinaciones complejas de tasa de interés, ingreso y propósito del crédito. Por otro lado, \textit{SVM RBF} alcanzó casi el nivel de precisión no lineal esperado, aunque requirió $25.59\text{ s}$ de cómputo en CV ($6.9\times$ más lento que \textit{Random Forest} y $44.1\times$ respecto a Regresión Logística) debido a la complejidad cuadrática/cúbica de resolver el problema dual sobre $36{,}000$ registros.
+
+\subsection{Resultados de los Modelos Optimizados}
+
+Tras concluir la Etapa 2 de búsqueda y la Etapa 3 sobre el $100\%$ de $X_{\text{train}}$, la Tabla~\ref{tab:optimized_test} presenta el desempeño real sobre el conjunto independiente de prueba ($X_{\text{test}}$, $n=9{,}000$), contrastándolo directamente frente a los referentes de CV base.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\caption{Resultados Finales en Conjunto Independiente de Prueba ($X_{\text{test}}$, $n=9{,}000$) y Mejora Frente al Baseline}
+\label{tab:optimized_test}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{Modelo Optimizado} & \textbf{Accuracy ($\Delta$)} & \textbf{Precision} & \textbf{Recall} & \textbf{$F_1$-Score ($\Delta$)} & \textbf{ROC-AUC ($\Delta$)} & \textbf{PR-AUC} & \textbf{Ajuste Final (s)} \\
+\midrule
+SVM RBF (\texttt{C=5.0, gamma="scale"}) & $0.9179$ ($+0.0033$) & $0.8576$ & $0.7560$ & $0.8036$ ($+0.0072$) & $0.9642$ ($+0.0022$) & $0.9039$ & $62.84$ \\
+Random Forest (\texttt{n\_est=200, depth=30}) & $\mathbf{0.9301}$ ($+0.0024$) & $\mathbf{0.8997}$ & $\mathbf{0.7715}$ & $\mathbf{0.8307}$ ($+0.0060$) & $\mathbf{0.9750}$ ($+0.0019$) & $\mathbf{0.9320}$ & $0.67$ \\
+Logistic Regression (\texttt{C=0.1, lbfgs}) & $0.8997$ ($+0.0046$) & $0.7913$ & $0.7450$ & $0.7674$ ($+0.0080$) & $0.9560$ ($+0.0024$) & $0.8630$ & $\mathbf{0.09}$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Los resultados confirman que la optimización de hiperparámetros produjo mejoras consistentes y positivas en los tres algoritmos al generalizar hacia datos no vistos ($X_{\text{test}}$), sin evidencias de sobreajuste respecto a la validación cruzada. En \textit{SVM RBF}, incrementar la regularización inversa a \texttt{C=5.0} manteniendo \texttt{gamma="scale"} y \texttt{class\_weight=None} elevó el puntaje $F_1$ de $0.7964$ (CV base) a $0.8010$ (CV óptimo) y $0.8036$ en prueba ($+0.0072$), incrementando la precisión hasta $0.8576$ a costa de $62.84\text{ s}$ de ajuste final debido al entrenamiento con calibración de Platt (\texttt{probability=True}). En \textit{Random Forest}, aumentar el tamaño del bosque a $200$ árboles y acotar la profundidad máxima a $30$ con división mínima de $2$ y hoja mínima de $1$ impulsó el desempeño en prueba a $\text{Accuracy}=0.9301$, $F_1=0.8307$ ($+0.0060$) y $\text{ROC-AUC}=0.9750$ en apenas $0.67\text{ s}$. Incluso Regresión Logística se benefició de una regularización más estricta (\texttt{C=0.1} frente a $1.0$), subiendo su $F_1$ de $0.7594$ a $0.7674$ ($+0.0080$) con un tiempo marginal de $0.09\text{ s}$.
+
+Un hallazgo metodológico particularmente relevante proviene de los tres mapas de optimización: ninguno de los clasificadores seleccionó \texttt{class\_weight="balanced"}. Al observar las grillas de CV en la Tabla~\ref{tab:opt_insight} (y Fig.~\ref{fig:tuning_heatmaps}), forzar la ponderación inversa a la frecuencia de clases penaliza excesivamente los errores sobre la clase minoritaria ($3.5\times$), elevando los falsos positivos y deteriorando sistemáticamente la precisión y el $F_1$ (por ejemplo, cayendo de $0.7599$ a $0.7404$ en Regresión Logística con $C=0.1$).
+
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Efecto de \texttt{class\_weight="balanced"} vs.\ \texttt{None} en Regresión Logística ($5$-fold CV)}
+\label{tab:opt_insight}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Peso} & \textbf{0.01} & \textbf{0.1} & \textbf{0.5} & \textbf{1.0} & \textbf{5.0} & \textbf{10.0} \\
+\midrule
+\texttt{None} ($F_1$ CV) & $0.7501$ & $\mathbf{0.7599}$ & $0.7598$ & $0.7593$ & $0.7595$ & $0.7594$ \\
+\texttt{balanced} ($F_1$ CV) & $0.7373$ & $0.7404$ & $0.7401$ & $0.7403$ & $0.7406$ & $0.7405$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comparación con el Estado del Arte}
+
+La Tabla~\ref{tab:sota_comparison} contrasta nuestros resultados en el conjunto de prueba frente a cinco investigaciones científicas recientes en clasificación de aprobación e incumplimiento crediticio.
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4.5pt}
+\caption{Comparación de Resultados con Cinco Estudios Científicos del Estado del Arte}
+\label{tab:sota_comparison}
+\begin{tabular}{@{}p{3.0cm}p{3.6cm}p{3.2cm}p{2.5cm}p{3.6cm}@{}}
+\toprule
+\textbf{Autor / Año} & \textbf{Modelo Principal} & \textbf{Base de Datos} & \textbf{Métrica} & \textbf{Resultado} \\
+\midrule
+\multirow{2}{*}{Zhang \textit{et al.} (2025)~\cite{zhang2025datadriven}} & Gradient Boosting (+SMOTE) & Credit Risk (Kaggle, $32{,}581$) & Acc. / $F_1$ / Rec. & $0.8887$ / $0.8084$ / $0.8021$ \\
+& XGBoost (+SMOTE) & Credit Risk (Kaggle, $32{,}581$) & ROC-AUC & $0.9714$ \\
+\midrule
+\multirow{2}{*}{Hoo (2025)~\cite{hoo2025wqd7004}} & Logistic Regression (OSEMN) & Loan Approval ($45{,}000$) & AUC / $F_1$ / Acc. & $0.9490$ / $0.8920$ / $0.8448$ \\
+& RF / SVM / GBM (sin ajuste) & Loan Approval ($45{,}000$) & Acc. / $F_1$ & $0.7290$ / $0.7890$ \\
+\midrule
+\multirow{2}{*}{Gour y Soni (2025)~\cite{gour2025ensemble}} & XGBoost / LightGBM & Benchmark Crediticio & Acc. / $F_1$ / AUC & $0.932$–$0.933$ / $0.837$–$0.841$ / $0.979$ \\
+& Random Forest & Benchmark Crediticio & Acc. / $F_1$ & $0.930$ / $0.830$ \\
+\midrule
+Kirui (2025)~\cite{kirui2025neural} & Red Neuronal (ANN, Adam) & Loan Approval ($45{,}000$) & Acc. / Prec.\textsubscript{1} / Rec.\textsubscript{1} & $0.9100$ / $0.8400$ / $0.7400$ \\
+\midrule
+Gultom \textit{et al.} (2026)~\cite{gultom2026explainable} & Random Forest (+SMOTE+SHAP) & Préstamos (desbalanceado) & Acc. / ROC-AUC & $0.9590$ / $0.9386$ \\
+\midrule
+\multirow{3}{*}{\textbf{Este estudio (2026)}} & \textbf{Random Forest (Optimizado)} & \textbf{Loan Approval ($\mathbf{45{,}000}$)} & \textbf{Acc. / $\mathbf{F_1}$ / AUC} & $\mathbf{0.9301}$ / $\mathbf{0.8307}$ / $\mathbf{0.9750}$ \\
+& SVM RBF (Optimizado) & Loan Approval ($45{,}000$) & Acc. / $F_1$ / AUC & $0.9179$ / $0.8036$ / $0.9642$ \\
+& Logistic Regression (Optimizado) & Loan Approval ($45{,}000$) & Acc. / $F_1$ / AUC & $0.8997$ / $0.7674$ / $0.9560$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+El análisis comparativo revela coincidencias notables y diferencias metodológicas esenciales que impiden proclamar superioridad absoluta sin matizar el protocolo experimental:
+\begin{enumerate}
+\item \textbf{Consistencia en desempeño de ensambles:} Nuestro \textit{Random Forest} optimizado ($\text{Acc}=0.9301$, $F_1=0.8307$, $\text{ROC-AUC}=0.9750$) exhibe una convergencia numérica notable con el \textit{Random Forest} de Gour y Soni~\cite{gour2025ensemble} ($\text{Acc}=0.930$, $F_1=0.830$) y se aproxima al rango de capacidad discriminatoria de sus modelos potenciados (\textit{XGBoost}/\textit{LightGBM}, $\text{AUC}=0.979$), así como al \textit{XGBoost} de Zhang \textit{et al.}~\cite{zhang2025datadriven} ($\text{AUC}=0.9714$). Asimismo, supera con claridad la precisión y exactitud de la Red Neuronal de Kirui~\cite{kirui2025neural} evaluada sobre el mismo archivo de $45{,}000$ filas ($\text{Acc}=0.9100$, $\text{Prec}_1=0.8400$, $\text{Rec}_1=0.7400$).
+\item \textbf{Diferencias en preprocesamiento y balanceo:} Tanto Zhang \textit{et al.}~\cite{zhang2025datadriven} como Gultom \textit{et al.}~\cite{gultom2026explainable} modificaron la distribución de entrenamiento mediante SMOTE y/o ajustes de umbral. En el estudio de Gultom \textit{et al.}, aunque se reporta $\text{Acc}=0.959$, su $\text{ROC-AUC}$ fue de $0.9386$ en un conjunto distinto, por lo que una comparación directa de exactitud sería metodológicamente inválida.
+\item \textbf{Partición, codificación y definición de métricas:} En el reporte de Hoo~\cite{hoo2025wqd7004}, aunque se utiliza la misma fuente de Kaggle, la inclusión de atributos derivados bajo el flujo OSEMN y el colapso de sus modelos no lineales a valores idénticos ($0.729$) sugiere diferencias en la codificación de clase positiva o en la convergencia por defecto en R, explicando por qué su Regresión Logística exhibió una $F_1$ elevada ($0.8920$) con una exactitud inferior ($0.8448$) respecto a la nuestra ($0.8997$).
+\item \textbf{Limitación de comparabilidad:} Incluso cuando dos estudios comparten \texttt{loan\_data.csv}, variaciones en proporciones de partición ($80/20$ vs.\ $70/30$), semilla aleatoria, tratamiento de atípicos e ingeniería de características modifican la frontera evaluada. Por tanto, estos resultados deben interpretarse como evidencia comparativa dentro de sus respectivos marcos experimentales y no como superioridad universal.
+\end{enumerate}
+
+\subsection{Análisis Gráfico de Resultados}
+
+Las Fig.~\ref{fig:tuning_heatmaps}--\ref{fig:roc_pr} complementan las métricas tabulares permitiendo inspeccionar la sensibilidad paramétrica, los errores específicos por clase y la estabilidad probabilística.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig3_tuning_heatmaps.pdf}
+\caption{Mapas de calor de validación cruzada 5-fold ($F_1$-Score promedio) sobre $X_{\text{train}}$ para las combinaciones bidimensionales clave manteniendo fijos los restantes hiperparámetros óptimos. El recuadro rojo indica la combinación seleccionada.}
+\label{fig:tuning_heatmaps}
+\end{figure*}
+
+La Fig.~\ref{fig:tuning_heatmaps} expone el comportamiento de la búsqueda de hiperparámetros. En \textit{SVM RBF}, valores pequeños de $C$ ($0.01$) combinados con un kernel muy amplio (\texttt{gamma=0.001}) provocan subajuste severo ($F_1=0.000$ al colapsar hacia la clase mayoritaria), mientras que incrementar conjuntamente la penalización hacia \texttt{C=5.0} y usar \texttt{gamma="scale"} permite alcanzar el óptimo de CV ($F_1=0.8010$, $\text{ROC-AUC}=0.9629$). En \textit{Random Forest}, la profundidad máxima ejerce el mayor efecto positivo al pasar de \texttt{max\_depth=10} ($F_1 \approx 0.807$) a \texttt{20}--\texttt{30} ($F_1 \approx 0.824$), estabilizándose sin ganancia apreciable entre $200$ y $300$ estimadores y justificando \texttt{n\_estimators=200, max\_depth=30} frente a árboles ilimitados (\texttt{None}) para contener el tamaño del modelo en disco. En Regresión Logística, la superficie confirma la meseta estable a partir de \texttt{C=0.1} con \texttt{class\_weight=None} ($F_1=0.7599$) y la penalización sistemática descrita al activar \texttt{balanced}.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig4_baseline_vs_optimized.pdf}
+\caption{Comparativa de desempeño entre los modelos base (validación cruzada 5-fold en $X_{\text{train}}$) y los modelos optimizados evaluados sobre el conjunto independiente de prueba ($X_{\text{test}}$).}
+\label{fig:baseline_vs_opt}
+\end{figure*}
+
+En la Fig.~\ref{fig:baseline_vs_opt} se verifica visualmente la consistencia entre las estimaciones de CV y el conjunto de prueba: todas las barras de prueba optimizada superan ligeramente o igualan al referente de CV base sin caídas de generalización, manteniéndose la jerarquía $\text{Random Forest} > \text{SVM RBF} > \text{Logistic Regression}$ de manera invariante en todas las métricas.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.96\textwidth]{figures/fig5_confusion_matrices.pdf}
+\caption{Matrices de confusión sobre el conjunto de prueba ($n=9{,}000$: $7{,}000$ negativos y $2{,}000$ positivos), mostrando conteos absolutos y porcentajes normalizados por clase real.}
+\label{fig:confusion_matrices}
+\end{figure*}
+
+La Fig.~\ref{fig:confusion_matrices} desglosa los aciertos y errores sobre las $9{,}000$ instancias de $X_{\text{test}}$. \textit{Random Forest} reduce los falsos positivos a apenas $172$ casos ($2.5\%$ de la clase \texttt{0}), frente a $251$ ($3.6\%$) de \textit{SVM RBF} y $393$ ($5.6\%$) de Regresión Logística; esto implica que el ensamble de árboles reduce en un $56.2\%$ las aprobaciones erróneas respecto al clasificador lineal. Simultáneamente, en la clase positiva (\texttt{1}), \textit{Random Forest} identifica correctamente $1{,}543$ solicitudes ($77.1\%$) con $457$ falsos negativos, superando ligeramente a \textit{SVM RBF} ($1{,}512$; $75.6\%$) y Regresión Logística ($1{,}490$; $74.5\%$).
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig6_roc_pr_curves.pdf}
+\caption{Curvas de discriminación probabilística sobre el conjunto independiente de prueba ($n=9{,}000$): (a) curvas ROC con área $\text{ROC-AUC}$; (b) curvas Precision-Recall con área promedio $\text{AP}$ frente a la prevalencia base de $0.2222$.}
+\label{fig:roc_pr}
+\end{figure*}
+
+Finalmente, la Fig.~\ref{fig:roc_pr} muestra la separación probabilística continua a través de todo el espectro de umbrales de decisión. En la gráfica ROC (Fig.~\ref{fig:roc_pr}(a)), \textit{Random Forest} domina la región de bajas tasas de falsos positivos ($\text{FPR} < 0.2$), alcanzando $\text{ROC-AUC}=0.9750$. Esta ventaja se amplifica bajo la perspectiva más exigente de la curva Precision-Recall ante el desbalance de clases (Fig.~\ref{fig:roc_pr}(b)), donde \textit{Random Forest} obtiene un \textit{Average Precision} ($\text{PR-AUC}$) de $0.9320$, frente a $0.9039$ de \textit{SVM RBF} y $0.8630$ de Regresión Logística, demostrando que conserva una precisión cercana a $1.00$ hasta niveles de exhaustividad próximos a $0.55$ antes de comenzar a ceder ante casos fronterizos.
+
+\subsection{Discusión de Resultados}
+
+¿Por qué \textit{Random Forest} presentó el mejor desempeño en este problema? La superioridad del bosque aleatorio ($F_1=0.8307$, $\text{ROC-AUC}=0.9750$, $\text{PR-AUC}=0.9320$) responde directamente a la geometría del espacio de características. Como reveló el análisis exploratorio, el conjunto contiene reglas jerárquicas abruptas —notablemente el veto absoluto de \texttt{previous\_loan\_defaults\_on\_file=Yes}— combinadas con interacciones multiplicativas y no lineales entre \texttt{loan\_percent\_income}, \texttt{loan\_int\_rate}, tipo de vivienda (\texttt{RENT}) e ingreso anual. Mientras que la Regresión Logística está restringida a un único hiperplano global en $\mathbb{R}^{22}$ y el kernel RBF depende de distancias isotrópicas sensibles a dimensiones con colinealidad ($r=0.9544$ entre edad y experiencia) o colas extremas (edades hasta $144$ e ingresos hasta $\$7.2$ millones), los árboles de \textit{Random Forest} particionan el espacio de manera ortogonal y jerárquica, aislando limpiamente la condición de mora en los primeros niveles y refinando la frontera financiera en niveles más profundos sin degradación por escala.
+
+Respecto al impacto de la optimización, las mejoras sobre los modelos base fueron consistentes pero acotadas (entre $+0.0060$ y $+0.0080$ en $F_1$), indicando que los algoritmos ya operaban cerca de la frontera de separabilidad alcanzable por estas tres familias bajo las $13$ características originales y umbral $0.50$. La mayor aportación del ajuste fue confirmar cuantitativamente que regularizar suficientemente \textit{SVM RBF} (\texttt{C=5.0}), acotar \textit{Random Forest} (\texttt{max\_depth=30}) y descartar el balanceo forzado de pesos produce modelos bien calibrados y eficientes ($0.67\text{ s}$ en \textit{Random Forest} vs.\ $62.84\text{ s}$ en SVM).
+
+Entre las limitaciones principales del estudio destacan cuatro aspectos: (i) el alcance algorítmico se centró en tres paradigmas clásicos sin incluir métodos de \textit{Gradient Boosting} modernos como \textit{XGBoost} o \textit{LightGBM}, los cuales alcanzan desempeños ligeramente superiores en literatura afín~\cite{gour2025ensemble}; (ii) se empleó el umbral de decisión fijo de $0.50$ sin calibración específica a matrices de pérdida bancaria; (iii) la búsqueda aleatoria de $12$ iteraciones en espacios multidimensionales como el de \textit{Random Forest} ($360$ combinaciones teóricas) explora solo una fracción del espacio global, aunque los mapas 2D confirmaron estabilidad en meseta; y (iv) la naturaleza sintética de \texttt{loan\_data.csv} (valores extremos de edad/experiencia y determinismo absoluto de mora previa) limita la extrapolación directa a carteras bancarias reales sin reentrenamiento institucional. Como líneas de trabajo futuro se plantea incorporar modelos de \textit{boosting} (\textit{XGBoost} y \textit{LightGBM}), aplicar optimización Bayesiana (por ejemplo, \textit{Optuna}), explorar calibración de umbral orientada a costo esperado e integrar explicabilidad sistemática mediante valores SHAP exactos (\textit{TreeSHAP}).
+
+% =========================================================================
+\section{Conclusiones}
+% =========================================================================
+
+Este trabajo cumplió con el objetivo de desarrollar, optimizar y evaluar de forma rigurosa y libre de fuga de información un flujo reproducible de clasificación de aprobación de préstamos dentro del módulo \texttt{model\_factory}. El diseño basado en \texttt{Pipeline} y \texttt{ColumnTransformer} permitió comparar bajo igualdad de condiciones a Regresión Logística, \textit{SVM RBF} y \textit{Random Forest} sobre una partición estratificada $80/20$ de $45{,}000$ registros y validación cruzada de $5$ pliegues.
+
+Los hallazgos experimentales demuestran que la arquitectura basada en ensamble paralelo \textit{Random Forest} (\texttt{n\_estimators=200}, \texttt{max\_depth=30}, \texttt{max\_features="sqrt"}, \texttt{class\_weight=None}) ofrece el mejor equilibrio entre desempeño discriminatorio y eficiencia computacional, alcanzando en el conjunto independiente de prueba una exactitud de $0.9301$, precisión de $0.8997$, exhaustividad de $0.7715$, $F_1=0.8307$, $\text{ROC-AUC}=0.9750$ y $\text{PR-AUC}=0.9320$ con un tiempo de ajuste final de apenas $0.67\text{ s}$. \textit{SVM RBF} ocupó el segundo lugar ($F_1=0.8036$, $\text{ROC-AUC}=0.9642$), aunque con un costo computacional casi $100$ veces superior en ajuste final ($62.84\text{ s}$), mientras que Regresión Logística ofreció una línea base rápida ($0.09\text{ s}$) pero limitada ante interacciones no lineales ($F_1=0.7674$, $\text{ROC-AUC}=0.9560$).
+
+Asimismo, se comprobó que para la optimización de la métrica $F_1$ sobre esta distribución ($77.78\%$ vs.\ $22.22\%$), activar \texttt{class\_weight="balanced"} degrada sistemáticamente el rendimiento de los tres clasificadores al incrementar los falsos positivos, resultado valioso para decisiones prácticas de diseño en motores de \textit{credit scoring}. En términos aplicados, los tres modelos entrenados y serializados en formato \texttt{.joblib} constituyen artefactos listos para inferencia en tiempo real, quedando abiertas como mejoras futuras la evaluación de algoritmos \textit{XGBoost}/\textit{LightGBM}, la limpieza o tratamiento específico de valores atípicos de edad y experiencia, y la optimización de umbrales de decisión sensibles al costo financiero esperado.
+
+\bibliographystyle{IEEEtran}
+\bibliography{referencias}
+
+\end{document}
