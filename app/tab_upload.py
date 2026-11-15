@@ -11,6 +11,7 @@ from app.charts import (
     plot_test_metrics_and_roc,
 )
 from app.config import FEATURE_ORDER
+from app.frontend import show_inline_loading
 from app.services import (
     balance_binary_target,
     compute_batch_eval_metrics,
@@ -257,67 +258,112 @@ def _render_batch_results(
 
 def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
     """Renderiza la pestaña de carga, validación, ejecución bajo demanda y evaluación estilo Tab 4."""
-    st.header("📂 Upload Database (Predicción y Evaluación sobre CSV)")
-    st.markdown(
-        "Sube un archivo `.csv` con las 13 columnas de entrada en formato compatible con `loan_data.csv` "
-        "(puede incluir opcionalmente la columna real `loan_status` para evaluar métricas, curvas ROC y matrices de confusión). "
-        "Pulsa **Predict** para procesar el lote con los 3 modelos y visualizar el análisis completo."
-    )
-
-    sample_template = load_sample_template(nrows=5)
-    if sample_template is not None:
-        st.download_button(
-            label="⬇️ Descargar CSV de ejemplo (5 registros reales de loan_data.csv)",
-            data=sample_template.to_csv(index=False).encode("utf-8"),
-            file_name="ejemplo_upload_database.csv",
-            mime="text/csv",
+    with st.container(border=True):
+        st.markdown('<div class="m3-section-title">Try yours — Upload Database (CSV)</div>', unsafe_allow_html=True)
+        st.markdown(
+            "Sube un archivo `.csv` con las 13 columnas de entrada en formato compatible con `loan_data.csv` "
+            "(puede incluir opcionalmente la columna real `loan_status` para evaluar métricas, curvas ROC y matrices de confusión). "
+            "Pulsa **Predict** para procesar el lote con los 3 modelos y visualizar el análisis completo."
         )
 
-    uploaded_file = st.file_uploader("Upload Database (.csv)", type=["csv"], key="upload_database_csv")
-    if uploaded_file is None:
-        st.session_state.pop("upload_batch_results", None)
-        return
+        sample_template = load_sample_template(nrows=5)
+        if sample_template is not None:
+            st.download_button(
+                label="⬇️ Descargar CSV de ejemplo (5 registros reales de loan_data.csv)",
+                data=sample_template.to_csv(index=False).encode("utf-8"),
+                file_name="ejemplo_upload_database.csv",
+                mime="text/csv",
+            )
 
-    try:
-        raw_bytes = uploaded_file.getvalue()
-        file_hash = hashlib.md5(raw_bytes).hexdigest()[:10]
-        uploaded_file.seek(0)
-        df_raw = pd.read_csv(uploaded_file)
-        st.write(f"Archivo cargado: **{uploaded_file.name}** ({len(df_raw):,} filas × {df_raw.shape[1]} columnas)")
+        uploaded_file = st.file_uploader("Upload Database (.csv)", type=["csv"], key="upload_database_csv")
 
-        is_valid, val_errs, df_features = validate_uploaded_dataframe(df_raw)
-        if not is_valid:
-            st.session_state.pop("upload_batch_results", None)
-            for e in val_errs:
-                st.error(f"❌ Validación fallida: {e}")
+        df_raw = None
+        df_features = None
+        file_name = None
+        file_sig = None
+
+        try:
+            if uploaded_file is not None:
+                raw_bytes = uploaded_file.getvalue()
+                file_hash = hashlib.md5(raw_bytes).hexdigest()[:10]
+                file_sig = f"{uploaded_file.name}:{uploaded_file.size}:{file_hash}"
+
+                persisted = st.session_state.get("upload_persisted_file")
+                if persisted and persisted.get("file_sig") == file_sig:
+                    df_raw = persisted["df_raw"]
+                    df_features = persisted["df_features"]
+                    file_name = persisted["file_name"]
+                else:
+                    uploaded_file.seek(0)
+                    df_raw = pd.read_csv(uploaded_file)
+                    file_name = uploaded_file.name
+
+                    is_valid, val_errs, df_features = validate_uploaded_dataframe(df_raw)
+                    if not is_valid:
+                        st.session_state.pop("upload_persisted_file", None)
+                        st.session_state.pop("upload_batch_results", None)
+                        for e in val_errs:
+                            st.error(f"❌ Validación fallida: {e}")
+                        return
+
+                    st.session_state["upload_persisted_file"] = {
+                        "file_name": file_name,
+                        "file_sig": file_sig,
+                        "df_raw": df_raw,
+                        "df_features": df_features,
+                    }
+                    cached_batch = st.session_state.get("upload_batch_results")
+                    if cached_batch and cached_batch.get("file_sig") != file_sig:
+                        st.session_state.pop("upload_batch_results", None)
+            else:
+                persisted = st.session_state.get("upload_persisted_file")
+                if not persisted:
+                    return
+                df_raw = persisted["df_raw"]
+                df_features = persisted["df_features"]
+                file_name = persisted["file_name"]
+                file_sig = persisted["file_sig"]
+
+            st.write(f"Archivo cargado: **{file_name}** ({len(df_raw):,} filas × {df_raw.shape[1]} columnas)")
+            st.success("✅ Validación exitosa: columnas, tipos de datos y categorías verificadas.")
+
+            col_act1, col_act2, _ = st.columns([1, 1, 2])
+            with col_act1:
+                predict_clicked = st.button("➜  Predict", type="primary", key="upload_predict_btn", use_container_width=True)
+            with col_act2:
+                if st.button("🧹 Limpiar CSV", key="upload_clear_btn", use_container_width=True):
+                    st.session_state.pop("upload_persisted_file", None)
+                    st.session_state.pop("upload_batch_results", None)
+                    st.rerun()
+
+        except Exception as exc:
+            st.error(f"Error al procesar el archivo CSV: {exc}")
             return
 
-        st.success("✅ Validación exitosa: columnas, tipos de datos y categorías verificadas.")
+    cached_batch = st.session_state.get("upload_batch_results")
+    if predict_clicked:
+        df_out, pred_cols = _run_batch_inference(models, df_raw, df_features)
+        st.session_state["upload_batch_results"] = {
+            "file_sig": file_sig,
+            "df_out": df_out,
+            "pred_cols": pred_cols,
+        }
+        cached_batch = st.session_state["upload_batch_results"]
 
-        file_sig = f"{uploaded_file.name}:{uploaded_file.size}:{file_hash}"
-        cached_batch = st.session_state.get("upload_batch_results")
-        if cached_batch and cached_batch.get("file_sig") != file_sig:
-            st.session_state.pop("upload_batch_results", None)
-            cached_batch = None
-
-        if st.button("Predict", type="primary", key="upload_predict_btn"):
-            df_out, pred_cols = _run_batch_inference(models, df_raw, df_features)
-            st.session_state["upload_batch_results"] = {
-                "file_sig": file_sig,
-                "df_out": df_out,
-                "pred_cols": pred_cols,
-            }
-            cached_batch = st.session_state["upload_batch_results"]
-
-        if cached_batch:
-            _render_batch_results(
-                models=models,
-                df_raw=df_raw,
-                df_out=cached_batch["df_out"],
-                pred_cols=cached_batch["pred_cols"],
-                file_name=uploaded_file.name,
-                file_sig=file_sig,
-                eval_results=eval_results,
-            )
-    except Exception as exc:
-        st.error(f"Error al procesar el archivo CSV: {exc}")
+    if cached_batch:
+        batch_loader = st.empty()
+        show_inline_loading(
+            batch_loader,
+            "Preparando análisis visual del lote",
+            f"Generando métricas y gráficas para {file_name}...",
+        )
+        _render_batch_results(
+            models=models,
+            df_raw=df_raw,
+            df_out=cached_batch["df_out"],
+            pred_cols=cached_batch["pred_cols"],
+            file_name=file_name,
+            file_sig=file_sig,
+            eval_results=eval_results,
+        )
+        batch_loader.empty()

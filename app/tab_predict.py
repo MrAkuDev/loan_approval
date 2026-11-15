@@ -10,7 +10,11 @@ from app.charts import (
     plot_single_prediction_confidence,
 )
 from app.config import CSV_PATH, FEATURE_ORDER, FEATURE_SHORT_LABELS, VALID_CATEGORIES
-from app.frontend import render_prediction_cards
+from app.frontend import (
+    render_hyperparameters_list,
+    render_prediction_cards,
+    show_inline_loading,
+)
 from app.services import (
     compute_local_feature_contributions,
     load_explainability_background,
@@ -51,14 +55,20 @@ def _render_local_explanations(models: dict, X_input: pd.DataFrame) -> None:
     )
 
     csv_mtime = os.path.getmtime(CSV_PATH) if os.path.exists(CSV_PATH) else 0.0
+    sh_loader = st.empty()
+    show_inline_loading(
+        sh_loader,
+        "Calculando explicación por característica",
+        "Midiendo el impacto Shapley en SVM RBF, Random Forest y Regresión Logística...",
+    )
     bg_df = load_explainability_background(csv_mtime, n_samples=24)
-    with st.spinner("Calculando impacto de cada característica en los 3 modelos..."):
-        attributions = compute_local_feature_contributions(
-            models=models,
-            X_input=X_input,
-            bg_df=bg_df,
-            bg_sig=f"{csv_mtime}:{len(bg_df)}",
-        )
+    attributions = compute_local_feature_contributions(
+        models=models,
+        X_input=X_input,
+        bg_df=bg_df,
+        bg_sig=f"{csv_mtime}:{len(bg_df)}",
+    )
+    sh_loader.empty()
 
     plot_instance_feature_contributions(attributions, X_input)
 
@@ -78,106 +88,116 @@ def _render_local_explanations(models: dict, X_input: pd.DataFrame) -> None:
     st.dataframe(pd.DataFrame(driver_rows), use_container_width=True, hide_index=True)
 
 
-def render_tab_predict(models: dict) -> None:
-    """Renderiza el formulario individual y los resultados comparativos de predicción."""
-    st.header("Ingresar Datos del Solicitante para Predicción")
-    st.markdown(
-        "Complete los 13 atributos de entrada (en el mismo orden y formato de `loan_data.csv`). "
-        "Los tres modelos entrenados evaluarán simultáneamente la instancia."
-    )
-
-    with st.form("single_prediction_form"):
-        st.subheader("1. Datos Personales del Solicitante")
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            person_age = st.number_input("Edad (`person_age`)", value=25.0, step=1.0)
-            person_gender = st.selectbox("Género (`person_gender`)", options=VALID_CATEGORIES["person_gender"], index=0)
-        with c2:
-            person_education = st.selectbox(
-                "Escolaridad (`person_education`)",
-                options=VALID_CATEGORIES["person_education"],
-                index=2,
-            )
-            person_home_ownership = st.selectbox(
-                "Tipo de Vivienda (`person_home_ownership`)",
-                options=VALID_CATEGORIES["person_home_ownership"],
-                index=0,
-            )
-        with c3:
-            person_income = st.number_input(
-                "Ingreso Anual USD (`person_income`)",
-                value=65000.0,
-                step=500.0,
-                format="%.2f",
-            )
-            person_emp_exp = st.number_input(
-                "Experiencia Laboral en años (`person_emp_exp`)",
-                value=3,
-                step=1,
-            )
-
-        st.subheader("2. Características del Préstamo")
-        c4, c5, c6 = st.columns(3)
-        with c4:
-            loan_amnt = st.number_input(
-                "Monto Solicitado USD (`loan_amnt`)",
-                value=12000.0,
-                step=500.0,
-                format="%.2f",
-            )
-        with c5:
-            loan_intent = st.selectbox(
-                "Propósito del Préstamo (`loan_intent`)",
-                options=VALID_CATEGORIES["loan_intent"],
-                index=0,
-            )
-        with c6:
-            loan_int_rate = st.number_input(
-                "Tasa de Interés % (`loan_int_rate`)",
-                value=11.5,
-                step=0.1,
-                format="%.2f",
-            )
-
-        auto_ratio = (
-            round(loan_amnt / person_income, 2)
-            if (loan_amnt is not None and person_income is not None and person_income != 0)
-            else 0.0
+def render_tab_predict(models: dict, eval_results: dict | None = None) -> None:
+    """Renderiza la tarjeta 'Predecir' en Inicio y los resultados comparativos de predicción."""
+    with st.container(border=True):
+        st.markdown('<div class="m3-section-title">Predecir</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="m3-section-subtitle">'
+            "Complete los 13 atributos del solicitante (en el formato de <code>loan_data.csv</code>). "
+            "Los tres modelos entrenados evaluarán simultáneamente la instancia."
+            "</div>",
+            unsafe_allow_html=True,
         )
-        col_r1, col_r2 = st.columns([1, 2])
-        with col_r1:
-            use_auto_ratio = st.checkbox(
-                "Calcular `loan_percent_income` automáticamente (`loan_amnt / person_income`)",
-                value=True,
-            )
-        with col_r2:
-            manual_ratio = st.number_input(
-                "Proporción Préstamo / Ingreso (`loan_percent_income`)",
-                value=float(auto_ratio),
-                step=0.01,
-                format="%.2f",
-                disabled=use_auto_ratio,
-            )
-        loan_percent_income = auto_ratio if use_auto_ratio else manual_ratio
 
-        st.subheader("3. Historial Crediticio")
-        c7, c8, c9 = st.columns(3)
-        with c7:
-            credit_score = st.number_input("Puntaje Crediticio (`credit_score`)", value=640, step=1)
-        with c8:
-            cb_person_cred_hist_length = st.number_input(
-                "Antigüedad del Historial Crediticio en años (`cb_person_cred_hist_length`)",
-                value=4.0,
-                step=1.0,
-            )
-        with c9:
-            previous_loan_defaults_on_file = st.selectbox(
-                "¿Incumplimientos Previos? (`previous_loan_defaults_on_file`)",
-                options=VALID_CATEGORIES["previous_loan_defaults_on_file"],
-                index=0,
-            )
+        if eval_results is not None:
+            with st.expander("📊 Ver detalle de hiperparametros"):
+                render_hyperparameters_list(eval_results)
 
-        submit_btn = st.form_submit_button("🔮 Generar Predicciones con los 3 Modelos", use_container_width=True)
+        with st.form("single_prediction_form"):
+            st.subheader("1. Datos Personales del Solicitante")
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                person_age = st.number_input("Edad (`person_age`)", value=25.0, step=1.0)
+                person_gender = st.selectbox("Género (`person_gender`)", options=VALID_CATEGORIES["person_gender"], index=0)
+            with c2:
+                person_education = st.selectbox(
+                    "Escolaridad (`person_education`)",
+                    options=VALID_CATEGORIES["person_education"],
+                    index=2,
+                )
+                person_home_ownership = st.selectbox(
+                    "Tipo de Vivienda (`person_home_ownership`)",
+                    options=VALID_CATEGORIES["person_home_ownership"],
+                    index=0,
+                )
+            with c3:
+                person_income = st.number_input(
+                    "Ingreso Anual USD (`person_income`)",
+                    value=65000.0,
+                    step=500.0,
+                    format="%.2f",
+                )
+                person_emp_exp = st.number_input(
+                    "Experiencia Laboral en años (`person_emp_exp`)",
+                    value=3,
+                    step=1,
+                )
+
+            st.subheader("2. Características del Préstamo")
+            c4, c5, c6 = st.columns(3)
+            with c4:
+                loan_amnt = st.number_input(
+                    "Monto Solicitado USD (`loan_amnt`)",
+                    value=12000.0,
+                    step=500.0,
+                    format="%.2f",
+                )
+            with c5:
+                loan_intent = st.selectbox(
+                    "Propósito del Préstamo (`loan_intent`)",
+                    options=VALID_CATEGORIES["loan_intent"],
+                    index=0,
+                )
+            with c6:
+                loan_int_rate = st.number_input(
+                    "Tasa de Interés % (`loan_int_rate`)",
+                    value=11.5,
+                    step=0.1,
+                    format="%.2f",
+                )
+
+            auto_ratio = (
+                round(loan_amnt / person_income, 2)
+                if (loan_amnt is not None and person_income is not None and person_income != 0)
+                else 0.0
+            )
+            col_r1, col_r2 = st.columns([1, 2])
+            with col_r1:
+                use_auto_ratio = st.checkbox(
+                    "Calcular `loan_percent_income` automáticamente (`loan_amnt / person_income`)",
+                    value=True,
+                )
+            with col_r2:
+                manual_ratio = st.number_input(
+                    "Proporción Préstamo / Ingreso (`loan_percent_income`)",
+                    value=float(auto_ratio),
+                    step=0.01,
+                    format="%.2f",
+                    disabled=use_auto_ratio,
+                )
+            loan_percent_income = auto_ratio if use_auto_ratio else manual_ratio
+
+            st.subheader("3. Historial Crediticio")
+            c7, c8, c9 = st.columns(3)
+            with c7:
+                credit_score = st.number_input("Puntaje Crediticio (`credit_score`)", value=640, step=1)
+            with c8:
+                cb_person_cred_hist_length = st.number_input(
+                    "Antigüedad del Historial Crediticio en años (`cb_person_cred_hist_length`)",
+                    value=4.0,
+                    step=1.0,
+                )
+            with c9:
+                previous_loan_defaults_on_file = st.selectbox(
+                    "¿Incumplimientos Previos? (`previous_loan_defaults_on_file`)",
+                    options=VALID_CATEGORIES["previous_loan_defaults_on_file"],
+                    index=0,
+                )
+
+            _, col_submit = st.columns([3, 1])
+            with col_submit:
+                submit_btn = st.form_submit_button("➜  Predict", use_container_width=True)
 
     if submit_btn:
         raw_instance = {
@@ -198,21 +218,21 @@ def render_tab_predict(models: dict) -> None:
 
         val_errors, val_warnings = validate_single_instance(raw_instance)
         if val_errors:
+            st.session_state.pop("home_last_prediction", None)
             for err in val_errors:
                 st.error(f"❌ Error de validación: {err}")
             return
 
-        for warn in val_warnings:
-            st.warning(f"⚠️ Advertencia de validación: {warn}")
-
+        pred_loader = st.empty()
+        show_inline_loading(
+            pred_loader,
+            "Evaluando solicitud",
+            "Ejecutando SVM RBF, Random Forest y Regresión Logística...",
+        )
         instance_dict = build_typed_instance(raw_instance)
         X_input = pd.DataFrame([instance_dict])[FEATURE_ORDER]
         preds = {name: predict_with_model(pipe, X_input) for name, pipe in models.items()}
-
-        st.markdown("---")
-        st.subheader("🎯 Resultados de Predicción por Modelo")
-        render_prediction_cards(preds)
-        _render_consensus_summary(preds)
+        pred_loader.empty()
 
         comp_rows = [
             {
@@ -225,15 +245,31 @@ def render_tab_predict(models: dict) -> None:
             }
             for m_name, res in preds.items()
         ]
-        df_comp = pd.DataFrame(comp_rows)
+        st.session_state["home_last_prediction"] = {
+            "val_warnings": val_warnings,
+            "X_input": X_input,
+            "preds": preds,
+            "comp_rows": comp_rows,
+        }
 
-        c_tbl, c_fig = st.columns([1.2, 1])
-        with c_tbl:
-            st.dataframe(df_comp, use_container_width=True, hide_index=True)
-        with c_fig:
-            plot_single_prediction_confidence(comp_rows)
+    cached_pred = st.session_state.get("home_last_prediction")
+    if cached_pred:
+        with st.container(border=True):
+            for warn in cached_pred["val_warnings"]:
+                st.warning(f"⚠️ Advertencia de validación: {warn}")
 
-        _render_local_explanations(models, X_input)
+            st.subheader("🎯 Resultados de Predicción por Modelo")
+            render_prediction_cards(cached_pred["preds"])
+            _render_consensus_summary(cached_pred["preds"])
 
-        with st.expander("📋 Ver vector de características exacto enviado a los pipelines"):
-            st.dataframe(X_input, use_container_width=True, hide_index=True)
+            df_comp = pd.DataFrame(cached_pred["comp_rows"])
+            c_tbl, c_fig = st.columns([1.2, 1])
+            with c_tbl:
+                st.dataframe(df_comp, use_container_width=True, hide_index=True)
+            with c_fig:
+                plot_single_prediction_confidence(cached_pred["comp_rows"])
+
+            _render_local_explanations(models, cached_pred["X_input"])
+
+            with st.expander("📋 Ver vector de características exacto enviado a los pipelines"):
+                st.dataframe(cached_pred["X_input"], use_container_width=True, hide_index=True)

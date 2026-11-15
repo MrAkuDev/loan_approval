@@ -19,6 +19,7 @@ from app.charts import (
 )
 from app.charts_3d import render_interactive_3d_scatter
 from app.config import CSV_PATH, TOP_BOUNDARY_FEATURES, VALID_CATEGORIES
+from app.frontend import show_inline_loading
 from app.services import (
     compute_corr_payload_from_df,
     compute_decision_boundary_grids,
@@ -157,6 +158,12 @@ def render_decision_boundary_section(
         st.warning("Selecciona dos características diferentes para los ejes X e Y.")
         return
 
+    db_loader = st.empty()
+    show_inline_loading(
+        db_loader,
+        "Calculando fronteras de decisión 2D",
+        f"Evaluando {feat_x} × {feat_y} sobre los 3 modelos...",
+    )
     boundary_data = compute_decision_boundary_grids(
         _models=models,
         _df_eda=df_source,
@@ -167,6 +174,7 @@ def render_decision_boundary_section(
         balanced_tag=balanced_tag,
         dataset_tag=dataset_tag,
     )
+    db_loader.empty()
     plot_model_decision_boundaries(boundary_data, feat_x, feat_y, eval_results or {})
 
     if not boundary_data["matched_both_cats"]:

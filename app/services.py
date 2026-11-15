@@ -194,7 +194,7 @@ def compute_decision_boundary_grids(
     home_val: str,
     balanced_tag: bool,
     dataset_tag: str = "cv5_train",
-    grid_res: int = 75,
+    grid_res: int = 55,
 ) -> dict:
     """Evalúa la malla 2D de probabilidades de cada modelo sobre las dos características elegidas."""
     baseline = {

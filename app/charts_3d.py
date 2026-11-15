@@ -7,31 +7,28 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 
-def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
-    """Renderiza una gráfica 3D interactiva con líneas verticales de altura para `loan_int_rate`."""
-    if df_3d.empty:
-        st.info("No hay registros disponibles para la combinación de filtros seleccionada en la vista 3D.")
-        return
-
-    sample = df_3d.sample(n=min(4500, len(df_3d)), random_state=42)
+@st.cache_data(show_spinner=False, max_entries=16)
+def _build_3d_html_cached(cache_key: tuple, _df_3d: pd.DataFrame, inc_cap: float) -> str:
+    """Construye y cachea el HTML/Canvas 3D para evitar re-serializar puntos en cada cambio de vista."""
+    sample = _df_3d.sample(n=min(4500, len(_df_3d)), random_state=42)
     z_min = float(sample["loan_int_rate"].min())
     z_max = float(sample["loan_int_rate"].max())
     y_min = 0.0
     y_max = float(max(sample["loan_amnt"].max(), 1.0))
 
     points = [
-        {
-            "x": round(float(r.person_income), 0),
-            "y": round(float(r.loan_amnt), 0),
-            "z": round(float(r.loan_int_rate), 2),
-            "c": int(r.loan_status),
-            "d": str(r.previous_loan_defaults_on_file),
-            "h": str(r.person_home_ownership),
-        }
-        for r in sample.itertuples(index=False)
+        {"x": x, "y": y, "z": z, "c": int(c), "d": str(d), "h": str(h)}
+        for x, y, z, c, d, h in zip(
+            sample["person_income"].round(0).tolist(),
+            sample["loan_amnt"].round(0).tolist(),
+            sample["loan_int_rate"].round(2).tolist(),
+            sample["loan_status"].tolist(),
+            sample["previous_loan_defaults_on_file"].tolist(),
+            sample["person_home_ownership"].tolist(),
+        )
     ]
 
-    html_code = f"""
+    return f"""
     <!DOCTYPE html>
     <html>
     <head>
@@ -465,4 +462,20 @@ def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
     </body>
     </html>
     """
+
+
+def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
+    """Renderiza una gráfica 3D interactiva con líneas verticales de altura para `loan_int_rate`."""
+    if df_3d.empty:
+        st.info("No hay registros disponibles para la combinación de filtros seleccionada en la vista 3D.")
+        return
+
+    cache_key = (
+        len(df_3d),
+        round(float(inc_cap), 2),
+        round(float(df_3d["person_income"].sum()), 2),
+        round(float(df_3d["loan_amnt"].sum()), 2),
+        int(df_3d["loan_status"].sum()),
+    )
+    html_code = _build_3d_html_cached(cache_key, df_3d, inc_cap)
     components.html(html_code, height=645)
