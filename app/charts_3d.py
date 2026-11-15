@@ -10,21 +10,25 @@ import streamlit.components.v1 as components
 @st.cache_data(show_spinner=False, max_entries=16)
 def _build_3d_html_cached(cache_key: tuple, _df_3d: pd.DataFrame, inc_cap: float) -> str:
     """Construye y cachea el HTML/Canvas 3D para evitar re-serializar puntos en cada cambio de vista."""
-    sample = _df_3d.sample(n=min(4500, len(_df_3d)), random_state=42)
+    clean_3d = _df_3d.dropna(subset=["person_income", "loan_amnt", "loan_int_rate"])
+    if clean_3d.empty:
+        return ""
+    sample = clean_3d.sample(n=min(4500, len(clean_3d)), random_state=42)
     z_min = float(sample["loan_int_rate"].min())
     z_max = float(sample["loan_int_rate"].max())
     y_min = 0.0
     y_max = float(max(sample["loan_amnt"].max(), 1.0))
 
     points = [
-        {"x": x, "y": y, "z": z, "c": int(c), "d": str(d), "h": str(h)}
-        for x, y, z, c, d, h in zip(
+        {"x": x, "y": y, "z": z, "c": int(c), "d": str(d), "h": str(h), "g": str(g)}
+        for x, y, z, c, d, h, g in zip(
             sample["person_income"].round(0).tolist(),
             sample["loan_amnt"].round(0).tolist(),
             sample["loan_int_rate"].round(2).tolist(),
             sample["loan_status"].tolist(),
-            sample["previous_loan_defaults_on_file"].tolist(),
-            sample["person_home_ownership"].tolist(),
+            sample["cb_person_default_on_file"].fillna("N").tolist(),
+            sample["person_home_ownership"].fillna("OTHER").tolist(),
+            sample["loan_grade"].fillna("A").tolist(),
         )
     ]
 
@@ -122,14 +126,14 @@ def _build_3d_html_cached(cache_key: tuple, _df_3d: pd.DataFrame, inc_cap: float
           </div>
           <div class="btn-group">
             <button id="flt-all" class="btn active">Todos</button>
-            <button id="flt-1" class="btn">Aprobado (1)</button>
-            <button id="flt-0" class="btn">Denegado (0)</button>
+            <button id="flt-0" class="btn">Sin Incumplimiento (0)</button>
+            <button id="flt-1" class="btn">Incumplimiento (1)</button>
             <label class="sel-lbl">
-              Defaults:
+              Mora previa:
               <select id="flt-defaults" class="sel">
                 <option value="all">Todos</option>
-                <option value="No">No</option>
-                <option value="Yes">Yes</option>
+                <option value="N">N</option>
+                <option value="Y">Y</option>
               </select>
             </label>
             <label class="sel-lbl">
@@ -144,8 +148,8 @@ def _build_3d_html_cached(cache_key: tuple, _df_3d: pd.DataFrame, inc_cap: float
             </label>
           </div>
           <div class="legend">
-            <span><span class="dot" style="background:#DC2626;"></span>Denegado (0)</span>
-            <span><span class="dot" style="background:#059669;"></span>Aprobado (1)</span>
+            <span><span class="dot" style="background:#059669;"></span>Sin Incumplimiento (0)</span>
+            <span><span class="dot" style="background:#DC2626;"></span>Incumplimiento (1)</span>
             <span id="vis-cnt" style="font-weight:600;color:#475569;"></span>
           </div>
         </div>
@@ -401,7 +405,7 @@ def _build_3d_html_cached(cache_key: tuple, _df_3d: pd.DataFrame, inc_cap: float
             const r = Math.max(2.6, Math.min(4.8, 3.2 * top.persp));
 
             if (showStems && pt.base) {{
-              ctx.strokeStyle = pt.raw.c === 1
+              ctx.strokeStyle = pt.raw.c === 0
                 ? "rgba(5, 150, 105, " + (alpha * 0.58).toFixed(2) + ")"
                 : "rgba(220, 38, 38, " + (alpha * 0.58).toFixed(2) + ")";
               ctx.lineWidth = 1.1;
@@ -411,7 +415,7 @@ def _build_3d_html_cached(cache_key: tuple, _df_3d: pd.DataFrame, inc_cap: float
               ctx.stroke();
             }}
 
-            ctx.fillStyle = pt.raw.c === 1
+            ctx.fillStyle = pt.raw.c === 0
               ? "rgba(5, 150, 105, " + alpha.toFixed(2) + ")"
               : "rgba(220, 38, 38, " + alpha.toFixed(2) + ")";
             ctx.beginPath();
@@ -442,11 +446,11 @@ def _build_3d_html_cached(cache_key: tuple, _df_3d: pd.DataFrame, inc_cap: float
             tip.style.display = "block";
             tip.style.left = Math.min(W - 190, Math.max(8, top.sx + 12)) + "px";
             tip.style.top = Math.min(H - 95, Math.max(8, top.sy - 14)) + "px";
-            const statusTxt = bestPt.raw.c === 1
-              ? "<span style='color:#34D399;font-weight:700;'>Aprobado (1)</span>"
-              : "<span style='color:#F87171;font-weight:700;'>Denegado (0)</span>";
+            const statusTxt = bestPt.raw.c === 0
+              ? "<span style='color:#34D399;font-weight:700;'>Sin Incumplimiento (0)</span>"
+              : "<span style='color:#F87171;font-weight:700;'>Incumplimiento (1)</span>";
             tip.innerHTML =
-              statusTxt + "<br>" +
+              statusTxt + " | Grado: <b>" + bestPt.raw.g + "</b><br>" +
               "Ingreso: <b>$" + bestPt.raw.x.toLocaleString() + "</b><br>" +
               "Préstamo: <b>$" + bestPt.raw.y.toLocaleString() + "</b><br>" +
               "Tasa Interés: <b>" + bestPt.raw.z.toFixed(2) + "%</b><br>" +
@@ -466,16 +470,17 @@ def _build_3d_html_cached(cache_key: tuple, _df_3d: pd.DataFrame, inc_cap: float
 
 def render_interactive_3d_scatter(df_3d: pd.DataFrame, inc_cap: float) -> None:
     """Renderiza una gráfica 3D interactiva con líneas verticales de altura para `loan_int_rate`."""
-    if df_3d.empty:
-        st.info("No hay registros disponibles para la combinación de filtros seleccionada en la vista 3D.")
+    valid_3d = df_3d.dropna(subset=["person_income", "loan_amnt", "loan_int_rate"])
+    if valid_3d.empty:
+        st.info("No hay registros completos (sin tasa de interés faltante) para la vista 3D.")
         return
 
     cache_key = (
-        len(df_3d),
+        len(valid_3d),
         round(float(inc_cap), 2),
-        round(float(df_3d["person_income"].sum()), 2),
-        round(float(df_3d["loan_amnt"].sum()), 2),
-        int(df_3d["loan_status"].sum()),
+        round(float(valid_3d["person_income"].sum()), 2),
+        round(float(valid_3d["loan_amnt"].sum()), 2),
+        int(valid_3d["loan_status"].sum()),
     )
-    html_code = _build_3d_html_cached(cache_key, df_3d, inc_cap)
+    html_code = _build_3d_html_cached(cache_key, valid_3d, inc_cap)
     components.html(html_code, height=645)

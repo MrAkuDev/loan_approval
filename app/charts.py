@@ -52,15 +52,15 @@ def _display_cached_fig(cache_key: tuple, builder_fn) -> None:
 
 
 def plot_single_prediction_confidence(comp_rows: list[dict]) -> None:
-    """Dibuja la gráfica horizontal de confianza por modelo para una instancia individual."""
+    """Dibuja la gráfica horizontal de probabilidad de riesgo (Incumplimiento, Clase 1) por modelo."""
     fig, ax = plt.subplots(figsize=(6, 3.2))
-    probs_plot = [r["Prob. Aprobado (Clase 1)"] * 100 for r in comp_rows]
-    colors = ["#059669" if r["Clase Predicha"] == 1 else "#DC2626" for r in comp_rows]
+    probs_plot = [r["Prob. Incumplimiento (Clase 1)"] * 100 for r in comp_rows]
+    colors = ["#DC2626" if r["Clase Predicha"] == 1 else "#059669" for r in comp_rows]
     bars = ax.barh([r["Modelo"] for r in comp_rows], probs_plot, color=colors)
     ax.axvline(50, color="#374151", linestyle="--", linewidth=1, label="Umbral 50%")
-    ax.set_xlim(0, 105)
-    ax.set_xlabel("Probabilidad de Aprobación — Clase 1 (%)")
-    ax.set_title("Confianza por Modelo")
+    ax.set_xlim(0, 108)
+    ax.set_xlabel("Probabilidad de Incumplimiento (Clase 1) (%)")
+    ax.set_title("Riesgo de Incumplimiento Estimado por Modelo")
     for bar, val in zip(bars, probs_plot):
         ax.text(val + 1.5, bar.get_y() + bar.get_height() / 2, f"{val:.1f}%", va="center", fontsize=9)
     ax.legend(loc="lower right")
@@ -89,7 +89,7 @@ def plot_confusion_matrices_row(
 
     def _build():
         fig_cm, axes_cm = plt.subplots(1, len(model_names), figsize=(15, 4.3))
-        labels_cm = ["No Aprobado (0)", "Aprobado (1)"]
+        labels_cm = ["Sin Incumplimiento (0)", "Incumplimiento (1)"]
 
         for idx, m_name in enumerate(model_names):
             cm = np.array(results_by_model[m_name]["confusion_matrix"])
@@ -178,13 +178,13 @@ def plot_correlation_heatmap_and_target_bars(corr_info: dict, show_all_corr: boo
         def _build_tc():
             bar_series = target_corr.loc[[c for c in selected_cols if c != "loan_status"]].sort_values(ascending=True)
             fig_tc, ax_tc = plt.subplots(figsize=(6.8, 7.2 if not show_all_corr else 9.0))
-            colors_tc = ["#DC2626" if v < 0 else "#1D4ED8" for v in bar_series.values]
+            colors_tc = ["#059669" if v < 0 else "#DC2626" for v in bar_series.values]
             bars_tc = ax_tc.barh(bar_series.index, bar_series.values, color=colors_tc)
             ax_tc.axvline(0, color="black", linewidth=0.9)
-            x_min_tc = min(-0.68, float(bar_series.min()) - 0.14)
-            x_max_tc = max(0.52, float(bar_series.max()) + 0.12)
+            x_min_tc = min(-0.55, float(bar_series.min()) - 0.14)
+            x_max_tc = max(0.55, float(bar_series.max()) + 0.14)
             ax_tc.set_xlim(x_min_tc, x_max_tc)
-            ax_tc.set_xlabel("Correlación con loan_status (Clase 0 ← 0 → Clase 1)")
+            ax_tc.set_xlabel("Correlación con loan_status (Sin Incumplimiento 0 ← 0 → Incumplimiento 1)")
             ax_tc.set_title("Relación Directa con loan_status", fontsize=11, fontweight="bold")
             ax_tc.tick_params(axis="y", labelsize=8 if not show_all_corr else 7)
             for bar, val in zip(bars_tc, bar_series.values):
@@ -199,7 +199,7 @@ def plot_correlation_heatmap_and_target_bars(corr_info: dict, show_all_corr: boo
 
 
 def plot_grouped_status_pct(df_eda: pd.DataFrame, col: str, title: str, xlabel: str) -> None:
-    """Dibuja gráfica de barras agrupadas (% Denegado 0 vs Aprobado 1) para una variable categórica."""
+    """Dibuja gráfica de barras agrupadas (% Sin Incumplimiento 0 vs Incumplimiento 1) para una variable categórica."""
     cache_key = ("grouped_pct", _df_sig(df_eda), col, title, xlabel)
 
     def _build():
@@ -214,8 +214,8 @@ def plot_grouped_status_pct(df_eda: pd.DataFrame, col: str, title: str, xlabel: 
         width = 0.36
 
         fig, ax = plt.subplots(figsize=(6.8, 4.4))
-        bars_0 = ax.bar(x - width / 2, ct[0].values, width, label="Denegado (0)", color="#DC2626")
-        bars_1 = ax.bar(x + width / 2, ct[1].values, width, label="Aprobado (1)", color="#059669")
+        bars_0 = ax.bar(x - width / 2, ct[0].values, width, label="Sin Incumplimiento (0)", color="#059669")
+        bars_1 = ax.bar(x + width / 2, ct[1].values, width, label="Incumplimiento (1)", color="#DC2626")
 
         for bars in (bars_0, bars_1):
             for b in bars:
@@ -237,22 +237,22 @@ def plot_grouped_status_pct(df_eda: pd.DataFrame, col: str, title: str, xlabel: 
 
 
 def plot_status_boxplot(df_eda: pd.DataFrame, col: str, title: str, ylabel: str) -> None:
-    """Dibuja boxplot comparando Denegado (0) vs Aprobado (1) para una variable numérica."""
+    """Dibuja boxplot comparando Sin Incumplimiento (0) vs Incumplimiento (1) para una variable numérica."""
     cache_key = ("status_box", _df_sig(df_eda), col, title, ylabel)
 
     def _build():
-        vals_0 = df_eda.loc[df_eda["loan_status"] == 0, col].values
-        vals_1 = df_eda.loc[df_eda["loan_status"] == 1, col].values
+        vals_0 = df_eda.loc[df_eda["loan_status"] == 0, col].dropna().values
+        vals_1 = df_eda.loc[df_eda["loan_status"] == 1, col].dropna().values
 
         fig, ax = plt.subplots(figsize=(6.8, 4.4))
         bp = ax.boxplot(
             [vals_0, vals_1],
-            tick_labels=["Denegado (0)", "Aprobado (1)"],
+            tick_labels=["Sin Incumplimiento (0)", "Incumplimiento (1)"],
             patch_artist=True,
             widths=0.45,
             medianprops={"color": "#111827", "linewidth": 1.8},
         )
-        for patch, color in zip(bp["boxes"], ["#FCA5A5", "#6EE7B7"]):
+        for patch, color in zip(bp["boxes"], ["#6EE7B7", "#FCA5A5"]):
             patch.set_facecolor(color)
             patch.set_alpha(0.85)
 
@@ -273,8 +273,8 @@ def plot_income_vs_loan_scatter(df_scat: pd.DataFrame, inc_cap: float) -> None:
     def _build():
         fig_sc, ax_sc = plt.subplots(figsize=(6.8, 4.4))
         for cls, label_txt, color_hex in [
-            (0, "Denegado (0)", "#DC2626"),
-            (1, "Aprobado (1)", "#059669"),
+            (0, "Sin Incumplimiento (0)", "#059669"),
+            (1, "Incumplimiento (1)", "#DC2626"),
         ]:
             sub_s = df_scat[df_scat["loan_status"] == cls]
             ax_sc.scatter(
@@ -297,9 +297,9 @@ def plot_income_vs_loan_scatter(df_scat: pd.DataFrame, inc_cap: float) -> None:
     _display_cached_fig(cache_key, _build)
 
 
-def plot_income_ratio_approval_bars(df_eda: pd.DataFrame) -> pd.Series:
-    """Dibuja la tasa de aprobación por tramo de `loan_percent_income` (General vs Sin Mora) y retorna `rate_all`."""
-    df_lpi = df_eda[["loan_percent_income", "previous_loan_defaults_on_file", "loan_status"]].copy()
+def plot_income_ratio_default_bars(df_eda: pd.DataFrame) -> pd.Series:
+    """Dibuja la tasa de incumplimiento (Incumplimiento %) por tramo de `loan_percent_income` (General vs Sin Mora) y retorna `rate_all`."""
+    df_lpi = df_eda[["loan_percent_income", "cb_person_default_on_file", "loan_status"]].copy()
     lpi_bins = [0.0, 0.10, 0.20, 0.30, 0.40, 1.0]
     lpi_labels = ["0–10%", "10–20%", "20–30%", "30–40%", "> 40%"]
     df_lpi["lpi_bin"] = pd.cut(df_lpi["loan_percent_income"], bins=lpi_bins, labels=lpi_labels, include_lowest=True)
@@ -308,7 +308,7 @@ def plot_income_ratio_approval_bars(df_eda: pd.DataFrame) -> pd.Series:
     cache_key = ("income_ratio_bars", _df_sig(df_eda))
 
     def _build():
-        df_no_def = df_lpi[df_lpi["previous_loan_defaults_on_file"] == "No"]
+        df_no_def = df_lpi[df_lpi["cb_person_default_on_file"] == "N"]
         rate_nodef = df_no_def.groupby("lpi_bin", observed=False)["loan_status"].mean().fillna(0.0) * 100.0
 
         x_b = np.arange(len(lpi_labels))
@@ -319,14 +319,14 @@ def plot_income_ratio_approval_bars(df_eda: pd.DataFrame) -> pd.Series:
             rate_all.values,
             w_b,
             label="Todas las solicitudes (con y sin mora)",
-            color="#1D4ED8",
+            color="#DC2626",
         )
         b_nd = ax_lpi.bar(
             x_b + w_b / 2,
             rate_nodef.values,
             w_b,
-            label="Solo sin mora previa (defaults = 'No')",
-            color="#059669",
+            label="Solo sin mora previa (default_on_file = 'N')",
+            color="#D97706",
         )
         for bars in (b_all, b_nd):
             for b in bars:
@@ -336,8 +336,8 @@ def plot_income_ratio_approval_bars(df_eda: pd.DataFrame) -> pd.Series:
         ax_lpi.set_xticklabels(lpi_labels)
         ax_lpi.set_ylim(0, 115)
         ax_lpi.set_xlabel("% del Ingreso Comprometido (loan_percent_income = Monto / Ingreso)")
-        ax_lpi.set_ylabel("% de Préstamos Aprobados (Clase 1)")
-        ax_lpi.set_title("Aprobación según % de Ingreso Solicitado (General vs Sin Mora)", fontsize=10.5, fontweight="bold")
+        ax_lpi.set_ylabel("% de Incumplimiento (Clase 1)")
+        ax_lpi.set_title("Tasa de Incumplimiento según % de Ingreso Solicitado (General vs Sin Mora)", fontsize=10.5, fontweight="bold")
         ax_lpi.legend(loc="upper left", fontsize=8.2)
         ax_lpi.grid(axis="y", linestyle="--", alpha=0.35)
         plt.tight_layout()
@@ -471,7 +471,7 @@ def plot_model_decision_boundaries(
     def _build():
         region_cmap = LinearSegmentedColormap.from_list(
             "loan_decision_regions",
-            ["#F87171", "#FEE2E2", "#F8FAFC", "#D1FAE5", "#34D399"],
+            ["#34D399", "#D1FAE5", "#F8FAFC", "#FEE2E2", "#F87171"],
         )
 
         fig, axes = plt.subplots(1, len(model_names), figsize=(16.5, 5.0), sharey=True)
@@ -500,8 +500,8 @@ def plot_model_decision_boundaries(
                 ax.contour(xx, yy, z_prob, levels=[0.5], colors=["#FACC15"], linewidths=1.8)
 
             for cls, lbl, color_hex in [
-                (0, "Denegado (0)", "#991B1B"),
-                (1, "Aprobado (1)", "#065F46"),
+                (0, "Sin Incumplimiento (0)", "#065F46"),
+                (1, "Incumplimiento (1)", "#991B1B"),
             ]:
                 sub = df_pts[df_pts["loan_status"] == cls]
                 if not sub.empty:
@@ -535,7 +535,7 @@ def plot_model_decision_boundaries(
         if last_cf is not None:
             cbar_ax = fig.add_axes([0.935, 0.16, 0.014, 0.72])
             cbar = fig.colorbar(last_cf, cax=cbar_ax)
-            cbar.set_label("Probabilidad de Aprobación P(loan_status = 1)", fontsize=9)
+            cbar.set_label("Probabilidad de Incumplimiento P(loan_status = 1)", fontsize=9)
         return fig
 
     _display_cached_fig(cache_key, _build)
@@ -632,13 +632,17 @@ def plot_hyperparameter_heatmaps(
 def _format_feature_value_label(col: str, val) -> str:
     """Formatea cada característica junto al valor ingresado para los ejes de explicabilidad."""
     label = FEATURE_SHORT_LABELS.get(col, col)
+    if pd.isna(val):
+        return f"{label} (N/D)"
     if col in {"person_income", "loan_amnt"}:
         return f"{label} (${float(val):,.0f})"
     if col == "loan_int_rate":
         return f"{label} ({float(val):.2f}%)"
     if col == "loan_percent_income":
         return f"{label} ({float(val):.2f})"
-    if col in {"person_age", "person_emp_exp", "cb_person_cred_hist_length", "credit_score"}:
+    if col == "person_emp_length":
+        return f"{label} ({float(val):.1f})"
+    if col in {"person_age", "cb_person_cred_hist_length"}:
         return f"{label} ({float(val):.0f})"
     return f"{label} ({val})"
 
@@ -647,13 +651,13 @@ def plot_instance_feature_contributions(
     attributions: dict[str, dict],
     X_input: pd.DataFrame,
 ) -> None:
-    """Dibuja 3 gráficas horizontales (una por modelo) mostrando cuánto empuja cada variable a aprobar/denegar."""
+    """Dibuja 3 gráficas horizontales (una por modelo) mostrando cuánto empuja cada variable hacia Incumplimiento/Sin Incumplimiento."""
     model_names = list(attributions.keys())
     if not model_names:
         return
 
     row_vals = X_input.iloc[0].to_dict()
-    fig, axes = plt.subplots(1, len(model_names), figsize=(19.5, 6.5))
+    fig, axes = plt.subplots(1, len(model_names), figsize=(19.5, 6.2))
     if len(model_names) == 1:
         axes = [axes]
 
@@ -664,7 +668,7 @@ def plot_instance_feature_contributions(
 
         labels = [_format_feature_value_label(c, row_vals[c]) for c in ordered_cols]
         vals_pp = np.array([contribs[c] * 100.0 for c in ordered_cols], dtype=float)
-        colors = ["#059669" if v >= 0 else "#DC2626" for v in vals_pp]
+        colors = ["#DC2626" if v >= 0 else "#059669" for v in vals_pp]
 
         bars = ax.barh(labels, vals_pp, color=colors, alpha=0.9)
         ax.axvline(0.0, color="#0F172A", linewidth=1.1)
@@ -684,11 +688,11 @@ def plot_instance_feature_contributions(
                 ha=ha,
                 fontsize=8,
                 fontweight="bold",
-                color="#065F46" if v >= 0 else "#991B1B",
+                color="#991B1B" if v >= 0 else "#065F46",
             )
 
-        pred_lbl = "Aprobado (1)" if info["pred_class"] == 1 else "No Aprobado (0)"
-        title_color = "#059669" if info["pred_class"] == 1 else "#DC2626"
+        pred_lbl = "Incumplimiento (1)" if info["pred_class"] == 1 else "Sin Incumplimiento (0)"
+        title_color = "#DC2626" if info["pred_class"] == 1 else "#059669"
         ax.set_title(
             f"{m_name}\n{pred_lbl} | Base: {info['base_value'] * 100:.1f}% → Pred: {info['pred_value'] * 100:.1f}%",
             fontsize=10.5,
@@ -696,7 +700,7 @@ def plot_instance_feature_contributions(
             color=title_color,
             pad=8,
         )
-        ax.set_xlabel("Impacto en P(Aprobado=1) (pp)", fontsize=9)
+        ax.set_xlabel("Impacto en P(Incumplimiento = 1) (pp)", fontsize=9)
         ax.tick_params(axis="y", labelsize=8.5)
         ax.grid(axis="x", linestyle="--", alpha=0.35)
 

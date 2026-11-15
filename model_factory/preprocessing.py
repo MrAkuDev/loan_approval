@@ -1,6 +1,7 @@
 """Construcción del preprocesamiento y ensamblado de Pipelines de scikit-learn."""
 
 from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
@@ -8,15 +9,23 @@ from model_factory.config import CATEGORICAL_COLUMNS, NUMERICAL_COLUMNS
 
 
 def build_preprocessor() -> ColumnTransformer:
-    """Construye el ColumnTransformer compartido para variables numéricas y categóricas."""
+    """Construye el ColumnTransformer con imputación y escalamiento/codificación sin fuga de datos."""
+    num_pipeline = Pipeline(
+        [
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", StandardScaler()),
+        ]
+    )
+    cat_pipeline = Pipeline(
+        [
+            ("imputer", SimpleImputer(strategy="most_frequent")),
+            ("ohe", OneHotEncoder(drop="first", handle_unknown="ignore", sparse_output=False)),
+        ]
+    )
     return ColumnTransformer(
         transformers=[
-            ("num", StandardScaler(), NUMERICAL_COLUMNS),
-            (
-                "cat",
-                OneHotEncoder(drop="first", handle_unknown="ignore", sparse_output=False),
-                CATEGORICAL_COLUMNS,
-            ),
+            ("num", num_pipeline, NUMERICAL_COLUMNS),
+            ("cat", cat_pipeline, CATEGORICAL_COLUMNS),
         ],
         remainder="passthrough",
     )

@@ -36,11 +36,19 @@ def main() -> None:
     specs = get_model_specs()
 
     print("=" * 72)
-    print("1. CARGA DE DATOS Y PARTICIÓN TRAIN / TEST (80/20 ESTRATIFICADA)")
+    print("1. CARGA DE DATOS, LIMPIEZA Y PARTICIÓN TRAIN / TEST (80/20 ESTRATIFICADA)")
     print("=" * 72)
-    df, X_train, X_test, y_train, y_test = load_and_split_data()
+    df, X_train, X_test, y_train, y_test, cleaning_stats = load_and_split_data()
     y = df["loan_status"]
-    print(f"Dataset total: {len(df):,} registros | Train: {len(X_train):,} | Test: {len(X_test):,}")
+    print(
+        f"Dataset bruto: {cleaning_stats['raw_rows']:,} | "
+        f"Duplicados eliminados: {cleaning_stats['duplicates_removed']:,} | "
+        f"Atípicos imposibles eliminados: {cleaning_stats['outliers_removed']:,}"
+    )
+    print(
+        f"Dataset limpio: {len(df):,} registros | Train: {len(X_train):,} | Test: {len(X_test):,} | "
+        f"Nulos imputados en Pipeline: {cleaning_stats['missing_values_clean']}"
+    )
 
     print("\n" + "=" * 72)
     print("2. ETAPA 1 — EVALUACIÓN BASELINE (PARÁMETROS POR DEFECTO)")
@@ -72,12 +80,17 @@ def main() -> None:
     summary_payload = {
         "dataset": {
             "file": CSV_FILENAME,
+            "source": "Kaggle — Credit Risk Dataset (laotse/credit-risk-dataset)",
+            "raw_rows": cleaning_stats["raw_rows"],
+            "duplicates_removed": cleaning_stats["duplicates_removed"],
+            "outliers_removed": cleaning_stats["outliers_removed"],
             "total_rows": int(len(df)),
             "train_rows": int(len(X_train)),
             "test_rows": int(len(X_test)),
+            "missing_values_clean": cleaning_stats["missing_values_clean"],
             "class_distribution": {
-                "0_no_aprobado": int((y == 0).sum()),
-                "1_aprobado": int((y == 1).sum()),
+                "0_no_default": int((y == 0).sum()),
+                "1_default": int((y == 1).sum()),
             },
             "feature_order": FEATURE_ORDER,
             "numerical_columns": NUMERICAL_COLUMNS,

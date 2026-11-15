@@ -103,8 +103,8 @@ def _render_model_comparison_section(
     summary_rows = []
     for m_name, pred_col in zip(model_names, pred_cols):
         short_key = m_name.lower().replace(" ", "_")
-        n_app = int((df_out[pred_col] == 1).sum())
-        n_den = int((df_out[pred_col] == 0).sum())
+        n_def = int((df_out[pred_col] == 1).sum())
+        n_ok = int((df_out[pred_col] == 0).sum())
         mean_prob = float(df_out[f"prob1_{short_key}"].mean())
 
         if has_ground_truth and batch_eval_metrics is not None:
@@ -112,8 +112,8 @@ def _render_model_comparison_section(
             summary_rows.append(
                 {
                     "Modelo": m_name,
-                    "Aprobados (1)": f"{n_app:,} ({(n_app / len(df_out)) * 100:.1f}%)",
-                    "Denegados (0)": f"{n_den:,} ({(n_den / len(df_out)) * 100:.1f}%)",
+                    "Sin Incumplimiento (0)": f"{n_ok:,} ({(n_ok / len(df_out)) * 100:.1f}%)",
+                    "Incumplimiento (1)": f"{n_def:,} ({(n_def / len(df_out)) * 100:.1f}%)",
                     "Accuracy": m_vals["accuracy"],
                     "Precision": m_vals["precision"],
                     "Recall": m_vals["recall"],
@@ -126,9 +126,9 @@ def _render_model_comparison_section(
             summary_rows.append(
                 {
                     "Modelo": m_name,
-                    "Aprobados (1)": f"{n_app:,} ({(n_app / len(df_out)) * 100:.1f}%)",
-                    "Denegados (0)": f"{n_den:,} ({(n_den / len(df_out)) * 100:.1f}%)",
-                    "Prob. Media P(1)": round(mean_prob, 4),
+                    "Sin Incumplimiento (0)": f"{n_ok:,} ({(n_ok / len(df_out)) * 100:.1f}%)",
+                    "Incumplimiento (1)": f"{n_def:,} ({(n_def / len(df_out)) * 100:.1f}%)",
+                    "Prob. Media P(Incumplimiento=1)": round(mean_prob, 4),
                     "Acuerdo con Voto Mayoritario": f"{agree_pct:.1f}%",
                 }
             )
@@ -166,7 +166,7 @@ def _render_batch_results(
     use_balanced = False
     if both_classes_in_eda:
         use_balanced = st.checkbox(
-            "Balancear clases 50% / 50% dentro del CSV cargado (igualar Denegado 0 vs Aprobado 1 para EDA)",
+            "Balancear clases 50% / 50% dentro del CSV cargado (igualar Sin Incumplimiento 0 vs Incumplimiento 1 para EDA)",
             value=False,
             key=f"upload_bal_{file_sig}",
         )
@@ -177,14 +177,14 @@ def _render_batch_results(
     n_c1 = int((df_eda["loan_status"] == 1).sum())
     mc1, mc2, mc3 = st.columns(3)
     mc1.metric("Registros activos (CSV)", f"{n_total:,}")
-    mc2.metric("Clase 0 — Denegado", f"{n_c0:,} ({(n_c0 / max(n_total, 1)) * 100:.1f}%)")
-    mc3.metric("Clase 1 — Aprobado", f"{n_c1:,} ({(n_c1 / max(n_total, 1)) * 100:.1f}%)")
+    mc2.metric("Clase 0 — Sin Incumplimiento", f"{n_c0:,} ({(n_c0 / max(n_total, 1)) * 100:.1f}%)")
+    mc3.metric("Clase 1 — Incumplimiento", f"{n_c1:,} ({(n_c1 / max(n_total, 1)) * 100:.1f}%)")
     st.caption(f"Fuente de etiquetas en las gráficas EDA y Correlación: {target_desc}.")
 
     # 1. Mapa de Calor de Correlaciones
     corr_sub = (
         f"Correlación de Pearson calculada sobre `{file_name}` (**{n_total:,} registros**) usando {target_desc} "
-        "(**valores positivos en azul** se asocian con **Clase 1: Aprobado**; **valores negativos en rojo** con **Clase 0: No Aprobado**)."
+        "(**valores positivos en rojo** se asocian con **Clase 1: Incumplimiento**; **valores negativos en verde** con **Clase 0: Sin Incumplimiento**)."
     )
     render_correlation_section(
         df_source=df_eda,
@@ -200,7 +200,7 @@ def _render_batch_results(
         models,
         section_title=f"2. Análisis Exploratorio de Datos (EDA — `{file_name}`, {eda_mode_tag})",
         description=(
-            f"Comportamiento de las principales características respecto a `loan_status` (**1 = Aprobado**, **0 = Denegado**) "
+            f"Comportamiento de las principales características respecto a `loan_status` (**0 = Sin Incumplimiento**, **1 = Incumplimiento**) "
             f"en los **{n_total:,} registros** activos de `{file_name}`."
         ),
     )
@@ -261,7 +261,7 @@ def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
     with st.container(border=True):
         st.markdown('<div class="m3-section-title">Try yours — Upload Database (CSV)</div>', unsafe_allow_html=True)
         st.markdown(
-            "Sube un archivo `.csv` con las 13 columnas de entrada en formato compatible con `loan_data.csv` "
+            "Sube un archivo `.csv` con las 11 columnas de entrada en formato compatible con `credit_risk_dataset.csv` "
             "(puede incluir opcionalmente la columna real `loan_status` para evaluar métricas, curvas ROC y matrices de confusión). "
             "Pulsa **Predict** para procesar el lote con los 3 modelos y visualizar el análisis completo."
         )
@@ -269,7 +269,7 @@ def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
         sample_template = load_sample_template(nrows=5)
         if sample_template is not None:
             st.download_button(
-                label="⬇️ Descargar CSV de ejemplo (5 registros reales de loan_data.csv)",
+                label="⬇️ Descargar CSV de ejemplo (5 registros reales de credit_risk_dataset.csv)",
                 data=sample_template.to_csv(index=False).encode("utf-8"),
                 file_name="ejemplo_upload_database.csv",
                 mime="text/csv",
@@ -281,6 +281,7 @@ def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
         df_features = None
         file_name = None
         file_sig = None
+        val_warnings = []
 
         try:
             if uploaded_file is not None:
@@ -293,12 +294,13 @@ def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
                     df_raw = persisted["df_raw"]
                     df_features = persisted["df_features"]
                     file_name = persisted["file_name"]
+                    val_warnings = persisted.get("val_warnings", [])
                 else:
                     uploaded_file.seek(0)
                     df_raw = pd.read_csv(uploaded_file)
                     file_name = uploaded_file.name
 
-                    is_valid, val_errs, df_features = validate_uploaded_dataframe(df_raw)
+                    is_valid, val_errs, val_warnings, df_features = validate_uploaded_dataframe(df_raw)
                     if not is_valid:
                         st.session_state.pop("upload_persisted_file", None)
                         st.session_state.pop("upload_batch_results", None)
@@ -311,6 +313,7 @@ def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
                         "file_sig": file_sig,
                         "df_raw": df_raw,
                         "df_features": df_features,
+                        "val_warnings": val_warnings,
                     }
                     cached_batch = st.session_state.get("upload_batch_results")
                     if cached_batch and cached_batch.get("file_sig") != file_sig:
@@ -323,9 +326,12 @@ def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
                 df_features = persisted["df_features"]
                 file_name = persisted["file_name"]
                 file_sig = persisted["file_sig"]
+                val_warnings = persisted.get("val_warnings", [])
 
             st.write(f"Archivo cargado: **{file_name}** ({len(df_raw):,} filas × {df_raw.shape[1]} columnas)")
             st.success("✅ Validación exitosa: columnas, tipos de datos y categorías verificadas.")
+            for w in val_warnings:
+                st.info(f"ℹ️ {w}")
 
             col_act1, col_act2, _ = st.columns([1, 1, 2])
             with col_act1:

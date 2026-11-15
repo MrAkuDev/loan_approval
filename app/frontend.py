@@ -476,7 +476,7 @@ def render_about_card(eval_results: dict | None = None) -> None:
         with col_info:
             st.markdown(
                 """
-                - **Proyecto:** Clasificación de Aprobación de Préstamos
+                - **Proyecto:** Clasificación de Riesgo Crediticio (Credit Risk Dataset)
                 - **Alumno:** Joel Arturo Álvarez Hernández (`403233`)
                 - **Institución:** Universidad Autónoma de Chihuahua (UACH)
                 - **Facultad:** Facultad de Ingeniería
@@ -534,15 +534,29 @@ def render_lab_header(eval_results: dict | None = None) -> str:
 
         if eval_results is not None:
             ds_info = eval_results["dataset"]
+            cd = ds_info.get("class_distribution", {})
+            c0_n = cd.get("0_no_default", cd.get("0_no_aprobado", 0))
+            c1_n = cd.get("1_default", cd.get("1_aprobado", 0))
+            tot_n = max(ds_info.get("total_rows", c0_n + c1_n), 1)
+            raw_n = ds_info.get("raw_rows", tot_n)
+            dup_n = ds_info.get("duplicates_removed", 0)
+            out_n = ds_info.get("outliers_removed", 0)
+            nulls_map = ds_info.get("missing_values_clean", {})
+            null_txt = (
+                ", ".join(f"`{k}` ({v:,})" for k, v in nulls_map.items())
+                if nulls_map
+                else "0 nulos"
+            )
             with st.expander("📊 Ver detalle de la base de datos e hiperparámetros óptimos"):
                 c_ds, c_hp = st.columns(2)
                 with c_ds:
                     st.markdown(
                         f"""
-                        - **Origen:** Kaggle — *Loan Approval Classification Dataset* (`loan_data.csv`)
-                        - **Registros totales:** **{ds_info['total_rows']:,}** filas × **14** columnas (0 nulos)
+                        - **Origen:** Kaggle — *Credit Risk Dataset* (`credit_risk_dataset.csv`)
+                        - **Registros:** **{raw_n:,}** brutos → **{tot_n:,}** limpios × **12** columnas (−{dup_n} duplicados, −{out_n} atípicos imposibles)
+                        - **Nulos imputados en Pipeline:** {null_txt}
                         - **Partición:** 80% Train (**{ds_info['train_rows']:,}**) / 20% Test (**{ds_info['test_rows']:,}**) estratificada
-                        - **Clases:** `0` No Aprobado (**{ds_info['class_distribution']['0_no_aprobado']:,}**, 77.78%) vs `1` Aprobado (**{ds_info['class_distribution']['1_aprobado']:,}**, 22.22%)
+                        - **Clases:** `0` Sin Incumplimiento (**{c0_n:,}**, {c0_n / tot_n * 100:.2f}%) vs `1` Incumplimiento (**{c1_n:,}**, {c1_n / tot_n * 100:.2f}%)
                         """
                     )
                 with c_hp:
@@ -567,9 +581,10 @@ def render_prediction_cards(preds: dict[str, dict]) -> None:
     m_cols = st.columns(3)
     for idx, (m_name, res) in enumerate(preds.items()):
         with m_cols[idx]:
-            card_cls = "model-card-approved" if res["pred"] == 1 else "model-card-rejected"
-            badge_cls = "pred-badge-ok" if res["pred"] == 1 else "pred-badge-no"
-            icon = "✅" if res["pred"] == 1 else "❌"
+            is_default = res["pred"] == 1
+            card_cls = "model-card-rejected" if is_default else "model-card-approved"
+            badge_cls = "pred-badge-no" if is_default else "pred-badge-ok"
+            icon = "⚠️" if is_default else "✅"
             prob_1_pct = f"{res['prob_1'] * 100:.2f}%" if res["prob_1"] is not None else "N/D"
             prob_0_pct = f"{res['prob_0'] * 100:.2f}%" if res["prob_0"] is not None else "N/D"
             dec_txt = f"{res['decision_score']:+.4f}" if res["decision_score"] is not None else "N/A"
@@ -580,8 +595,8 @@ def render_prediction_cards(preds: dict[str, dict]) -> None:
                     <div class="model-card-title">{m_name}</div>
                     <div class="{badge_cls}">{icon} {res['label']}</div>
                     <div class="model-card-meta">
-                        <b>Prob. Aprobado (1):</b> {prob_1_pct}<br>
-                        <b>Prob. No Aprobado (0):</b> {prob_0_pct}<br>
+                        <b>Prob. Sin Incumplimiento (0):</b> {prob_0_pct}<br>
+                        <b>Prob. Incumplimiento (1):</b> {prob_1_pct}<br>
                         <b>Score de Decisión:</b> <code>{dec_txt}</code>
                     </div>
                 </div>

@@ -1,8 +1,8 @@
-# 🏦 Predicción de Aprobación de Préstamos Bancarios (Loan Approval ML)
+# 🏦 Clasificación de Riesgo Crediticio y Aprobación de Préstamos (Credit Risk ML)
 
 Aplicación web interactiva desarrollada en **Streamlit** como parte del Proyecto Final de **Machine Learning** (Maestría — Facultad de Ingeniería, Universidad Autónoma de Chihuahua).
 
-Integra y compara en tiempo real los **tres modelos con mejor desempeño** evaluados en [`loan_approval.ipynb`](loan_approval.ipynb), utilizando el mismo preprocesamiento y orden de características aplicados durante el entrenamiento sobre [`loan_data.csv`](loan_data.csv).
+Integra y compara en tiempo real **tres modelos supervisados** (`SVM RBF`, `Random Forest` y `Regresión Logística`), utilizando un preprocesamiento unificado con imputación y escalamiento/codificación sin fuga de datos sobre [`credit_risk_dataset.csv`](credit_risk_dataset.csv) (*Kaggle — laotse/credit-risk-dataset*).
 
 ---
 
@@ -17,11 +17,12 @@ Integra y compara en tiempo real los **tres modelos con mejor desempeño** evalu
 
 ## 🧠 Modelos Implementados
 
-Los tres modelos seleccionados del proyecto siguen un flujo de dos etapas en [`model_factory/train_model.py`](model_factory/train_model.py):
-1. **Evaluación Baseline:** Entrenamiento y validación cruzada estratificada (5 folds) con parámetros por defecto.
-2. **Ajuste de Hiperparámetros:** Búsqueda mediante `GridSearchCV` / `RandomizedSearchCV` (métrica objetivo `F1-Score`) y entrenamiento final sobre el 80% de entrenamiento (`36,000` registros), evaluando en el 20% de prueba (`9,000` registros).
+Los tres modelos seleccionados del proyecto siguen un flujo modular en [`model_factory/train_model.py`](model_factory/train_model.py):
+1. **Limpieza y Partición Estratificada:** Deduplicación (`165` duplicados) y filtrado determinista de atípicos imposibles (`person_age > 100`, `person_emp_length > 60`) sobre `credit_risk_dataset.csv`, manteniendo `32,409` registros limpios divididos 80% entrenamiento (`25,927`) / 20% prueba (`6,482`).
+2. **Evaluación Baseline:** Validación cruzada estratificada (5 folds) con parámetros por defecto.
+3. **Ajuste de Hiperparámetros:** Búsqueda mediante `GridSearchCV` / `RandomizedSearchCV` (métrica objetivo `F1-Score`) y entrenamiento final sobre el 100% de `X_train`.
 
-Los tres pipelines completos (`ColumnTransformer` con `StandardScaler` + `OneHotEncoder` + estimador) se guardan por separado en `models/`:
+Los tres pipelines completos (`ColumnTransformer` con `SimpleImputer` + `StandardScaler` + `OneHotEncoder` + estimador) se guardan por separado en `models/`:
 - **SVM (Kernel RBF):** `models/svm_rbf.joblib`
 - **Random Forest:** `models/random_forest.joblib`
 - **Regresión Logística:** `models/logistic_regression.joblib`
@@ -30,11 +31,10 @@ Los tres pipelines completos (`ColumnTransformer` con `StandardScaler` + `OneHot
 
 ## 🖥️ Funcionalidades de la Aplicación (`app.py`)
 
-1. **Información del Proyecto:** Ficha académica, descripción del problema, base de datos (`loan_data.csv`) y modelos integrados.
-2. **Predicción Individual:** Formulario validado con los 13 atributos del solicitante; muestra las predicciones de los 3 modelos lado a lado, probabilidades estimadas, score de decisión y análisis de consenso/diferencias.
-3. **Upload Database:** Carga de archivos `.csv` con validación de columnas, tipos y categorías, ejecución por lotes de los 3 modelos y descarga de resultados.
-4. **Evaluación Experimental:** Métricas reales (`Accuracy`, `Precision`, `Recall`, `F1-Score`, `ROC-AUC`), curvas ROC y matrices de confusión en el conjunto de prueba (`models/evaluation_results.json`).
-5. **Interpretación y Limitaciones:** Explicación clara de clases, probabilidades y limitaciones del conjunto de datos.
+1. **Inicio (Información y Predicción Individual):** Ficha académica, detalles del dataset (`credit_risk_dataset.csv`) y formulario validado con los 11 atributos del solicitante; muestra las predicciones (`Sin Incumplimiento (0)` vs `Incumplimiento (1)`) de los 3 modelos lado a lado, probabilidades estimadas, explicación local Shapley y análisis de consenso/diferencias.
+2. **Lab — Local (Evaluación Experimental y EDA):** Correlaciones sin fuga de datos, EDA en `StratifiedKFold (cv_5)`, vista 3D interactiva, fronteras de decisión 2D, heatmaps de hiperparámetros, curvas ROC y matrices de confusión en Test (`models/evaluation_results.json`).
+3. **Lab — Try yours (Upload Database CSV):** Carga de archivos `.csv` con validación de columnas, tipos y categorías (incluyendo imputación automática de nulos en `Pipeline`), ejecución por lotes de los 3 modelos y descarga de resultados.
+4. **Acerca de (Interpretación y Limitaciones):** Guía clara de clases (`Sin Incumplimiento (0)`, `Incumplimiento (1)`), probabilidades y limitaciones del conjunto de datos.
 
 ---
 
@@ -66,7 +66,7 @@ Los tres pipelines completos (`ColumnTransformer` con `StandardScaler` + `OneHot
 │   └── train_model.py                 # Punto de entrada principal del entrenamiento
 ├── requirements.txt                   # Dependencias para despliegue en Streamlit Community Cloud
 ├── loan_approval.ipynb                # Notebook experimental del proyecto final
-├── loan_data.csv                      # Base de datos (45,000 registros, 14 columnas)
+├── credit_risk_dataset.csv            # Base de datos Kaggle (32,581 filas brutas, 12 columnas)
 ├── models/
 │   ├── svm_rbf.joblib                 # Pipeline entrenado SVM RBF
 │   ├── random_forest.joblib           # Pipeline entrenado Random Forest

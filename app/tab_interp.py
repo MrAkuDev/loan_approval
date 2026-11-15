@@ -15,10 +15,10 @@ def render_tab_interp() -> None:
         st.subheader("1. ¿Qué representa la clase predicha?")
         st.markdown(
             """
-        - **Clase `1` — Aprobado (`Loan Approved`):** Indica que, según los patrones aprendidos en los datos históricos
-          de `loan_data.csv`, la solicitud presenta características compatibles con solicitudes aprobadas.
-        - **Clase `0` — No Aprobado (`Loan Not Approved`):** Indica que la solicitud se asemeja a perfiles rechazados
-          en la base de entrenamiento.
+        - **Clase `0` — Sin Incumplimiento (`0`):** Indica que, según los patrones aprendidos en los datos históricos
+          de `credit_risk_dataset.csv`, la solicitud presenta bajo riesgo de incumplimiento y un perfil solvente.
+        - **Clase `1` — Incumplimiento (`1`):** Indica que la solicitud se asemeja a perfiles con incumplimiento
+          crediticio en la base de entrenamiento.
         """
         )
 
@@ -29,18 +29,18 @@ def render_tab_interp() -> None:
           - En **Regresión Logística**, la probabilidad proviene directamente de la función sigmoide aplicada a la combinación lineal de características.
           - En **SVM RBF**, la probabilidad se calcula mediante calibración de Platt (`probability=True`) sobre la distancia al hiperplano separador.
           - En **Random Forest**, la probabilidad corresponde a la proporción promedio de votos entre los árboles de decisión del ensamble.
-          - Un valor cercano a **100%** en Clase `1` significa alta confianza estadística de aprobación; un valor cercano a **50%** indica incertidumbre cerca de la frontera de decisión, donde los 3 modelos pueden discrepar.
-        - **Score de decisión (`decision_function`):** En SVM y modelos lineales representa la distancia firmada respecto al hiperplano de separación (`>= 0` corresponde a Clase `1` y `< 0` a Clase `0`).
+          - Un valor cercano a **100%** en Clase `1` significa alta probabilidad de **Incumplimiento (1)**; un valor cercano a **0%** en Clase `1` (es decir, ~100% en Clase `0`) indica alta confianza de solvencia; valores cercanos a **50%** indican incertidumbre en la frontera de decisión, donde los 3 modelos pueden discrepar.
+        - **Score de decisión (`decision_function`):** En SVM y modelos lineales representa la distancia firmada respecto al hiperplano de separación (`>= 0` corresponde a Clase `1: Incumplimiento` y `< 0` a Clase `0: Sin Incumplimiento`).
         """
         )
 
         st.subheader("3. Limitaciones de las predicciones generadas")
         st.warning(
             """
-        1. **Naturaleza sintética de la base de datos (`SMOTENC`):** `loan_data.csv` es un conjunto aumentado sintéticamente a partir de datos de riesgo crediticio. Como se observó en el análisis exploratorio del notebook (`loan_approval.ipynb`), entre registros sin mora previa, variables como `loan_percent_income` y `loan_int_rate` muestran correlación positiva con la clase `1`, lo que refleja la estructura del dataset sintético y no necesariamente una regla bancaria real de bajo riesgo.
-        2. **Desbalance de clases (77.78% `0` vs 22.22% `1`):** El modelo prioriza el desempeño global (`F1` y `ROC-AUC`), por lo que la clase minoritaria (`1`) presenta menor *recall* que la clase mayoritaria (`0`).
-        3. **Regla estricta aprendida sobre incumplimientos previos:** En los 45,000 registros de `loan_data.csv`, el 100% de los solicitantes con `previous_loan_defaults_on_file = "Yes"` (22,858 casos) pertenecen a la clase `0`. Por ello, cualquier entrada con incumplimiento previo será clasificada como `0` con altísima probabilidad.
-        4. **Riesgo de extrapolación fuera de distribución:** Valores extremos no presentes en el entrenamiento (por ejemplo, `loan_percent_income > 0.66`, `loan_amnt > person_income` o edades atípicas) pueden generar predicciones inestables.
+        1. **Preprocesamiento e imputación de valores faltantes:** El archivo original `credit_risk_dataset.csv` (`32,581` registros) presenta `165` filas duplicadas, `7` valores físicamente imposibles (`person_age > 100` o `person_emp_length > 60`), y valores nulos en `person_emp_length` (~2.7%) y `loan_int_rate` (~9.5%). Tras la limpieza determinista (`32,409` registros), los nulos se imputan mediante mediana/moda dentro del `Pipeline` usando exclusivamente `X_train`.
+        2. **Desbalance de clases (~78.1% `0` vs ~21.9% `1`):** El modelo prioriza el desempeño global (`F1` y `ROC-AUC`), por lo que la clase minoritaria (`1: Incumplimiento`) puede presentar menor *recall* que la clase mayoritaria (`0: Sin Incumplimiento`).
+        3. **Dependencia del grado crediticio (`loan_grade`) y carga financiera (`loan_percent_income`):** En esta base de riesgo real, los grados `D–G`, las tasas de interés elevadas y una razón préstamo-ingreso alta incrementan fuertemente el riesgo de incumplimiento.
+        4. **Riesgo de extrapolación fuera de distribución:** Valores extremos no presentes en el entrenamiento (por ejemplo, `loan_percent_income > 0.70`, ingresos atípicos o edades extremas) pueden generar predicciones inestables.
         5. **Uso como herramienta de apoyo:** Los resultados constituyen una estimación estadística basada en el proyecto académico y no sustituyen el análisis financiero, legal ni normativo de una entidad bancaria real.
         """
         )

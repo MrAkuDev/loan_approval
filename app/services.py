@@ -21,11 +21,24 @@ from sklearn.model_selection import StratifiedKFold, train_test_split
 from app.config import (
     CSV_PATH,
     FEATURE_ORDER,
+    MAX_VALID_AGE,
+    MAX_VALID_EMP_LENGTH,
     MODEL_FILES,
     NUMERICAL_COLUMNS,
     RESULTS_PATH,
     VALID_CATEGORIES,
 )
+
+
+def _load_clean_source_df() -> pd.DataFrame | None:
+    """Carga `credit_risk_dataset.csv` aplicando la misma limpieza determinista de `model_factory`."""
+    if not os.path.exists(CSV_PATH):
+        return None
+    df_raw = pd.read_csv(CSV_PATH)
+    df_dedup = df_raw.drop_duplicates().copy()
+    valid_age = df_dedup["person_age"] <= MAX_VALID_AGE
+    valid_emp = df_dedup["person_emp_length"].isna() | (df_dedup["person_emp_length"] <= MAX_VALID_EMP_LENGTH)
+    return df_dedup[valid_age & valid_emp].reset_index(drop=True)
 
 
 @st.cache_resource
@@ -70,9 +83,9 @@ def load_cv5_eda_data(
     balanced: bool = True,
 ):
     """Carga X_train usando StratifiedKFold(n_splits=5, shuffle=True, random_state=42) y opcionalmente balancea 50/50."""
-    if not os.path.exists(CSV_PATH):
+    df_all = _load_clean_source_df()
+    if df_all is None:
         return None
-    df_all = pd.read_csv(CSV_PATH)
     X_all = df_all[FEATURE_ORDER]
     y_all = df_all["loan_status"]
     X_tr, _, y_tr, _ = train_test_split(X_all, y_all, test_size=0.20, random_state=42, stratify=y_all)
@@ -102,9 +115,9 @@ def load_cv5_eda_data(
 @st.cache_data
 def load_test_eda_data(csv_mtime: float) -> pd.DataFrame | None:
     """Carga el conjunto oficial Test Holdout (20%, random_state=42, estratificado)."""
-    if not os.path.exists(CSV_PATH):
+    df_all = _load_clean_source_df()
+    if df_all is None:
         return None
-    df_all = pd.read_csv(CSV_PATH)
     X_all = df_all[FEATURE_ORDER]
     y_all = df_all["loan_status"]
     _, X_te, _, y_te = train_test_split(X_all, y_all, test_size=0.20, random_state=42, stratify=y_all)
@@ -144,7 +157,7 @@ def predict_with_model(pipeline, X_df: pd.DataFrame) -> dict:
 
     return {
         "pred": pred_class,
-        "label": "Aprobado (1)" if pred_class == 1 else "No Aprobado (0)",
+        "label": "Incumplimiento (1)" if pred_class == 1 else "Sin Incumplimiento (0)",
         "prob_0": prob_0,
         "prob_1": prob_1,
         "decision_score": dec_score,
@@ -165,20 +178,23 @@ def load_artifacts():
 
 
 def load_sample_template(nrows: int = 5) -> pd.DataFrame | None:
-    """Carga las primeras `nrows` filas de `loan_data.csv` como plantilla descargable."""
+    """Carga las primeras `nrows` filas de `credit_risk_dataset.csv` como plantilla descargable."""
     if os.path.exists(CSV_PATH):
         return pd.read_csv(CSV_PATH, nrows=nrows)
     return None
 
 
 def _feature_axis_bounds(series: pd.Series, col: str) -> tuple[float, float]:
-    """Calcula límites limpios de visualización (evitando outliers extremos en gráficas 2D)."""
+    """Calcula límites limpios de visualización (evitando outliers extremos y nulos en gráficas 2D)."""
+    clean_s = series.dropna()
+    if clean_s.empty:
+        return 0.0, 1.0
     if col == "person_income":
-        lo, hi = float(series.quantile(0.01)), float(series.quantile(0.95))
+        lo, hi = float(clean_s.quantile(0.01)), float(clean_s.quantile(0.95))
     elif col == "loan_percent_income":
-        lo, hi = 0.0, float(min(series.max(), max(0.48, series.quantile(0.995))))
+        lo, hi = 0.0, float(min(clean_s.max(), max(0.48, clean_s.quantile(0.995))))
     else:
-        lo, hi = float(series.quantile(0.01)), float(series.quantile(0.99))
+        lo, hi = float(clean_s.quantile(0.01)), float(clean_s.quantile(0.99))
     if hi <= lo:
         hi = lo + 1.0
     return lo, hi
@@ -190,7 +206,7 @@ def compute_decision_boundary_grids(
     _df_eda: pd.DataFrame,
     feat_x: str,
     feat_y: str,
-    default_val: str,
+    grade_val: str,
     home_val: str,
     balanced_tag: bool,
     dataset_tag: str = "cv5_train",
@@ -199,13 +215,13 @@ def compute_decision_boundary_grids(
     """Evalúa la malla 2D de probabilidades de cada modelo sobre las dos características elegidas."""
     baseline = {
         col: (
-            float(_df_eda[col].median())
+            float(_df_eda[col].median(skipna=True))
             if col in NUMERICAL_COLUMNS
             else str(_df_eda[col].mode().iloc[0])
         )
         for col in FEATURE_ORDER
     }
-    baseline["previous_loan_defaults_on_file"] = default_val
+    baseline["loan_grade"] = grade_val
     baseline["person_home_ownership"] = home_val
 
     x_min, x_max = _feature_axis_bounds(_df_eda[feat_x], feat_x)
@@ -228,20 +244,25 @@ def compute_decision_boundary_grids(
         prob_grids[m_name] = probs.reshape(xx.shape)
 
     in_bounds = (
-        (_df_eda[feat_x] >= x_min)
+        _df_eda[feat_x].notna()
+        & _df_eda[feat_y].notna()
+        & (_df_eda[feat_x] >= x_min)
         & (_df_eda[feat_x] <= x_max)
         & (_df_eda[feat_y] >= y_min)
         & (_df_eda[feat_y] <= y_max)
     )
     both_mask = (
-        (_df_eda["previous_loan_defaults_on_file"] == default_val)
+        (_df_eda["loan_grade"] == grade_val)
         & (_df_eda["person_home_ownership"] == home_val)
         & in_bounds
     )
     matched_both = int(both_mask.sum()) >= 30
-    scatter_pool = _df_eda[both_mask] if matched_both else _df_eda[
-        (_df_eda["previous_loan_defaults_on_file"] == default_val) & in_bounds
-    ]
+    grade_only_mask = (_df_eda["loan_grade"] == grade_val) & in_bounds
+    scatter_pool = (
+        _df_eda[both_mask]
+        if matched_both
+        else (_df_eda[grade_only_mask] if int(grade_only_mask.sum()) > 0 else _df_eda[in_bounds])
+    )
     scatter_sample = scatter_pool.sample(n=min(450, len(scatter_pool)), random_state=42)
 
     return {
@@ -303,8 +324,8 @@ def compute_batch_eval_metrics(
 @st.cache_data
 def load_explainability_background(csv_mtime: float, n_samples: int = 24) -> pd.DataFrame:
     """Obtiene una muestra estratificada de `X_train` como referencia base para explicabilidad local."""
-    if os.path.exists(CSV_PATH):
-        df_all = pd.read_csv(CSV_PATH)
+    df_all = _load_clean_source_df()
+    if df_all is not None:
         X_all = df_all[FEATURE_ORDER]
         y_all = df_all["loan_status"]
         X_tr, _, y_tr, _ = train_test_split(X_all, y_all, test_size=0.20, random_state=42, stratify=y_all)
@@ -358,8 +379,10 @@ def compute_local_feature_contributions(
             step_rows.append(cur)
 
     df_steps = pd.DataFrame(step_rows, columns=FEATURE_ORDER)
-    for col in FEATURE_ORDER:
-        df_steps[col] = df_steps[col].astype(X_input[col].dtype)
+    for col in NUMERICAL_COLUMNS:
+        df_steps[col] = pd.to_numeric(df_steps[col], errors="coerce").astype(float)
+    for col in VALID_CATEGORIES:
+        df_steps[col] = df_steps[col].astype(object)
 
     total_perms = len(perms)
     attributions: dict[str, dict] = {}

@@ -13,12 +13,12 @@ def render_tab_info(eval_results: dict) -> None:
         st.markdown(
             """
         - **Descripción del problema:** Las instituciones financieras evalúan múltiples variables
-          demográficas, financieras e historiales crediticios para decidir si una solicitud de
-          préstamo debe aprobarse (`1`) o rechazarse (`0`). Se trata de un problema de
-          **clasificación binaria supervisada** con desbalance de clases (77.78% vs 22.22%).
+          demográficas, financieras e historiales crediticios para predecir si una solicitud presenta
+          riesgo de incumplimiento (`1 = Incumplimiento`) o solvencia (`0 = Sin Incumplimiento`). Se trata de un problema de
+          **clasificación binaria supervisada** con desbalance de clases (~78.1% vs ~21.9%).
         - **Objetivo de la aplicación:** Integrar en una interfaz web los **tres modelos con
-          mejor desempeño** evaluados en `loan_approval.ipynb`, permitiendo ingresar instancias
-          individuales o lotes en CSV para generar, comparar e interpretar sus predicciones en vivo.
+          mejor desempeño**, permitiendo ingresar instancias individuales o lotes en CSV para generar,
+          comparar e interpretar sus predicciones en vivo.
         """
         )
 
@@ -27,7 +27,7 @@ def render_tab_info(eval_results: dict) -> None:
             """
         | Campo | Detalle |
         | :--- | :--- |
-        | **Proyecto** | Predicción de Aprobación de Préstamos (*Loan Approval*) |
+        | **Proyecto** | Clasificación de Riesgo Crediticio (*Credit Risk Dataset*) |
         | **Alumno / Matrícula** | Joel Arturo Álvarez Hernández (`403233`) |
         | **Institución** | Universidad Autónoma de Chihuahua (UACH) |
         | **Facultad / Materia** | Facultad de Ingeniería — Machine Learning (Proyecto Final) |
@@ -37,18 +37,22 @@ def render_tab_info(eval_results: dict) -> None:
 
     with col_p2:
         ds_info = eval_results["dataset"]
-        st.subheader("🗄️ Base de Datos Utilizada (`loan_data.csv`)")
+        cd = ds_info.get("class_distribution", {})
+        c0_n = cd.get("0_no_default", cd.get("0_no_aprobado", 0))
+        c1_n = cd.get("1_default", cd.get("1_aprobado", 0))
+        tot_n = max(ds_info.get("total_rows", c0_n + c1_n), 1)
+        st.subheader("🗄️ Base de Datos Utilizada (`credit_risk_dataset.csv`)")
         st.markdown(
             f"""
-        - **Origen:** Kaggle — *Loan Approval Classification Dataset* (`taweilo`).
-        - **Total de registros:** **{ds_info['total_rows']:,}** filas × **14** columnas (0 nulos, 0 duplicados).
+        - **Origen:** Kaggle — *Credit Risk Dataset* (`laotse/credit-risk-dataset`).
+        - **Registros limpios:** **{ds_info['total_rows']:,}** filas × **12** columnas (desde **{ds_info.get('raw_rows', ds_info['total_rows']):,}** brutos tras eliminar {ds_info.get('duplicates_removed', 0)} duplicados y {ds_info.get('outliers_removed', 0)} atípicos imposibles).
         - **Partición utilizada:** 80% Entrenamiento (**{ds_info['train_rows']:,}**) / 20% Prueba (**{ds_info['test_rows']:,}**) estratificada (`random_state=42`).
         - **Distribución de la variable objetivo (`loan_status`):**
-          - Clase `0` (**No Aprobado**): **{ds_info['class_distribution']['0_no_aprobado']:,}** registros (77.78%)
-          - Clase `1` (**Aprobado**): **{ds_info['class_distribution']['1_aprobado']:,}** registros (22.22%)
+          - Clase `0` (**Sin Incumplimiento**): **{c0_n:,}** registros ({c0_n / tot_n * 100:.2f}%)
+          - Clase `1` (**Incumplimiento**): **{c1_n:,}** registros ({c1_n / tot_n * 100:.2f}%)
         - **Preprocesamiento idéntico en los 3 pipelines:**
-          - `StandardScaler` sobre las **8 variables numéricas**.
-          - `OneHotEncoder(drop='first', handle_unknown='ignore')` sobre las **5 variables categóricas**.
+          - `SimpleImputer(strategy='median')` + `StandardScaler()` sobre las **7 variables numéricas**.
+          - `SimpleImputer(strategy='most_frequent')` + `OneHotEncoder(drop='first', handle_unknown='ignore')` sobre las **4 variables categóricas**.
         """
         )
 

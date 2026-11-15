@@ -10,7 +10,7 @@ from app.charts import (
     plot_correlation_heatmap_and_target_bars,
     plot_grouped_status_pct,
     plot_hyperparameter_heatmaps,
-    plot_income_ratio_approval_bars,
+    plot_income_ratio_default_bars,
     plot_income_vs_loan_scatter,
     plot_model_decision_boundaries,
     plot_random_forest_top_importance,
@@ -29,12 +29,12 @@ from app.services import (
 
 
 def render_eda_diagnostics(df_eda: pd.DataFrame, models: dict) -> None:
-    """Renderiza el análisis de la frontera diagonal y la importancia de variables."""
-    st.markdown("**¿Por qué los préstamos aprobados (verde) se concentran en menores ingresos y montos moderados?**")
+    """Renderiza el análisis de riesgo por carga de ingreso y la importancia de variables."""
+    st.markdown("**¿Cómo se relacionan el porcentaje de ingreso comprometido y los atributos del solicitante con el riesgo de Incumplimiento?**")
     exp_c1, exp_c2 = st.columns(2)
 
     with exp_c1:
-        plot_income_ratio_approval_bars(df_eda)
+        plot_income_ratio_default_bars(df_eda)
     with exp_c2:
         if "Random Forest" in models:
             plot_random_forest_top_importance(models["Random Forest"])
@@ -49,13 +49,13 @@ def render_correlation_section(
     subtitle: str | None = None,
 ) -> None:
     """Renderiza la Sección 1 (Mapa de Calor de Correlaciones y relación directa con loan_status)."""
-    st.subheader("1. Mapa de Calor de Correlaciones (Características asociadas a Clase 1 (Aprobado) vs Clase 0 (No Aprobado))")
+    st.subheader("1. Mapa de Calor de Correlaciones (Características asociadas a Clase 1 (Incumplimiento) vs Clase 0 (Sin Incumplimiento))")
     st.markdown(
         subtitle
         or (
             "Correlación de Pearson calculada sobre los 5 folds de `cv_5` "
             "entre las características del solicitante y `loan_status` "
-            "(**valores positivos en azul** se asocian con **Clase 1: Aprobado**; **valores negativos en rojo** se asocian con **Clase 0: No Aprobado**)."
+            "(**valores positivos en rojo** se asocian con **Clase 1: Incumplimiento**; **valores negativos en verde** se asocian con **Clase 0: Sin Incumplimiento**)."
         )
     )
 
@@ -82,23 +82,29 @@ def render_eda_section(
 
     eda_r1_c1, eda_r1_c2 = st.columns(2)
     with eda_r1_c1:
-        plot_grouped_status_pct(df_eda, "loan_intent", "Propósito del Préstamo (loan_intent) vs loan_status", "Propósito del Préstamo (loan_intent)")
+        plot_grouped_status_pct(df_eda, "loan_grade", "Grado del Préstamo (loan_grade) vs loan_status", "Grado Crediticio (loan_grade)")
     with eda_r1_c2:
         plot_grouped_status_pct(df_eda, "person_home_ownership", "Tipo de Vivienda (person_home_ownership) vs loan_status", "Tipo de Vivienda")
 
     eda_r2_c1, eda_r2_c2 = st.columns(2)
     with eda_r2_c1:
-        plot_grouped_status_pct(df_eda, "previous_loan_defaults_on_file", "Incumplimientos Previos vs loan_status", "Incumplimiento Previo Registrado")
+        plot_grouped_status_pct(df_eda, "cb_person_default_on_file", "Mora Previa en Buró (cb_person_default_on_file) vs loan_status", "Incumplimiento Previo en Buró")
     with eda_r2_c2:
-        plot_status_boxplot(df_eda, "loan_percent_income", "% de Ingreso Comprometido (loan_percent_income) vs loan_status", "Proporción del Ingreso (loan_percent_income)")
+        plot_grouped_status_pct(df_eda, "loan_intent", "Propósito del Préstamo (loan_intent) vs loan_status", "Propósito del Préstamo")
 
     eda_r3_c1, eda_r3_c2 = st.columns(2)
     with eda_r3_c1:
-        plot_status_boxplot(df_eda, "loan_int_rate", "Tasa de Interés (%) (loan_int_rate) vs loan_status", "Tasa de Interés (%)")
+        plot_status_boxplot(df_eda, "loan_percent_income", "% de Ingreso Comprometido (loan_percent_income) vs loan_status", "Proporción del Ingreso (loan_percent_income)")
     with eda_r3_c2:
+        plot_status_boxplot(df_eda, "loan_int_rate", "Tasa de Interés (%) (loan_int_rate) vs loan_status", "Tasa de Interés (%)")
+
+    eda_r4_c1, eda_r4_c2 = st.columns(2)
+    with eda_r4_c1:
         df_scat = df_eda.sample(n=min(4000, len(df_eda)), random_state=42)
         inc_cap = max(float(df_eda["person_income"].quantile(0.95)), 1.0)
         plot_income_vs_loan_scatter(df_scat, inc_cap)
+    with eda_r4_c2:
+        plot_status_boxplot(df_eda, "person_emp_length", "Antigüedad Laboral (person_emp_length) vs loan_status", "Antigüedad Laboral (años)")
 
     st.markdown("**Vista 3D Interactiva: Ingreso Anual × Monto Solicitado × Tasa de Interés (`loan_int_rate`) por `loan_status`**")
     df_scat_3d = df_eda[df_eda["person_income"] <= inc_cap]
@@ -119,9 +125,9 @@ def render_decision_boundary_section(
     """Renderiza las fronteras de decisión 2D de cada modelo sobre las variables principales."""
     st.markdown(f"**Fronteras de Decisión por Modelo sobre las Características Más Influyentes ({source_label})**")
     st.caption(
-        f"Visualiza cómo cada modelo entrenado separa **Denegado (0)** vs **Aprobado (1)** sobre dos variables principales "
+        f"Visualiza cómo cada modelo entrenado separa **Sin Incumplimiento (0)** vs **Incumplimiento (1)** sobre dos variables principales "
         f"usando **{source_label}**, manteniendo las demás características fijas en la mediana/moda del conjunto. "
-        "La línea amarilla marca la frontera donde la probabilidad estimada cruza `P = 0.50`."
+        "La línea amarilla marca la frontera donde la probabilidad estimada de Incumplimiento cruza `P = 0.50`."
     )
 
     bc1, bc2, bc3, bc4 = st.columns(4)
@@ -140,11 +146,11 @@ def render_decision_boundary_section(
             key=f"db_{dataset_tag}_feat_y",
         )
     with bc3:
-        default_val = st.selectbox(
-            "Incumplimientos previos (`defaults`)",
-            options=VALID_CATEGORIES["previous_loan_defaults_on_file"],
-            index=0,
-            key=f"db_{dataset_tag}_defaults",
+        grade_val = st.selectbox(
+            "Grado crediticio (`loan_grade`)",
+            options=VALID_CATEGORIES["loan_grade"],
+            index=1,
+            key=f"db_{dataset_tag}_grade",
         )
     with bc4:
         home_val = st.selectbox(
@@ -169,7 +175,7 @@ def render_decision_boundary_section(
         _df_eda=df_source,
         feat_x=feat_x,
         feat_y=feat_y,
-        default_val=default_val,
+        grade_val=grade_val,
         home_val=home_val,
         balanced_tag=balanced_tag,
         dataset_tag=dataset_tag,
@@ -179,8 +185,8 @@ def render_decision_boundary_section(
 
     if not boundary_data["matched_both_cats"]:
         st.caption(
-            f"Nota: La combinación `defaults='{default_val}'` + `home_ownership='{home_val}'` tiene pocos registros en {source_label}; "
-            "los puntos mostrados corresponden a todas las viviendas con ese historial de mora."
+            f"Nota: La combinación `loan_grade='{grade_val}'` + `home_ownership='{home_val}'` tiene pocos registros en {source_label}; "
+            "los puntos mostrados corresponden al subconjunto disponible."
         )
 
     st.markdown(
@@ -215,7 +221,7 @@ def _render_before_vs_after_table(eval_results: dict, model_names: list[str], ba
                     ),
                 }
             )
-        st.markdown("**Comparativa Antes vs Después del ajuste de hiperparámetros en el Test Set (9,000 registros):**")
+        st.markdown("**Comparativa Antes vs Después del ajuste de hiperparámetros en el Test Set:**")
     else:
         for m_name in model_names:
             cv_b = eval_results["baseline_cv"][m_name]
@@ -236,10 +242,12 @@ def _render_before_vs_after_table(eval_results: dict, model_names: list[str], ba
 
 def render_tab_eval(models: dict, eval_results: dict) -> None:
     """Renderiza toda la pestaña de evaluación experimental y EDA."""
+    ds_info = eval_results["dataset"]
     st.header("📊 Evaluación Experimental de los Modelos")
     st.markdown(
-        "Todos los valores presentados en esta sección provienen directamente de los experimentos "
-        "ejecutados sobre la partición oficial del proyecto (**80% Train = 36,000** / **20% Test = 9,000**, `random_state=42`)."
+        f"Todos los valores presentados en esta sección provienen directamente de los experimentos "
+        f"ejecutados sobre la partición oficial del proyecto (**80% Train = {ds_info['train_rows']:,}** / **20% Test = {ds_info['test_rows']:,}**, `random_state=42`) "
+        f"de `credit_risk_dataset.csv`."
     )
 
     model_names = list(eval_results["optimized_test"].keys())
@@ -247,9 +255,9 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
     st.markdown("### ⚖️ Fuente de Datos para Gráficas: `StratifiedKFold (cv_5)` — 5 Folds de `X_train`")
     fold_choice = "Todos los 5 folds (cv_5)"
     use_balanced_cv5 = st.checkbox(
-        "Balancear clases 50% / 50% dentro de `cv_5` (igualar Denegado 0 vs Aprobado 1)",
+        "Balancear clases 50% / 50% dentro de `cv_5` (igualar Sin Incumplimiento 0 vs Incumplimiento 1)",
         value=True,
-        help="StratifiedKFold conserva la proporción original (~77.8% vs ~22.2%) en cada fold; activar este balanceo iguala 50/50 ambas clases dentro de cv_5.",
+        help="StratifiedKFold conserva la proporción original (~78.1% vs ~21.9%) en cada fold; activar este balanceo iguala 50/50 ambas clases dentro de cv_5.",
     )
 
     csv_mtime = os.path.getmtime(CSV_PATH) if os.path.exists(CSV_PATH) else 0.0
@@ -261,14 +269,14 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
         n_c1 = int((df_eda["loan_status"] == 1).sum())
         mc1, mc2, mc3 = st.columns(3)
         mc1.metric("Registros activos (`cv_5`)", f"{n_total_eda:,}")
-        mc2.metric("Clase 0 — Denegado", f"{n_c0:,} ({(n_c0 / n_total_eda) * 100:.1f}%)")
-        mc3.metric("Clase 1 — Aprobado", f"{n_c1:,} ({(n_c1 / n_total_eda) * 100:.1f}%)")
+        mc2.metric("Clase 0 — Sin Incumplimiento", f"{n_c0:,} ({(n_c0 / n_total_eda) * 100:.1f}%)")
+        mc3.metric("Clase 1 — Incumplimiento", f"{n_c1:,} ({(n_c1 / n_total_eda) * 100:.1f}%)")
         st.caption(
             "Nota técnica: `StratifiedKFold (cv_5)` garantiza que los 5 folds mantengan exactamente la misma proporción de clases sin sesgo. "
             + (
                 "Con el balanceo 50/50 activado dentro de los 5 folds de `cv_5`, ambas clases tienen el mismo peso visual para comparar patrones reales sin dominancia de la clase mayoritaria."
                 if use_balanced_cv5
-                else "Mostrando la proporción estratificada original (~77.8% Denegado vs ~22.2% Aprobado) de los 5 folds de `cv_5`."
+                else "Mostrando la proporción estratificada original (~78.1% Sin Incumplimiento vs ~21.9% Incumplimiento) de los 5 folds de `cv_5`."
             )
         )
 
@@ -281,13 +289,13 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
     if df_eda is not None:
         eda_desc = (
             f"Comportamiento de las principales características respecto al resultado del préstamo "
-            f"(**1 = Aprobado**, **0 = Denegado**) sobre la partición de `StratifiedKFold (cv_5)` seleccionada "
+            f"(**0 = Sin Incumplimiento**, **1 = Incumplimiento**) sobre la partición de `StratifiedKFold (cv_5)` seleccionada "
             f"(**{len(df_eda):,} registros**)."
         )
         render_eda_section(df_eda, models, section_title=eda_title, description=eda_desc)
     else:
         st.subheader(eda_title)
-        st.warning("No se encontró `loan_data.csv` para generar las gráficas EDA.")
+        st.warning("No se encontró `credit_risk_dataset.csv` para generar las gráficas EDA.")
 
     # 3. Etapa Inicial (Baseline CV)
     st.subheader("3. Etapa Inicial (Parámetros por Defecto — 5-Fold Cross-Validation en Train)")

@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1794717064.43601 "main.aux" "main.bbl" "main" 1794717066.52888 0
-  "./referencias.bib" 1794717047 3984 48e38c17dae27a67cf4415fd430bf9c2 ""
+["bibtex main"] 1794721842.64257 "main.aux" "main.bbl" "main" 1794721844.7937 0
+  "./referencias.bib" 1794720972 3951 5cfd50bf5e6be716f758f15f14ae39b3 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/bibtex/bst/ieeetran/IEEEtran.bst" 1440622569 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "main.aux" 1794717065 11754 c4e8aaea76c812ce9a18a35e6510fd66 "pdflatex"
+  "main.aux" 1794721843 12617 4a1642fc7325275a50b58cff617b2523 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1794717064.70459 "main.tex" "main.pdf" "main" 1794717066.52959 0
+["pdflatex"] 1794721842.9048 "main.tex" "main.pdf" "main" 1794721844.79445 0
   "C:/Users/JoelA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1794716922 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/JoelA/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1794716872 13333488 cbdb6d4a30c2bf92ccb8dfc0002c1f41 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -210,16 +210,16 @@
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/tex/latex/tools/array.sty" 1761901070 15651 9d7c62df82cb29a555c00550babfe364 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "figures/fig1_dataset_eda.pdf" 1794715648 25387 e1f10e87fca49dcc785f05ac113d03f9 ""
-  "figures/fig2_correlaciones.pdf" 1794715648 25992 6a4ebc24052ba40eb6099be711db09d7 ""
-  "figures/fig3_tuning_heatmaps.pdf" 1794715649 37997 5745811a41c1f7bebdf526a97283ac13 ""
-  "figures/fig4_baseline_vs_optimized.pdf" 1794715649 27257 ecd121dbf70bf934f045926311b7bdf5 ""
-  "figures/fig5_confusion_matrices.pdf" 1794715650 27454 12988626b373a9a9ad9c7a3087c413c6 ""
-  "figures/fig6_roc_pr_curves.pdf" 1794715654 47912 57cb8571fb36ae2b829fe7e03e4a78a0 ""
-  "main.aux" 1794717065 11754 c4e8aaea76c812ce9a18a35e6510fd66 "pdflatex"
-  "main.bbl" 1794717064 4148 3408aa9f248caa0ecba02d5bac0e3001 "bibtex main"
-  "main.out" 1794717065 3510 3259cada92c3b0aebb6716f8235b4410 "pdflatex"
-  "main.tex" 1794717013 59120 dbedf17c8143c65170fa7e329a404598 ""
+  "figures/fig1_dataset_eda.pdf" 1794721828 27076 777961a1da3f766ff614a4066b3d29de ""
+  "figures/fig2_correlaciones.pdf" 1794721828 26196 e640c389bebdb822184781e86a9fa0a0 ""
+  "figures/fig3_tuning_heatmaps.pdf" 1794721828 36451 c9aca452163d0accbbfdd5d1cae7d7a7 ""
+  "figures/fig4_baseline_vs_optimized.pdf" 1794721829 26775 698ad9001bfcafb31783046547f6db6f ""
+  "figures/fig5_confusion_matrices.pdf" 1794721829 27260 b9f65657b73d1e00f391ca7c5c03ac21 ""
+  "figures/fig6_roc_pr_curves.pdf" 1794721832 47961 bee7d4597c396f5dda25a76c82e7af9c ""
+  "main.aux" 1794721843 12617 4a1642fc7325275a50b58cff617b2523 "pdflatex"
+  "main.bbl" 1794721842 4117 2da32b70d630826fc2516d29bd5d47b2 "bibtex main"
+  "main.out" 1794721843 3510 3259cada92c3b0aebb6716f8235b4410 "pdflatex"
+  "main.tex" 1794721799 57268 cf52dfd51ca9940dd8a656d32d00f938 ""
   (generated)
   "main.aux"
   "main.log"

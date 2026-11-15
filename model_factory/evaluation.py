@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import (
     accuracy_score,
+    average_precision_score,
     confusion_matrix,
     f1_score,
     precision_score,
@@ -53,6 +54,7 @@ def evaluate_on_test(pipeline: Pipeline, X_test: pd.DataFrame, y_test: pd.Series
         "recall": round(float(recall_score(y_test, y_pred)), 4),
         "f1": round(float(f1_score(y_test, y_pred)), 4),
         "roc_auc": round(float(roc_auc_score(y_test, y_prob)), 4),
+        "pr_auc": round(float(average_precision_score(y_test, y_prob)), 4),
         "confusion_matrix": cm.tolist(),
         "roc_curve": {
             "fpr": [round(x, 4) for x in fpr_sample],

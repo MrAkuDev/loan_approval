@@ -7,26 +7,52 @@ from model_factory.config import (
     CSV_PATH,
     CV_SPLITS,
     FEATURE_ORDER,
+    MAX_VALID_AGE,
+    MAX_VALID_EMP_LENGTH,
     RANDOM_STATE,
     TARGET_COLUMN,
     TEST_SIZE,
 )
 
 
+def clean_credit_risk_dataframe(df_raw: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    """Elimina duplicados exactos y valores físicamente imposibles sin imputar ni filtrar por el objetivo."""
+    raw_rows = int(len(df_raw))
+    df_dedup = df_raw.drop_duplicates().copy()
+    duplicates_removed = raw_rows - int(len(df_dedup))
+
+    valid_age = df_dedup["person_age"] <= MAX_VALID_AGE
+    valid_emp = df_dedup["person_emp_length"].isna() | (df_dedup["person_emp_length"] <= MAX_VALID_EMP_LENGTH)
+    df_clean = df_dedup[valid_age & valid_emp].reset_index(drop=True)
+    outliers_removed = int(len(df_dedup)) - int(len(df_clean))
+
+    stats = {
+        "raw_rows": raw_rows,
+        "duplicates_removed": duplicates_removed,
+        "outliers_removed": outliers_removed,
+        "clean_rows": int(len(df_clean)),
+        "missing_values_clean": {
+            col: int(cnt) for col, cnt in df_clean.isna().sum().items() if cnt > 0
+        },
+    }
+    return df_clean, stats
+
+
 def load_and_split_data(
     csv_path: str = CSV_PATH,
     test_size: float = TEST_SIZE,
     random_state: int = RANDOM_STATE,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
-    """Carga el CSV fuente y realiza una partición estratificada Train/Test."""
-    df = pd.read_csv(csv_path)
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, dict]:
+    """Carga el CSV fuente, aplica limpieza determinista y realiza una partición estratificada Train/Test."""
+    df_raw = pd.read_csv(csv_path)
+    df, cleaning_stats = clean_credit_risk_dataframe(df_raw)
     X = df[FEATURE_ORDER].copy()
     y = df[TARGET_COLUMN].copy()
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state, stratify=y
     )
-    return df, X_train, X_test, y_train, y_test
+    return df, X_train, X_test, y_train, y_test, cleaning_stats
 
 
 def build_cv_splitter(

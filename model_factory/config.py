@@ -10,7 +10,7 @@ from sklearn.svm import SVC
 PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(PACKAGE_DIR)
 
-CSV_FILENAME = "loan_data.csv"
+CSV_FILENAME = "credit_risk_dataset.csv"
 CSV_PATH = os.path.join(PROJECT_ROOT, CSV_FILENAME)
 MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 RESULTS_FILE = os.path.join(MODELS_DIR, "evaluation_results.json")
@@ -22,40 +22,39 @@ CV_SPLITS = 5
 SCORING_METRICS = ["accuracy", "precision", "recall", "f1", "roc_auc"]
 TUNING_SCORING = "f1"
 
-# Orden exacto de características tal como aparecen en loan_data.csv / loan_approval.ipynb
+MAX_VALID_AGE = 100
+MAX_VALID_EMP_LENGTH = 60
+
+# Orden exacto de características tal como aparecen en credit_risk_dataset.csv (Kaggle: laotse/credit-risk-dataset)
 CATEGORICAL_COLUMNS = [
-    "person_gender",
-    "person_education",
     "person_home_ownership",
     "loan_intent",
-    "previous_loan_defaults_on_file",
+    "loan_grade",
+    "cb_person_default_on_file",
 ]
 
 NUMERICAL_COLUMNS = [
     "person_age",
     "person_income",
-    "person_emp_exp",
+    "person_emp_length",
     "loan_amnt",
     "loan_int_rate",
     "loan_percent_income",
     "cb_person_cred_hist_length",
-    "credit_score",
 ]
 
 FEATURE_ORDER = [
     "person_age",
-    "person_gender",
-    "person_education",
     "person_income",
-    "person_emp_exp",
     "person_home_ownership",
-    "loan_amnt",
+    "person_emp_length",
     "loan_intent",
+    "loan_grade",
+    "loan_amnt",
     "loan_int_rate",
     "loan_percent_income",
+    "cb_person_default_on_file",
     "cb_person_cred_hist_length",
-    "credit_score",
-    "previous_loan_defaults_on_file",
 ]
 
 
