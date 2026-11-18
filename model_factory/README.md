@@ -74,10 +74,11 @@ credit_risk_dataset.csv
    - Runs `cross_validate` over `SCORING_METRICS = ["accuracy", "precision", "recall", "f1", "roc_auc"]` and `cross_val_predict` (`n_jobs=-1`) on `(X_train, y_train)` to compute out-of-fold mean/std metrics and the CV confusion matrix.
    - Note: `baseline_test` in the JSON output is initialized to `{}` (baseline models are evaluated via CV on `X_train`, keeping `X_test` untouched until Stage 3).
 
-3. **Stage 2 — Hyperparameter Tuning & 2D Heatmaps (`tuning.py`)**:
+3. **Stage 2 — Hyperparameter Tuning, 2D Heatmaps & 1D Sensitivity Curves (`tuning.py`)**:
    - `tune_all_models()` fits `build_preprocessor()` on `X_train` once to obtain `X_train_proc` so candidate evaluations do not repeatedly re-encode raw features, while `X_test` remains isolated.
    - `tune_single_model()` runs `GridSearchCV` (when `search_strategy == "grid"`) or `RandomizedSearchCV` (when `search_strategy == "random"`, with `n_iter=12` and `random_state=42`) optimizing `TUNING_SCORING = "f1"`.
    - `compute_tuning_heatmaps()` fixes non-plotted tuned parameters (`fixed_params`) to their winning values from `best_params_by_model` and runs a 2D `GridSearchCV(..., scoring={"f1": "f1", "roc_auc": "roc_auc"}, refit=False)` over `heatmap_config["y_values"]` × `heatmap_config["x_values"]`.
+   - `compute_hyperparameter_effects()` varies one hyperparameter at a time across `param_space` around each model's `best_params` using `build_training_pipeline()` + `cross_validate(..., return_train_score=True)` (`f1`, `roc_auc`, `accuracy`) and stores Train vs. 5-Fold CV validation curves in `evaluation_results.json["hyperparameter_effects"]`.
 
 4. **Stage 3 — Final Training, Test Evaluation & Export (`tuning.py`, `evaluation.py`)**:
    - Combines `{**cfg["base_params"], **cfg["final_extra_params"], **best_params}` for each model.
@@ -100,7 +101,7 @@ credit_risk_dataset.csv
 | `CSV_FILENAME` | `"credit_risk_dataset.csv"` | Source dataset filename in `PROJECT_ROOT`. |
 | `MODELS_DIR` | `<PROJECT_ROOT>/models` | Output directory for `.joblib` pipelines and JSON results. |
 | `RESULTS_FILE` | `<MODELS_DIR>/evaluation_results.json` | Consolidated metrics, correlations, and heatmap output file. |
-| `TARGET_COLUMN` | `"loan_status"` | Binary target (`0` = Sin Default / Aprobado, `1` = Default / Alto Riesgo). |
+| `TARGET_COLUMN` | `"loan_status"` | Binary target (`0` = Sin Incumplimiento, `1` = Incumplimiento). |
 | `MAX_VALID_AGE` | `100` | Upper age threshold applied during deterministic cleaning. |
 | `MAX_VALID_EMP_LENGTH` | `60` | Upper employment length threshold (years) during deterministic cleaning. |
 | `TEST_SIZE` | `0.20` | 20% stratified holdout test proportion (80% Train). |

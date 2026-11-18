@@ -5,9 +5,15 @@ import time
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, cross_validate
 
-from model_factory.config import MODELS_DIR, RANDOM_STATE, RESULTS_FILE, TUNING_SCORING
+from model_factory.config import (
+    HYPERPARAMETER_LABELS,
+    MODELS_DIR,
+    RANDOM_STATE,
+    RESULTS_FILE,
+    TUNING_SCORING,
+)
 from model_factory.evaluation import evaluate_on_test
 from model_factory.preprocessing import build_preprocessor, build_training_pipeline
 
@@ -141,6 +147,104 @@ def compute_tuning_heatmaps(
         }
 
     return heatmaps
+
+
+def _ordered_param_values(values: list) -> list:
+    """Ordena valores numéricos de menor a mayor dejando `None` (sin límite) al final."""
+    if all(v is None or isinstance(v, (int, float)) for v in values):
+        return sorted(values, key=lambda v: (v is None, float(v) if v is not None else 0.0))
+    return list(values)
+
+
+def compute_hyperparameter_effects(
+    specs: dict[str, dict],
+    best_params_by_model: dict[str, dict],
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
+    cv,
+) -> dict[str, dict]:
+    """Evalúa curvas 1D Train vs Validación (5-fold CV) para cada hiperparámetro en `param_space`."""
+    scoring = {"f1": "f1", "roc_auc": "roc_auc", "accuracy": "accuracy"}
+    effects: dict[str, dict] = {}
+
+    for name, cfg in specs.items():
+        base_best = best_params_by_model.get(name, {})
+        eval_cache: dict[tuple, dict] = {}
+        param_curves: list[dict] = []
+
+        print(f"Calculando efecto por hiperparámetro (Train vs CV) para {name}...")
+        for param_name, raw_values in cfg["param_space"].items():
+            ordered_vals = _ordered_param_values(raw_values)
+            if len(ordered_vals) <= 1:
+                continue
+
+            value_labels: list[str] = []
+            metrics_series: dict[str, list[float]] = {
+                "train_f1_mean": [],
+                "train_f1_std": [],
+                "val_f1_mean": [],
+                "val_f1_std": [],
+                "train_roc_auc_mean": [],
+                "train_roc_auc_std": [],
+                "val_roc_auc_mean": [],
+                "val_roc_auc_std": [],
+                "train_accuracy_mean": [],
+                "val_accuracy_mean": [],
+                "fit_time_mean": [],
+            }
+
+            for val in ordered_vals:
+                candidate_params = {**cfg["base_params"], **base_best, param_name: val}
+                cache_key = tuple(sorted((k, repr(v)) for k, v in candidate_params.items()))
+                if cache_key not in eval_cache:
+                    pipe = build_training_pipeline(cfg["estimator_cls"](**candidate_params))
+                    cv_out = cross_validate(
+                        pipe,
+                        X_train,
+                        y_train,
+                        cv=cv,
+                        scoring=scoring,
+                        return_train_score=True,
+                        n_jobs=-1,
+                    )
+                    eval_cache[cache_key] = {
+                        "train_f1_mean": round(float(np.mean(cv_out["train_f1"])), 4),
+                        "train_f1_std": round(float(np.std(cv_out["train_f1"])), 4),
+                        "val_f1_mean": round(float(np.mean(cv_out["test_f1"])), 4),
+                        "val_f1_std": round(float(np.std(cv_out["test_f1"])), 4),
+                        "train_roc_auc_mean": round(float(np.mean(cv_out["train_roc_auc"])), 4),
+                        "train_roc_auc_std": round(float(np.std(cv_out["train_roc_auc"])), 4),
+                        "val_roc_auc_mean": round(float(np.mean(cv_out["test_roc_auc"])), 4),
+                        "val_roc_auc_std": round(float(np.std(cv_out["test_roc_auc"])), 4),
+                        "train_accuracy_mean": round(float(np.mean(cv_out["train_accuracy"])), 4),
+                        "val_accuracy_mean": round(float(np.mean(cv_out["test_accuracy"])), 4),
+                        "fit_time_mean": round(float(np.mean(cv_out["fit_time"])), 3),
+                    }
+
+                entry = eval_cache[cache_key]
+                value_labels.append("None" if val is None else str(val))
+                for k in metrics_series:
+                    metrics_series[k].append(entry[k])
+
+            best_val = base_best.get(param_name)
+            param_curves.append(
+                {
+                    "param": param_name,
+                    "label": HYPERPARAMETER_LABELS.get(param_name, param_name),
+                    "values": value_labels,
+                    "best_value": "None" if best_val is None else str(best_val),
+                    **metrics_series,
+                }
+            )
+
+        effects[name] = {
+            "fixed_best_params": {
+                k: ("None" if v is None else str(v)) for k, v in base_best.items()
+            },
+            "params": param_curves,
+        }
+
+    return effects
 
 
 def train_and_export_final_models(

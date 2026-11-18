@@ -41,6 +41,36 @@ def _load_clean_source_df() -> pd.DataFrame | None:
     return df_dedup[valid_age & valid_emp].reset_index(drop=True)
 
 
+@st.cache_data
+def load_cleaning_audit(csv_mtime: float) -> dict | None:
+    """Retorna el desglose y las filas eliminadas durante la limpieza determinista del CSV."""
+    if not os.path.exists(CSV_PATH):
+        return None
+    df_raw = pd.read_csv(CSV_PATH)
+    dup_mask = df_raw.duplicated(keep="first")
+    df_duplicates = df_raw[dup_mask].copy()
+    df_dedup = df_raw[~dup_mask].copy()
+
+    bad_age = df_dedup["person_age"] > MAX_VALID_AGE
+    bad_emp = df_dedup["person_emp_length"].notna() & (df_dedup["person_emp_length"] > MAX_VALID_EMP_LENGTH)
+    df_outliers = df_dedup[bad_age | bad_emp].copy()
+    if not df_outliers.empty:
+        reasons = []
+        for idx in df_outliers.index:
+            r_parts = []
+            if bool(bad_age.loc[idx]):
+                r_parts.append(f"person_age > {MAX_VALID_AGE}")
+            if bool(bad_emp.loc[idx]):
+                r_parts.append(f"person_emp_length > {MAX_VALID_EMP_LENGTH}")
+            reasons.append(" y ".join(r_parts))
+        df_outliers.insert(0, "Motivo de Exclusión", reasons)
+
+    return {
+        "outliers_df": df_outliers.reset_index(drop=True),
+        "duplicates_df": df_duplicates.reset_index(drop=True),
+    }
+
+
 @st.cache_resource
 def load_models(model_mtimes: tuple):
     """Carga los pipelines serializados `.joblib` desde `models/`."""

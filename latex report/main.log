@@ -1,9 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.11.14)  14 NOV 2026 23:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.11.14)  17 NOV 2026 20:13
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**./main.tex
-(main.tex
+**"c:/archivos/docs maestria/practicas de machine learning/loan_approval/latex report/main.tex"
+(c:/archivos/docs maestria/practicas de machine learning/loan_approval/latex report/main.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
 (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/ieeetran\IEEEtran.cls
@@ -17,8 +18,7 @@ Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
 \@IEEEtrantmpcountB=\count276
 \@IEEEtrantmpcountC=\count277
 \@IEEEtrantmptoksA=\toks17
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 5
-03.
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 503.
 (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
@@ -26,8 +26,7 @@ File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 -- Using PDF output.
 \@IEEEnormalsizeunitybaselineskip=\dimen151
 -- This is a 10 point document.
-LaTeX Encoding Info:    Redeclaring text command \textunderscore (encoding ?) o
-n input line 937.
+LaTeX Encoding Info:    Redeclaring text command \textunderscore (encoding ?) on input line 937.
 \CLASSINFOnormalsizebaselineskip=\dimen152
 \CLASSINFOnormalsizeunitybaselineskip=\dimen153
 \IEEEnormaljot=\dimen154
@@ -35,52 +34,42 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <11> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <11> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <17> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <20> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1090.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 (Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1090.
-
 \IEEEquantizedlength=\dimen155
 \IEEEquantizedlengthdiff=\dimen156
 \IEEEquantizedtextheightdiff=\dimen157
@@ -119,37 +108,24 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 Package: inputenc 2024/02/08 v1.3d Input encoding file
 \inpenc@prehook=\toks18
 \inpenc@posthook=\toks19
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
 Package: fontenc 2025/07/18 v2.1d Standard LaTeX package
-LaTeX Font Info:    Trying to load font information for T1+ptm on input line 11
-6.
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd
+LaTeX Font Info:    Trying to load font information for T1+ptm on input line 116.
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
-))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
-Package: babel 2025/12/11 v25.17 The multilingual framework for LuaLaTeX, pdfLa
-TeX and XeLaTeX
+)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
+Package: babel 2025/12/11 v25.17 The multilingual framework for LuaLaTeX, pdfLaTeX and XeLaTeX
 \babel@savecnt=\count290
-LaTeX Encoding Info:    Redeclaring text command \ij (encoding OT1) on input li
-ne 2068.
-LaTeX Encoding Info:    Redeclaring text command \IJ (encoding OT1) on input li
-ne 2070.
-LaTeX Encoding Info:    Redeclaring text command \ij (encoding T1) on input lin
-e 2072.
-LaTeX Encoding Info:    Redeclaring text command \IJ (encoding T1) on input lin
-e 2073.
-LaTeX Encoding Info:    Ignoring declaration for text command \ij (encoding ?) 
-on input line 2074.
-LaTeX Encoding Info:    Ignoring declaration for text command \IJ (encoding ?) 
-on input line 2076.
-LaTeX Encoding Info:    Ignoring declaration for text command \SS (encoding ?) 
-on input line 2101.
+LaTeX Encoding Info:    Redeclaring text command \ij (encoding OT1) on input line 2068.
+LaTeX Encoding Info:    Redeclaring text command \IJ (encoding OT1) on input line 2070.
+LaTeX Encoding Info:    Redeclaring text command \ij (encoding T1) on input line 2072.
+LaTeX Encoding Info:    Redeclaring text command \IJ (encoding T1) on input line 2073.
+LaTeX Encoding Info:    Ignoring declaration for text command \ij (encoding ?) on input line 2074.
+LaTeX Encoding Info:    Ignoring declaration for text command \IJ (encoding ?) on input line 2076.
+LaTeX Encoding Info:    Ignoring declaration for text command \SS (encoding ?) on input line 2101.
 \U@D=\dimen172
 \l@unhyphenated=\language79
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
 \bbl@readstream=\read2
 \bbl@dirlevel=\count291
 Package babel Info: Configuration files are deprecated, as
@@ -160,47 +136,36 @@ Package babel Info: Configuration files are deprecated, as
 * Local config file bblopts.cfg used
 *
 (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/arabi\bblopts.cfg
-File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
- babel
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/es\babel
--spanish.tex)
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of babel
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/babel/locale/es\babel-spanish.tex)
 Package babel Info: Importing font and identification data for spanish
 (babel)             from babel-es.ini. Reported on input line 4320.
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/babel-spanish\spanish.l
-df
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/babel-spanish\spanish.ldf
 Language: spanish.ldf 2021/05/27 v5.0q Spanish support from the babel system
 \es@quottoks=\toks20
 \es@quotdepth=\count292
 ))
-LaTeX Encoding Info:    Redeclaring text command \guillemotleft (encoding OT1) 
-on input line 6.
-LaTeX Encoding Info:    Redeclaring text command \guillemotright (encoding OT1)
- on input line 6.
+LaTeX Encoding Info:    Redeclaring text command \guillemotleft (encoding OT1) on input line 6.
+LaTeX Encoding Info:    Redeclaring text command \guillemotright (encoding OT1) on input line 6.
  (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/cite\cite.sty
 LaTeX Info: Redefining \cite on input line 302.
 LaTeX Info: Redefining \nocite on input line 332.
 Package: cite 2015/02/27  v 5.5
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
 Package: amsmath 2025/07/09 v2.17z AMS math features
 \@mathmargin=\skip52
 
 For additional information on amsmath, use the `?' option.
 (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
 Package: amstext 2024/11/17 v2.01 AMS text
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks21
 \ex@=\dimen173
-))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
+)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 \pmbraise@=\dimen174
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
 \inf@bad=\count293
@@ -250,44 +215,34 @@ LaTeX Info: Redefining \Relbar on input line 970.
 \mathdisplay@stack=\toks25
 LaTeX Info: Redefining \[ on input line 2950.
 LaTeX Info: Redefining \] on input line 2951.
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.st
-y
+)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks26
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
 Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
 Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
-fg
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 106.
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
 File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen182
 \Gin@req@width=\dimen183
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \heavyrulewidth=\dimen184
 \lightrulewidth=\dimen185
@@ -306,15 +261,13 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisruleclass=\count307
 \@lastruleclass=\count308
 \@thisrulewidth=\dimen196
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
 Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
 \multirow@colwidth=\skip55
 \multirow@cntb=\count309
 \multirow@dima=\skip56
 \bigstrutjot=\dimen197
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
 Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
 \col@sep=\dimen198
 \ar@mcellbox=\box57
@@ -323,52 +276,29 @@ Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
 \extratabsurround=\skip57
 \backup@length=\skip58
 \ar@cellbox=\box58
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count310
 \float@exts=\toks28
 \float@box=\box59
 \@float@everytoks=\toks29
 \@floatcapt=\box60
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.
-sty
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.st
-y
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
--common.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.sty (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.sty (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-common.tex
 \pgfutil@everybye=\toks30
 \pgfutil@tempdima=\dimen256
 \pgfutil@tempdimb=\dimen257
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
--latex.def
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-latex.def
 \pgfutil@abb=\box61
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.
-code.tex
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex)
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.code.tex (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex)
 Package: pgfrcs 2025-08-29 v3.1.11a (3.1.11a)
 ))
 Package: pgf 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.
-sty
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.
-sty
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-s.code.tex
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.sty (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.sty (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys.code.tex
 Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
-.code.tex
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys.code.tex
 \pgfkeys@pathtoks=\toks31
 \pgfkeys@temptoks=\toks32
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
-libraryfiltered.code.tex
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeyslibraryfiltered.code.tex
 \pgfkeys@tmptoks=\toks33
 ))
 \pgf@x=\dimen258
@@ -391,39 +321,27 @@ libraryfiltered.code.tex
 \t@pgf@tokb=\toks35
 \t@pgf@tokc=\toks36
 \pgf@sys@id@count=\count315
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.c
-fg
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.cfg
 File: pgf.cfg 2025-08-29 v3.1.11a (3.1.11a)
 )
 Driver file for pgf: pgfsys-pdftex.def
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-s-pdftex.def
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys-pdftex.def
 File: pgfsys-pdftex.def 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-s-common-pdf.def
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsys-common-pdf.def
 File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
-)))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-ssoftpath.code.tex
+))) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsyssoftpath.code.tex
 File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfsyssoftpath@smallbuffer@items=\count316
 \pgfsyssoftpath@bigbuffer@items=\count317
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
-sprotocol.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsysprotocol.code.tex
 File: pgfsysprotocol.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
 Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package xcolor Info: Driver file: pdftex.def on input line 274.
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
 Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
 Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
 Package xcolor Info: Model `RGB' extended on input line 1365.
@@ -433,52 +351,18 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-e.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcore.code.tex
 Package: pgfcore 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
-.tex
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil.
-code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparse
-r.code.tex
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code.tex (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparser.code.tex
 \pgfmath@dimen=\dimen268
 \pgfmath@count=\count318
 \pgfmath@box=\box62
 \pgfmath@toks=\toks37
 \pgfmath@stack@operand=\toks38
 \pgfmath@stack@operation=\toks39
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.basic.code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.trigonometric.code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.random.code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.comparison.code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.base.code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.round.code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.misc.code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
-ions.integerarithmetics.code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc.
-code.tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat
-.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.basic.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.trigonometric.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.random.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.comparison.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.base.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.round.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.misc.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.integerarithmetics.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat.code.tex
 \c@pgfmathroundto@lastzeros=\count319
-))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.
-tex)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epoints.code.tex
+)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.tex) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepoints.code.tex
 File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@picminx=\dimen269
 \pgf@picmaxx=\dimen270
@@ -494,130 +378,75 @@ File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@yy=\dimen280
 \pgf@zx=\dimen281
 \pgf@zy=\dimen282
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epathconstruct.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathconstruct.code.tex
 File: pgfcorepathconstruct.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@path@lastx=\dimen283
 \pgf@path@lasty=\dimen284
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epathusage.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathusage.code.tex
 File: pgfcorepathusage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@shorten@end@additional=\dimen285
 \pgf@shorten@start@additional=\dimen286
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-escopes.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorescopes.code.tex
 File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfpic=\box63
 \pgf@hbox=\box64
 \pgf@layerbox@main=\box65
 \pgf@picture@serial@count=\count320
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-egraphicstate.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoregraphicstate.code.tex
 File: pgfcoregraphicstate.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgflinewidth=\dimen287
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-etransformations.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransformations.code.tex
 File: pgfcoretransformations.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@pt@x=\dimen288
 \pgf@pt@y=\dimen289
 \pgf@pt@temp=\dimen290
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-equick.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorequick.code.tex
 File: pgfcorequick.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-eobjects.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreobjects.code.tex
 File: pgfcoreobjects.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epathprocessing.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathprocessing.code.tex
 File: pgfcorepathprocessing.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-earrows.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorearrows.code.tex
 File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfarrowsep=\dimen291
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-eshade.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreshade.code.tex
 File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@max=\dimen292
 \pgf@sys@shading@range@num=\count321
 \pgf@shadingcount=\count322
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-eimage.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreimage.code.tex
 File: pgfcoreimage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-eexternal.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreexternal.code.tex
 File: pgfcoreexternal.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfexternal@startupbox=\box66
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-elayers.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorelayers.code.tex
 File: pgfcorelayers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-etransparency.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransparency.code.tex
 File: pgfcoretransparency.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-epatterns.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepatterns.code.tex
 File: pgfcorepatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
-erdf.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorerdf.code.tex
 File: pgfcorerdf.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
-shapes.code.tex
+))) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmoduleshapes.code.tex
 File: pgfmoduleshapes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfnodeparttextbox=\box67
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
-plot.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmoduleplot.code.tex
 File: pgfmoduleplot.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
-mp-version-0-65.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-0-65.sty
 Package: pgfcomp-version-0-65 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@nodesepstart=\dimen293
 \pgf@nodesepend=\dimen294
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
-mp-version-1-18.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-1-18.sty
 Package: pgfcomp-version-1-18 2025-08-29 v3.1.11a (3.1.11a)
-))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.st
-y
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.s
-ty
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
-.code.tex))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
-.tex))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.
-code.tex
+)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.sty (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.sty (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys.code.tex)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code.tex)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.code.tex
 Package: pgffor 2025-08-29 v3.1.11a (3.1.11a)
 \pgffor@iter=\dimen295
 \pgffor@skip=\dimen296
 \pgffor@stack=\toks40
 \pgffor@toks=\toks41
-))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
-z\tikz.code.tex
+)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz\tikz.code.tex
 Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
-aryplothandlers.code.tex
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@plot@mark@count=\count323
 \pgfplotmarksize=\dimen297
@@ -638,103 +467,67 @@ File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \tikznumberofchildren=\count325
 \tikznumberofcurrentchild=\count326
 \tikz@fig@count=\count327
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
-matrix.code.tex
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulematrix.code.tex
 File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfmatrixcurrentrow=\count328
 \pgfmatrixcurrentcolumn=\count329
 \pgf@matrix@numberofcolumns=\count330
 )
 \tikz@expandcount=\count331
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
-z/libraries\tikzlibrarytopaths.code.tex
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
-aryarrows.meta.code.tex
+))) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryarrows.meta.code.tex
 File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfarrowinset=\dimen306
 \pgfarrowlength=\dimen307
 \pgfarrowwidth=\dimen308
 \pgfarrowlinewidth=\dimen309
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
-z/libraries\tikzlibrarypositioning.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
-z/libraries\tikzlibraryshapes.geometric.code.tex
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibraryshapes.geometric.code.tex
 File: tikzlibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/shapes\
-pgflibraryshapes.geometric.code.tex
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/shapes\pgflibraryshapes.geometric.code.tex
 File: pgflibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
 Package: hyperref 2025-07-12 v7.01o Hypertext links for LaTeX
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefine
-keys.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefinekeys.sty
 Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.s
-ty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.sty
 Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
 Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
-.sty
-Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
-)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
-ty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO)
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.sty
 Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
 )
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
-))
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
+)) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
 Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
 Package: nameref 2025-06-21 v2.57 Cross-referencing by name of section
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettit
-lestring.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
 \c@section@level=\count332
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
 Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
 \etb@tempcnta=\count333
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
-ty
-Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
-)
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.sty
+Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO)
 )
 \@linkdim=\dimen310
 \Hy@linkcounter=\count334
@@ -762,14 +555,10 @@ Package hyperref Info: Bookmarks ON on input line 4462.
 \c@Hy@tempcnt=\count337
 LaTeX Info: Redefining \url on input line 4801.
 \XeTeXLinkMargin=\dimen311
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc
-.sty
-Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
-)
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO)
 ))
 \Fld@menulength=\count338
 \Field@Width=\dimen312
@@ -786,27 +575,20 @@ Package hyperref Info: PDF/A mode OFF on input line 6108.
 \c@Hfootnote=\count341
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
 File: hpdftex.def 2025-07-12 v7.01o Hyperref driver for pdfTeX
 \Fld@listcount=\count342
 \c@bookmark@seq@number=\count343
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
-echeck.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfilecheck.sty
 Package: rerunfilecheck 2025-06-21 v1.11 Rerun checks for auxiliary files (HO)
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquec
-ounter.sty
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquecounter.sty
 Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
-Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
-84.
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 284.
 )
 \Hy@SectionHShift=\skip59
 )
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
-tex.def
+(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count344
 ) (main.aux
@@ -839,9 +621,7 @@ LaTeX Font Info:    ... okay on input line 27.
 -- Lines per column: 56 (exact).
 LaTeX Info: Redefining \. on input line 27.
 LaTeX Info: Redefining \% on input line 27.
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
-ii
+(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count345
 \scratchdimen=\dimen314
@@ -854,15 +634,10 @@ ii
 \MPnumerator=\count349
 \makeMPintoPDFobject=\count350
 \everyMPtoPDFconversion=\toks43
-)
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
-ase.sty
+) (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-85.
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.c
-fg
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 Package hyperref Info: Link coloring OFF on input line 27.
@@ -870,433 +645,366 @@ Package hyperref Info: Link coloring OFF on input line 27.
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 44.
-
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+LaTeX Font Info:    Trying to load font information for U+msa on input line 43.
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 44.
-
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+LaTeX Font Info:    Trying to load font information for U+msb on input line 43.
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 57
-.
-
-(C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1pcr.fd
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 56.
+ (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
-)
-[1{C:/Users/JoelA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Jo
-elA/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
+) [1{C:/Users/JoelA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
-]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [2]
-Underfull \hbox (badness 10000) in paragraph at lines 104--104
+] [2]
+Underfull \hbox (badness 10000) in paragraph at lines 103--103
 []|$\OT1/cmr/m/n/7 $4[]000 \OMS/cmsy/m/n/7 ^^@
  []
 
 
-Underfull \hbox (badness 2229) in paragraph at lines 106--107
+Underfull \hbox (badness 2229) in paragraph at lines 105--106
 []|\T1/ptm/m/n/7 Monto prin-ci-pal del prés-ta-mo so-li-ci-ta-do
  []
 
 
-Underfull \hbox (badness 2903) in paragraph at lines 107--107
-[]|$\OT1/cmr/m/n/7 5\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 42 %[] \OMS/cmsy/m/n/7 ^^@ 
-\OT1/cmr/m/n/7 23\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 22 %[]$
+Underfull \hbox (badness 2903) in paragraph at lines 106--106
+[]|$\OT1/cmr/m/n/7 5\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 42 %[] \OMS/cmsy/m/n/7 ^^@ \OT1/cmr/m/n/7 23\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 22 %[]$
  []
 
 
-Underfull \hbox (badness 1824) in paragraph at lines 112--112
-[]|\T1/pcr/m/n/7 EDUCATION \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 6[]409$\T1/ptm/m/n/7 
-), \T1/pcr/m/n/7 MEDICAL \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 6[]042$\T1/ptm/m/n/7 ),
-
+Underfull \hbox (badness 1824) in paragraph at lines 111--111
+[]|\T1/pcr/m/n/7 EDUCATION \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 6[]409$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 MEDICAL \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 6[]042$\T1/ptm/m/n/7 ),
  []
 
 
-Underfull \hbox (badness 6236) in paragraph at lines 112--112
-\T1/pcr/m/n/7 VENTURE \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]679$\T1/ptm/m/n/7 ), \T
-1/pcr/m/n/7 PERSONAL \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]496$\T1/ptm/m/n/7 ),
+Underfull \hbox (badness 6236) in paragraph at lines 111--111
+\T1/pcr/m/n/7 VENTURE \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]679$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 PERSONAL \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]496$\T1/ptm/m/n/7 ),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 112--112
-\T1/pcr/m/n/7 DEBTCONSOLIDATION \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]189$\T1/ptm/m
-/n/7 ),
+Underfull \hbox (badness 10000) in paragraph at lines 111--111
+\T1/pcr/m/n/7 DEBTCONSOLIDATION \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]189$\T1/ptm/m/n/7 ),
  []
 
 
-Underfull \hbox (badness 2591) in paragraph at lines 113--113
-[]|\T1/pcr/m/n/7 A \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 10[]702$\T1/ptm/m/n/7 ), \T1/
-pcr/m/n/7 B \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 10[]384$\T1/ptm/m/n/7 ), \T1/pcr/m/n
-/7 C \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 6[]436$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 D
+Underfull \hbox (badness 2591) in paragraph at lines 112--112
+[]|\T1/pcr/m/n/7 A \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 10[]702$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 B \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 10[]384$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 C \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 6[]436$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 D
  []
 
 <figures/fig1_dataset_eda.pdf, id=137, 680.24538pt x 243.18013pt>
 File: figures/fig1_dataset_eda.pdf Graphic file (type pdf)
 <use figures/fig1_dataset_eda.pdf>
-Package pdftex.def Info: figures/fig1_dataset_eda.pdf  used on input line 125.
+Package pdftex.def Info: figures/fig1_dataset_eda.pdf  used on input line 124.
 (pdftex.def)             Requested size: 474.71906pt x 169.71284pt.
 
-Underfull \hbox (badness 1354) in paragraph at lines 132--133
+Underfull \hbox (badness 1354) in paragraph at lines 131--132
 \T1/ptm/m/n/10 te las re-glas in-de-pen-dien-tes de la mues-tra com-ple-ta se
  []
 
 
-Underfull \hbox (badness 4341) in paragraph at lines 137--138
+Underfull \hbox (badness 4341) in paragraph at lines 136--137
 []\T1/ptm/b/n/10 Tratamiento de va-lo-res fal-tan-tes sin fu-ga de
  []
 
 
-Underfull \hbox (badness 6396) in paragraph at lines 137--138
-\T1/ptm/m/n/10 en \T1/pcr/m/n/10 person_emp_length \T1/ptm/m/n/10 ($\OT1/cmr/m/
-n/10 2\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 74 %[]$\T1/ptm/m/n/10 ) y $\OT1/cmr/m/n
-/10 3[]094$ \T1/ptm/m/n/10 en
+Underfull \hbox (badness 6396) in paragraph at lines 136--137
+\T1/ptm/m/n/10 en \T1/pcr/m/n/10 person_emp_length \T1/ptm/m/n/10 ($\OT1/cmr/m/n/10 2\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 74 %[]$\T1/ptm/m/n/10 ) y $\OT1/cmr/m/n/10 3[]094$ \T1/ptm/m/n/10 en
  []
 
 
-Underfull \hbox (badness 2197) in paragraph at lines 137--138
-\T1/pcr/m/n/10 loan_int_rate \T1/ptm/m/n/10 ($\OT1/cmr/m/n/10 9\OML/cmm/m/it/10
- :\OT1/cmr/m/n/10 55 %[]$\T1/ptm/m/n/10 ). En lu-gar de des-car-tar
+Underfull \hbox (badness 2197) in paragraph at lines 136--137
+\T1/pcr/m/n/10 loan_int_rate \T1/ptm/m/n/10 ($\OT1/cmr/m/n/10 9\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 55 %[]$\T1/ptm/m/n/10 ). En lu-gar de des-car-tar
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 137--138
-\T1/pcr/m/n/10 SimpleImputer \T1/ptm/m/n/10 con \T1/pcr/m/n/10 strategy="median
-"
+Underfull \hbox (badness 10000) in paragraph at lines 136--137
+\T1/pcr/m/n/10 SimpleImputer \T1/ptm/m/n/10 con \T1/pcr/m/n/10 strategy="median"
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 137--138
-\T1/ptm/m/n/10 y el ca-te-gó-ri-co \T1/pcr/m/n/10 SimpleImputer \T1/ptm/m/n/10 
-con
+Underfull \hbox (badness 10000) in paragraph at lines 136--137
+\T1/ptm/m/n/10 y el ca-te-gó-ri-co \T1/pcr/m/n/10 SimpleImputer \T1/ptm/m/n/10 con
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 137--138
+Underfull \hbox (badness 10000) in paragraph at lines 136--137
 \T1/pcr/m/n/10 strategy="most_frequent" \T1/ptm/m/n/10 den-tro del
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 137--138
+Underfull \hbox (badness 10000) in paragraph at lines 136--137
 \T1/pcr/m/n/10 ColumnTransformer\T1/ptm/m/n/10 , cal-cu-lan-do las me-dia-nas
  []
 
 
-Underfull \hbox (badness 2173) in paragraph at lines 144--145
-[]\T1/ptm/b/n/10 Codificación ca-te-gó-ri-ca: \T1/ptm/m/n/10 Las $\OT1/cmr/m/n/
-10 4$ \T1/ptm/m/n/10 va-ria-bles ca-te-gó-ri-
+Underfull \hbox (badness 2173) in paragraph at lines 143--144
+[]\T1/ptm/b/n/10 Codificación ca-te-gó-ri-ca: \T1/ptm/m/n/10 Las $\OT1/cmr/m/n/10 4$ \T1/ptm/m/n/10 va-ria-bles ca-te-gó-ri-
  []
 
 
-Underfull \hbox (badness 2538) in paragraph at lines 145--146
-\T1/ptm/m/n/10 de Pear-son se cal-cu-ló ex-clu-si-va-men-te so-bre $\OML/cmm/m/
-it/10 X[]$
+Underfull \hbox (badness 2538) in paragraph at lines 144--145
+\T1/ptm/m/n/10 de Pear-son se cal-cu-ló ex-clu-si-va-men-te so-bre $\OML/cmm/m/it/10 X[]$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
-\T1/ptm/m/n/10 ($\OT1/cmr/m/n/10 25[]927$ \T1/ptm/m/n/10 mues-tras) tras co-di-
-fi-ca-ción \T1/ptm/m/it/10 dummy \T1/ptm/m/n/10 con
+Underfull \hbox (badness 10000) in paragraph at lines 144--145
+\T1/ptm/m/n/10 ($\OT1/cmr/m/n/10 25[]927$ \T1/ptm/m/n/10 mues-tras) tras co-di-fi-ca-ción \T1/ptm/m/it/10 dummy \T1/ptm/m/n/10 con
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
-\T1/ptm/m/n/10 a \T1/pcr/m/n/10 loan_percent_income \T1/ptm/m/n/10 ($\OML/cmm/m
-/it/10 r \OT1/cmr/m/n/10 = +0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 3799$\T1/ptm/m/n
-/10 ),
+Underfull \hbox (badness 10000) in paragraph at lines 144--145
+\T1/ptm/m/n/10 a \T1/pcr/m/n/10 loan_percent_income \T1/ptm/m/n/10 ($\OML/cmm/m/it/10 r \OT1/cmr/m/n/10 = +0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 3799$\T1/ptm/m/n/10 ),
  []
 
 
-Underfull \hbox (badness 1448) in paragraph at lines 145--146
+Underfull \hbox (badness 1448) in paragraph at lines 144--145
 \T1/ptm/m/n/10 mien-tras que las co-rre-la-cio-nes ne-ga-ti-vas pro-tec-to-ras
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
+Underfull \hbox (badness 10000) in paragraph at lines 144--145
 \T1/ptm/m/n/10 más mar-ca-das re-caen en \T1/pcr/m/n/10 person_income
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
-\T1/ptm/m/n/10 la co-li-nea-li-dad es-pe-ra-da en-tre \T1/pcr/m/n/10 person_age
- \T1/ptm/m/n/10 y
+Underfull \hbox (badness 10000) in paragraph at lines 144--145
+\T1/ptm/m/n/10 la co-li-nea-li-dad es-pe-ra-da en-tre \T1/pcr/m/n/10 person_age \T1/ptm/m/n/10 y
  []
 
 [3]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-<figures/fig2_correlaciones.pdf, id=150, 520.10056pt x 369.56508pt>
+<figures/fig2_correlaciones.pdf, id=151, 520.10056pt x 369.56508pt>
 File: figures/fig2_correlaciones.pdf Graphic file (type pdf)
 <use figures/fig2_correlaciones.pdf>
-Package pdftex.def Info: figures/fig2_correlaciones.pdf  used on input line 151
-.
+Package pdftex.def Info: figures/fig2_correlaciones.pdf  used on input line 150.
 (pdftex.def)             Requested size: 252.0pt x 179.06403pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [4 <./figures/fig1_dataset_eda.pdf>]
-Underfull \hbox (badness 2150) in paragraph at lines 214--215
-\T1/ptm/m/n/10 es-tra-ti-fi-ca-da (\T1/pcr/m/n/10 train_test_split\T1/ptm/m/n/1
-0 , \T1/pcr/m/n/10 test_size=0.20\T1/ptm/m/n/10 ,
+Underfull \hbox (badness 2150) in paragraph at lines 213--214
+\T1/ptm/m/n/10 es-tra-ti-fi-ca-da (\T1/pcr/m/n/10 train_test_split\T1/ptm/m/n/10 , \T1/pcr/m/n/10 test_size=0.20\T1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 1515) in paragraph at lines 214--215
-\T1/ptm/m/n/10 tre-na-mien-to y $\OT1/cmr/m/n/10 6[]482$ \T1/ptm/m/n/10 a prue-
-ba ($\OT1/cmr/m/n/10 5[]064$ \T1/ptm/m/n/10 cla-se \T1/pcr/m/n/10 0 \T1/ptm/m/n
-/10 y $\OT1/cmr/m/n/10 1[]418$
+Underfull \hbox (badness 1515) in paragraph at lines 213--214
+\T1/ptm/m/n/10 tre-na-mien-to y $\OT1/cmr/m/n/10 6[]482$ \T1/ptm/m/n/10 a prue-ba ($\OT1/cmr/m/n/10 5[]064$ \T1/ptm/m/n/10 cla-se \T1/pcr/m/n/10 0 \T1/ptm/m/n/10 y $\OT1/cmr/m/n/10 1[]418$
  []
 
 
-Underfull \hbox (badness 2941) in paragraph at lines 214--215
-\T1/ptm/m/n/10 cla-se \T1/pcr/m/n/10 1\T1/ptm/m/n/10 ). Pa-ra to-das las va-li-
-da-cio-nes in-ter-nas se em-
+Underfull \hbox (badness 2941) in paragraph at lines 213--214
+\T1/ptm/m/n/10 cla-se \T1/pcr/m/n/10 1\T1/ptm/m/n/10 ). Pa-ra to-das las va-li-da-cio-nes in-ter-nas se em-
  []
 
 
-Underfull \hbox (badness 1675) in paragraph at lines 216--217
-\T1/ptm/m/n/10 ba-se re-pro-du-ci-bles den-tro del \T1/pcr/m/n/10 Pipeline \T1/
-ptm/m/n/10 com-ple-to fue
+Underfull \hbox (badness 1675) in paragraph at lines 215--216
+\T1/ptm/m/n/10 ba-se re-pro-du-ci-bles den-tro del \T1/pcr/m/n/10 Pipeline \T1/ptm/m/n/10 com-ple-to fue
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 216--217
-\T1/ptm/m/n/10 bús-que-da exhaus-ti-va (\T1/pcr/m/n/10 GridSearchCV\T1/ptm/m/n/
-10 ) pa-ra las $\OT1/cmr/m/n/10 12$
+Underfull \hbox (badness 10000) in paragraph at lines 215--216
+\T1/ptm/m/n/10 bús-que-da exhaus-ti-va (\T1/pcr/m/n/10 GridSearchCV\T1/ptm/m/n/10 ) pa-ra las $\OT1/cmr/m/n/10 12$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 216--217
+Underfull \hbox (badness 10000) in paragraph at lines 215--216
 \T1/ptm/m/n/10 con-fi-gu-ra-cio-nes de Re-gre-sión Lo-gís-ti-ca y bús-que-da
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 216--217
-\T1/ptm/m/n/10 alea-to-ria [[]12[]] (\T1/pcr/m/n/10 RandomizedSearchCV\T1/ptm/m
-/n/10 , \T1/pcr/m/n/10 n_iter=12\T1/ptm/m/n/10 ,
+Underfull \hbox (badness 10000) in paragraph at lines 215--216
+\T1/ptm/m/n/10 alea-to-ria [[]12[]] (\T1/pcr/m/n/10 RandomizedSearchCV\T1/ptm/m/n/10 , \T1/pcr/m/n/10 n_iter=12\T1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 216--217
-\T1/pcr/m/n/10 random_state=42\T1/ptm/m/n/10 ) pa-ra \T1/ptm/m/it/10 SVM RBF \T
-1/ptm/m/n/10 y \T1/ptm/m/it/10 Ran-dom
+Underfull \hbox (badness 10000) in paragraph at lines 215--216
+\T1/pcr/m/n/10 random_state=42\T1/ptm/m/n/10 ) pa-ra \T1/ptm/m/it/10 SVM RBF \T1/ptm/m/n/10 y \T1/ptm/m/it/10 Ran-dom
  []
 
 
-Underfull \hbox (badness 1895) in paragraph at lines 216--217
-\T1/ptm/m/it/10 Fo-rest\T1/ptm/m/n/10 , ma-xi-mi-zan-do siem-pre el pun-ta-je $
-\OML/cmm/m/it/10 F[]$\T1/ptm/m/n/10 . Asi-mis-mo,
+Underfull \hbox (badness 1895) in paragraph at lines 215--216
+\T1/ptm/m/it/10 Fo-rest\T1/ptm/m/n/10 , ma-xi-mi-zan-do siem-pre el pun-ta-je $\OML/cmm/m/it/10 F[]$\T1/ptm/m/n/10 . Asi-mis-mo,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 216--217
-\T1/ptm/m/n/10 (\T1/pcr/m/n/10 refit=False\T1/ptm/m/n/10 ) pa-ra ins-pec-cio-na
-r con-jun-ta-men-te $\OML/cmm/m/it/10 F[]$
+Underfull \hbox (badness 10000) in paragraph at lines 215--216
+\T1/ptm/m/n/10 (\T1/pcr/m/n/10 refit=False\T1/ptm/m/n/10 ) pa-ra ins-pec-cio-nar con-jun-ta-men-te $\OML/cmm/m/it/10 F[]$
  []
 
 
-Underfull \hbox (badness 3229) in paragraph at lines 216--217
+Underfull \hbox (badness 3229) in paragraph at lines 215--216
 \T1/ptm/m/n/10 y $[]$. La Ta-bla []II[] re-su-me las con-fi-gu-ra-cio-nes
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 228--228
+Underfull \hbox (badness 10000) in paragraph at lines 227--227
 []|\T1/pcr/m/n/7 RandomizedSearchCV
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 228--228
+Underfull \hbox (badness 10000) in paragraph at lines 227--227
 []|\T1/pcr/m/n/7 kernel="rbf"\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 228--228
+Underfull \hbox (badness 10000) in paragraph at lines 227--227
 \T1/pcr/m/n/7 random_state=42
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 228--228
+Underfull \hbox (badness 10000) in paragraph at lines 227--227
 \T1/ptm/m/n/7 (+ \T1/pcr/m/n/7 probability=True
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 228--228
-[]|\T1/pcr/m/n/7 C\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [0\OML/cmm/m/it/7 :\OT1/cmr/m
-/n/7 01\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 1\OML/
-cmm/m/it/7 ; \OT1/cmr/m/n/7 1\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0\OML/cmm/m/it/7 ;
- \OT1/cmr/m/n/7 5\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0]$\T1/ptm/m/n/7 ; \T1/pcr/m/n
-/7 gamma\T1/ptm/m/n/7 :
+Underfull \hbox (badness 10000) in paragraph at lines 227--227
+[]|\T1/pcr/m/n/7 C\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 01\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 1\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 1\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 5\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0]$\T1/ptm/m/n/7 ; \T1/pcr/m/n/7 gamma\T1/ptm/m/n/7 :
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 228--228
-\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; []; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/c
-mr/m/n/7 001\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0
-1]$\T1/ptm/m/n/7 ;
+Underfull \hbox (badness 10000) in paragraph at lines 227--227
+\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; []; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 001\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 01]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 228--229
-[]|\T1/pcr/m/n/7 C=5.0\T1/ptm/m/n/7 , \T1/pcr/m/n/7 gamma="scale"\T1/ptm/m/n/7 
-,
+Underfull \hbox (badness 10000) in paragraph at lines 227--228
+[]|\T1/pcr/m/n/7 C=5.0\T1/ptm/m/n/7 , \T1/pcr/m/n/7 gamma="scale"\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--230
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
 []|\T1/pcr/m/n/7 RandomizedSearchCV
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--230
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
 []|\T1/pcr/m/n/7 random_state=42\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--230
-[]|\T1/pcr/m/n/7 n_estimators\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [100\OML/cmm/m/it/
-7 ; \OT1/cmr/m/n/7 150\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 200\OML/cmm/m/it/7 ; \OT
-1/cmr/m/n/7 300]$\T1/ptm/m/n/7 ;
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
+[]|\T1/pcr/m/n/7 n_estimators\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [100\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 150\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 200\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 300]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--230
-\T1/pcr/m/n/7 max_depth\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; \OT
-1/cmr/m/n/7 10\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 15\OML/cmm/m/it/7 ; \OT1/cmr/m/n
-/7 20\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 30]$\T1/ptm/m/n/7 ;
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
+\T1/pcr/m/n/7 max_depth\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 10\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 15\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 20\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 30]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--230
-\T1/pcr/m/n/7 min_samples_split\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [2\OML/cmm/m/it/
-7 ; \OT1/cmr/m/n/7 5\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 10]$\T1/ptm/m/n/7 ;
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
+\T1/pcr/m/n/7 min_samples_split\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [2\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 5\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 10]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--230
-\T1/pcr/m/n/7 min_samples_leaf\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [1\OML/cmm/m/it/7
- ; \OT1/cmr/m/n/7 2\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 4]$\T1/ptm/m/n/7 ;
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
+\T1/pcr/m/n/7 min_samples_leaf\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [1\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 2\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 4]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--230
-\T1/pcr/m/n/7 max_features\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; 
-[]\OT1/cmr/m/n/7 ]$\T1/ptm/m/n/7 ;
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
+\T1/pcr/m/n/7 max_features\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; []\OT1/cmr/m/n/7 ]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--231
+Underfull \hbox (badness 10000) in paragraph at lines 229--230
 []|\T1/pcr/m/n/7 n_estimators=200\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--231
+Underfull \hbox (badness 10000) in paragraph at lines 229--230
 \T1/pcr/m/n/7 max_depth=30\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--231
+Underfull \hbox (badness 10000) in paragraph at lines 229--230
 \T1/pcr/m/n/7 min_samples_split=2\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--231
+Underfull \hbox (badness 10000) in paragraph at lines 229--230
 \T1/pcr/m/n/7 min_samples_leaf=1\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--231
+Underfull \hbox (badness 10000) in paragraph at lines 229--230
 \T1/pcr/m/n/7 max_features="sqrt"\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 232--232
+Underfull \hbox (badness 10000) in paragraph at lines 231--231
 []|\T1/pcr/m/n/7 GridSearchCV \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 12$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 232--232
+Underfull \hbox (badness 10000) in paragraph at lines 231--231
 []|\T1/pcr/m/n/7 random_state=42\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 232--232
-[]|\T1/pcr/m/n/7 C\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [0\OML/cmm/m/it/7 :\OT1/cmr/m
-/n/7 01\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 1\OML/
-cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 5\OML/cmm/m/it/7 ;
- \OT1/cmr/m/n/7 1\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0\OML/cmm/m/it/7 ; \OT1/cmr/m/
-n/7 5\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 10\OML/c
-mm/m/it/7 :\OT1/cmr/m/n/7 0]$\T1/ptm/m/n/7 ;
+Underfull \hbox (badness 10000) in paragraph at lines 231--231
+[]|\T1/pcr/m/n/7 C\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 01\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 1\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 5\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 1\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 5\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 10\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 232--232
-\T1/pcr/m/n/7 class_weight\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; 
-[]\OT1/cmr/m/n/7 ]$\T1/ptm/m/n/7 ;
+Underfull \hbox (badness 10000) in paragraph at lines 231--231
+\T1/pcr/m/n/7 class_weight\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; []\OT1/cmr/m/n/7 ]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 6157) in paragraph at lines 232--233
-[]|\T1/pcr/m/n/7 C=10.0\T1/ptm/m/n/7 , \T1/pcr/m/n/7 class_weight=None\T1/ptm/m
-/n/7 ,
+Underfull \hbox (badness 6157) in paragraph at lines 231--232
+[]|\T1/pcr/m/n/7 C=10.0\T1/ptm/m/n/7 , \T1/pcr/m/n/7 class_weight=None\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 3240) in paragraph at lines 242--244
+Underfull \hbox (badness 3240) in paragraph at lines 241--243
 \T1/ptm/m/n/10 donde la cla-se po-si-ti-va co-rres-pon-de al even-to de in-
  []
 
 
-Underfull \hbox (badness 2790) in paragraph at lines 242--244
-\T1/ptm/m/n/10 cum-pli-mien-to (\T1/pcr/m/n/10 loan_status=1\T1/ptm/m/n/10 ). L
-os ex-pe-ri-men-tos se
+Underfull \hbox (badness 2790) in paragraph at lines 241--243
+\T1/ptm/m/n/10 cum-pli-mien-to (\T1/pcr/m/n/10 loan_status=1\T1/ptm/m/n/10 ). Los ex-pe-ri-men-tos se
  []
 
 
-Underfull \hbox (badness 1960) in paragraph at lines 242--244
-\T1/ptm/m/n/10 eje-cu-ta-ron en Python $\OT1/cmr/m/n/10 3\OML/cmm/m/it/10 :\OT1
-/cmr/m/n/10 15$ \T1/ptm/m/n/10 con \T1/pcr/m/n/10 scikit-learn $\OT1/cmr/m/n/10
- 1\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 1$\T1/pt
-m/m/n/10 ,
+Underfull \hbox (badness 1960) in paragraph at lines 241--243
+\T1/ptm/m/n/10 eje-cu-ta-ron en Python $\OT1/cmr/m/n/10 3\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 15$ \T1/ptm/m/n/10 con \T1/pcr/m/n/10 scikit-learn $\OT1/cmr/m/n/10 1\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 1$\T1/ptm/m/n/10 ,
  []
 
 [5 <./figures/fig2_correlaciones.pdf>]
-Underfull \hbox (badness 1354) in paragraph at lines 293--294
-[]\T1/ptm/m/n/10 Los re-sul-ta-dos en $\OML/cmm/m/it/10 X[]$ \T1/ptm/m/n/10 mue
-s-tran ga-nan-cias sus-tan-cia-
+Underfull \hbox (badness 1354) in paragraph at lines 292--293
+[]\T1/ptm/m/n/10 Los re-sul-ta-dos en $\OML/cmm/m/it/10 X[]$ \T1/ptm/m/n/10 mues-tran ga-nan-cias sus-tan-cia-
  []
 
 
-Underfull \hbox (badness 1412) in paragraph at lines 293--294
-\T1/ptm/m/n/10 les de op-ti-mi-za-ción en los dos cla-si-fi-ca-do-res no li-nea
--
+Underfull \hbox (badness 1412) in paragraph at lines 292--293
+\T1/ptm/m/n/10 les de op-ti-mi-za-ción en los dos cla-si-fi-ca-do-res no li-nea-
  []
 
 
-Underfull \hbox (badness 2027) in paragraph at lines 293--294
-\T1/ptm/m/n/10 fi-gu-ra-ción de $\OT1/cmr/m/n/10 200$ \T1/ptm/m/n/10 ár-bo-les 
-con pro-fun-di-dad má-xi-ma de
+Underfull \hbox (badness 2027) in paragraph at lines 292--293
+\T1/ptm/m/n/10 fi-gu-ra-ción de $\OT1/cmr/m/n/10 200$ \T1/ptm/m/n/10 ár-bo-les con pro-fun-di-dad má-xi-ma de
  []
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 315--316
+Underfull \hbox (badness 10000) in paragraph at lines 314--315
 []\T1/ptm/m/n/10 La Ta-bla []VI[] con-tras-ta nues-tros re-sul-ta-dos so-bre
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 315--316
+Underfull \hbox (badness 10000) in paragraph at lines 314--315
 \T1/pcr/m/n/10 credit_risk_dataset.csv \T1/ptm/m/n/10 fren-te a cin-co
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 315--316
-\T1/ptm/m/n/10 in-ves-ti-ga-cio-nes cien-tí-fi-cas re-cien-tes en pre-dic-ción 
-de
+Underfull \hbox (badness 10000) in paragraph at lines 314--315
+\T1/ptm/m/n/10 in-ves-ti-ga-cio-nes cien-tí-fi-cas re-cien-tes en pre-dic-ción de
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 326--326
+[]|\T1/ptm/m/n/8 Credit Risk (Kag-gle,
  []
 
 
@@ -1305,39 +1013,30 @@ Underfull \hbox (badness 10000) in paragraph at lines 327--327
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 328--328
-[]|\T1/ptm/m/n/8 Credit Risk (Kag-gle,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 338--338
+Underfull \hbox (badness 10000) in paragraph at lines 337--337
 []|\T1/ptm/m/n/8 Random Fo-rest (+SMO-
  []
 
 <figures/fig3_tuning_heatmaps.pdf, id=362, 804.29482pt x 232.3455pt>
 File: figures/fig3_tuning_heatmaps.pdf Graphic file (type pdf)
 <use figures/fig3_tuning_heatmaps.pdf>
-Package pdftex.def Info: figures/fig3_tuning_heatmaps.pdf  used on input line 3
-61.
+Package pdftex.def Info: figures/fig3_tuning_heatmaps.pdf  used on input line 360.
 (pdftex.def)             Requested size: 516.0pt x 149.06932pt.
 [7]
 <figures/fig4_baseline_vs_optimized.pdf, id=378, 789.05728pt x 254.1513pt>
 File: figures/fig4_baseline_vs_optimized.pdf Graphic file (type pdf)
 <use figures/fig4_baseline_vs_optimized.pdf>
-Package pdftex.def Info: figures/fig4_baseline_vs_optimized.pdf  used on input 
-line 370.
+Package pdftex.def Info: figures/fig4_baseline_vs_optimized.pdf  used on input line 369.
 (pdftex.def)             Requested size: 516.0pt x 166.21242pt.
 <figures/fig5_confusion_matrices.pdf, id=380, 760.64523pt x 228.89874pt>
 File: figures/fig5_confusion_matrices.pdf Graphic file (type pdf)
 <use figures/fig5_confusion_matrices.pdf>
-Package pdftex.def Info: figures/fig5_confusion_matrices.pdf  used on input lin
-e 379.
+Package pdftex.def Info: figures/fig5_confusion_matrices.pdf  used on input line 378.
 (pdftex.def)             Requested size: 495.36346pt x 149.0688pt.
 <figures/fig6_roc_pr_curves.pdf, id=382, 687.96684pt x 268.4909pt>
 File: figures/fig6_roc_pr_curves.pdf Graphic file (type pdf)
 <use figures/fig6_roc_pr_curves.pdf>
-Package pdftex.def Info: figures/fig6_roc_pr_curves.pdf  used on input line 388
-.
+Package pdftex.def Info: figures/fig6_roc_pr_curves.pdf  used on input line 387.
 (pdftex.def)             Requested size: 490.19843pt x 191.31403pt.
  [8 <./figures/fig3_tuning_heatmaps.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1345,44 +1044,34 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [9 <./figures/fig4_baseline_vs_optimized.pdf> <./figures/fig5_confusion_matric
-es.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 409--410
-\T1/ptm/m/it/10 Fo-rest \T1/ptm/m/n/10 (\T1/pcr/m/n/10 n_estimators=200\T1/ptm/
-m/n/10 , \T1/pcr/m/n/10 max_depth=30\T1/ptm/m/n/10 ,
+ [9 <./figures/fig4_baseline_vs_optimized.pdf> <./figures/fig5_confusion_matrices.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 408--409
+\T1/ptm/m/it/10 Fo-rest \T1/ptm/m/n/10 (\T1/pcr/m/n/10 n_estimators=200\T1/ptm/m/n/10 , \T1/pcr/m/n/10 max_depth=30\T1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 409--410
-\T1/pcr/m/n/10 max_features="sqrt"\T1/ptm/m/n/10 , \T1/pcr/m/n/10 class_weight=
-None\T1/ptm/m/n/10 )
+Underfull \hbox (badness 10000) in paragraph at lines 408--409
+\T1/pcr/m/n/10 max_features="sqrt"\T1/ptm/m/n/10 , \T1/pcr/m/n/10 class_weight=None\T1/ptm/m/n/10 )
  []
 
 
-Underfull \hbox (badness 1721) in paragraph at lines 409--410
-\T1/ptm/m/n/10 exac-ti-tud de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/
-10 9351$\T1/ptm/m/n/10 , pre-ci-sión de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT
-1/cmr/m/n/10 9594$\T1/ptm/m/n/10 , exhaus-ti-vi-dad
+Underfull \hbox (badness 1721) in paragraph at lines 408--409
+\T1/ptm/m/n/10 exac-ti-tud de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9351$\T1/ptm/m/n/10 , pre-ci-sión de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9594$\T1/ptm/m/n/10 , exhaus-ti-vi-dad
  []
 
 
-Underfull \hbox (badness 3068) in paragraph at lines 409--410
-\T1/ptm/m/n/10 de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 7341$\T1/
-ptm/m/n/10 , $\OML/cmm/m/it/10 F[] \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cm
-r/m/n/10 8318$\T1/ptm/m/n/10 , $[] \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cm
-r/m/n/10 9348$ \T1/ptm/m/n/10 y
+Underfull \hbox (badness 3068) in paragraph at lines 408--409
+\T1/ptm/m/n/10 de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 7341$\T1/ptm/m/n/10 , $\OML/cmm/m/it/10 F[] \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 8318$\T1/ptm/m/n/10 , $[] \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9348$ \T1/ptm/m/n/10 y
  []
 
 (main.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 34--39
-[]$\T1/ptm/m/n/8 https : / / www . researchgate . net / publication / 399598089
- _ Journal _ of _
+[]$\T1/ptm/m/n/8 https : / / www . researchgate . net / publication / 399598089 _ Journal _ of _
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 34--39
-\T1/ptm/m/n/8 Smart _ Sensors _ and _ Computing _ Loan _ Default _ Prediction _
- Using _
+\T1/ptm/m/n/8 Smart _ Sensors _ and _ Computing _ Loan _ Default _ Prediction _ Using _
  []
 
 
@@ -1419,41 +1108,15 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 3259CADA92C3B0AEBB6716F8235B4410;3510.
  ) 
 Here is how much of TeX's memory you used:
- 24120 strings out of 467871
- 453674 string characters out of 5418375
- 881552 words of memory out of 5000000
+ 24122 strings out of 467871
+ 453927 string characters out of 5418375
+ 880552 words of memory out of 5000000
  52515 multiletter control sequences out of 15000+600000
  764141 words of font info for 182 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
- 84i,14n,104p,1776b,806s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
-cmbx10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
-fonts/cm/cmbx6.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/pu
-blic/amsfonts/cm/cmbx7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTe
-X/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/JoelA/AppData/Local/Progr
-ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/JoelA/AppData/Lo
-cal/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/JoelA/Ap
-pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/
-JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C
-:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr1
-0.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmr5.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/a
-msfonts/cm/cmr6.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmr7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/amsfonts/cm/cmr8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX
-/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/JoelA/AppData/Local/Programs
-/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/JoelA/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/JoelA/AppDa
-ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Joe
-lA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb
-><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.p
-fb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.p
-fb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.
-pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.
-pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a
-.pfb>
-Output written on main.pdf (10 pages, 560493 bytes).
+ 84i,14n,104p,1764b,806s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx6.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (10 pages, 559887 bytes).
 PDF statistics:
  800 PDF objects out of 1000 (max. 8388607)
  66 named destinations out of 1000 (max. 500000)

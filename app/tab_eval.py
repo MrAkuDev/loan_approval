@@ -9,6 +9,7 @@ from app.charts import (
     plot_confusion_matrices_row,
     plot_correlation_heatmap_and_target_bars,
     plot_grouped_status_pct,
+    plot_hyperparameter_effects,
     plot_hyperparameter_heatmaps,
     plot_income_ratio_default_bars,
     plot_income_vs_loan_scatter,
@@ -18,11 +19,12 @@ from app.charts import (
     plot_test_metrics_and_roc,
 )
 from app.charts_3d import render_interactive_3d_scatter
-from app.config import CSV_PATH, TOP_BOUNDARY_FEATURES, VALID_CATEGORIES
+from app.config import CSV_PATH, MAX_VALID_AGE, MAX_VALID_EMP_LENGTH, TOP_BOUNDARY_FEATURES, VALID_CATEGORIES
 from app.frontend import show_inline_loading
 from app.services import (
     compute_corr_payload_from_df,
     compute_decision_boundary_grids,
+    load_cleaning_audit,
     load_cv5_eda_data,
     load_test_eda_data,
 )
@@ -240,6 +242,65 @@ def _render_before_vs_after_table(eval_results: dict, model_names: list[str], ba
     st.dataframe(pd.DataFrame(bva_rows), use_container_width=True, hide_index=True)
 
 
+def _render_cleaning_summary(ds_info: dict, csv_mtime: float) -> None:
+    """Muestra las cifras de limpieza determinista del dataset y el detalle de registros eliminados."""
+    raw_n = ds_info.get("raw_rows", ds_info.get("total_rows", 0))
+    dup_n = ds_info.get("duplicates_removed", 0)
+    out_n = ds_info.get("outliers_removed", 0)
+    clean_n = ds_info.get("total_rows", raw_n - dup_n - out_n)
+    cd = ds_info.get("class_distribution", {})
+    c0_n = cd.get("0_no_default", cd.get("0_no_aprobado", 0))
+    c1_n = cd.get("1_default", cd.get("1_aprobado", 0))
+    nulls_map = ds_info.get("missing_values_clean", {})
+    null_txt = (
+        ", ".join(f"`{col}` ({cnt:,} nulos)" for col, cnt in nulls_map.items())
+        if nulls_map
+        else "0 nulos"
+    )
+
+    st.markdown("**🧹 Resumen de Limpieza y Datos Depurados (`credit_risk_dataset.csv`)**")
+    cl1, cl2, cl3, cl4 = st.columns(4)
+    cl1.metric("Registros brutos", f"{raw_n:,}")
+    cl2.metric("Duplicados eliminados", f"-{dup_n:,}", f"{(dup_n / max(raw_n, 1)) * 100:.2f}% del bruto", delta_color="off")
+    cl3.metric(
+        "Atípicos imposibles eliminados",
+        f"-{out_n:,}",
+        f"edad > {MAX_VALID_AGE} o emp > {MAX_VALID_EMP_LENGTH}",
+        delta_color="off",
+    )
+    cl4.metric(
+        "Dataset limpio total",
+        f"{clean_n:,}",
+        f"Train {ds_info['train_rows']:,} · Test {ds_info['test_rows']:,}",
+        delta_color="off",
+    )
+    st.caption(
+        f"Sobre los **{clean_n:,}** registros limpios: **Sin Incumplimiento (0): {c0_n:,} ({(c0_n / max(clean_n, 1)) * 100:.2f}%)** · "
+        f"**Incumplimiento (1): {c1_n:,} ({(c1_n / max(clean_n, 1)) * 100:.2f}%)**. "
+        f"Valores faltantes conservados para imputación por mediana dentro del `Pipeline` (fit en `X_train`): {null_txt}."
+    )
+
+    audit = load_cleaning_audit(csv_mtime)
+    if audit is not None:
+        df_out_rows = audit["outliers_df"]
+        df_dup_rows = audit["duplicates_df"]
+        with st.expander(
+            f"🔍 Ver valores eliminados durante la limpieza ({len(df_out_rows)} atípicos y {len(df_dup_rows)} duplicados)",
+            expanded=False,
+        ):
+            st.markdown(f"**Atípicos imposibles eliminados (`{len(df_out_rows)}` filas):** `person_age > {MAX_VALID_AGE}` o `person_emp_length > {MAX_VALID_EMP_LENGTH}`")
+            if not df_out_rows.empty:
+                st.dataframe(df_out_rows, use_container_width=True, hide_index=True)
+            else:
+                st.info("No se detectaron valores atípicos fuera de rango.")
+
+            st.markdown(f"**Filas duplicadas exactas eliminadas (`{len(df_dup_rows)}` filas conservando la primera ocurrencia):**")
+            if not df_dup_rows.empty:
+                st.dataframe(df_dup_rows, use_container_width=True, hide_index=True)
+            else:
+                st.info("No se detectaron duplicados exactos.")
+
+
 def render_tab_eval(models: dict, eval_results: dict) -> None:
     """Renderiza toda la pestaña de evaluación experimental y EDA."""
     ds_info = eval_results["dataset"]
@@ -251,6 +312,9 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
     )
 
     model_names = list(eval_results["optimized_test"].keys())
+    csv_mtime = os.path.getmtime(CSV_PATH) if os.path.exists(CSV_PATH) else 0.0
+
+    _render_cleaning_summary(ds_info, csv_mtime)
 
     st.markdown("### ⚖️ Fuente de Datos para Gráficas: `StratifiedKFold (cv_5)` — 5 Folds de `X_train`")
     fold_choice = "Todos los 5 folds (cv_5)"
@@ -260,7 +324,6 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
         help="StratifiedKFold conserva la proporción original (~78.1% vs ~21.9%) en cada fold; activar este balanceo iguala 50/50 ambas clases dentro de cv_5.",
     )
 
-    csv_mtime = os.path.getmtime(CSV_PATH) if os.path.exists(CSV_PATH) else 0.0
     df_eda = load_cv5_eda_data(csv_mtime, fold_choice=fold_choice, balanced=use_balanced_cv5)
 
     if df_eda is not None:
@@ -327,22 +390,14 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
     tuning_heatmaps = eval_results.get("tuning_heatmaps", {})
     if tuning_heatmaps:
         st.caption(
-            "Comparación del desempeño promedio en validación cruzada (5-Fold CV sobre `X_train`) al variar dos hiperparámetros clave "
+            "Comparación del desempeño promedio (**F1-Score**) en validación cruzada (5-Fold CV sobre `X_train`) al variar dos hiperparámetros clave "
             "por modelo. El recuadro rojo marca la combinación seleccionada como óptima (`TUNING_SCORING = f1`)."
         )
-        hm_metric_label = st.radio(
-            "Métrica visualizada en los heatmaps:",
-            options=["F1-Score", "ROC-AUC"],
-            index=0,
-            horizontal=True,
-            key="etapa3_1_hm_metric",
-        )
-        metric_key = "scores_f1" if hm_metric_label == "F1-Score" else "scores_roc_auc"
         plot_hyperparameter_heatmaps(
             tuning_heatmaps=tuning_heatmaps,
             model_names=model_names,
-            metric_key=metric_key,
-            metric_label=hm_metric_label,
+            metric_key="scores_f1",
+            metric_label="F1-Score",
         )
         fixed_notes = []
         for m_name in model_names:
@@ -355,6 +410,39 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
     else:
         st.info(
             "No se encontraron grillas de hiperparámetros en `evaluation_results.json`. "
+            "Ejecuta `python model_factory/train_model.py` para generarlas."
+        )
+
+    # 3.2 Curvas de Validación 1D por Hiperparámetro (Train vs 5-Fold CV)
+    st.subheader("3.2 Efecto de Cada Hiperparámetro en el Aprendizaje del Modelo (Train vs. Validación 5-Fold CV)")
+    hp_effects = eval_results.get("hyperparameter_effects", {})
+    available_fx_models = [m for m in model_names if m in hp_effects]
+    if available_fx_models:
+        st.caption(
+            "Variación controlada de un hiperparámetro a la vez (manteniendo los demás fijos en su valor óptimo) "
+            "mostrando **F1-Score en entrenamiento (naranja discontinuo)** vs **validación 5-Fold CV (azul sólido ±1σ)** "
+            "para detectar subajuste, sobreajuste y punto óptimo de generalización (estrella roja)."
+        )
+        fx_model = st.radio(
+            "Modelo a inspeccionar:",
+            options=available_fx_models,
+            index=available_fx_models.index("Random Forest") if "Random Forest" in available_fx_models else 0,
+            horizontal=True,
+            key="etapa3_2_fx_model",
+        )
+        plot_hyperparameter_effects(
+            model_effects=hp_effects[fx_model],
+            model_name=fx_model,
+            metric_key="f1",
+            metric_label="F1-Score",
+        )
+        fixed_best = hp_effects[fx_model].get("fixed_best_params", {})
+        if fixed_best:
+            fixed_txt = ", ".join(f"{k}={v}" for k, v in fixed_best.items())
+            st.caption(f"Configuración base de referencia para **{fx_model}**: `{fixed_txt}`.")
+    else:
+        st.info(
+            "No se encontraron curvas por hiperparámetro en `evaluation_results.json`. "
             "Ejecuta `python model_factory/train_model.py` para generarlas."
         )
 

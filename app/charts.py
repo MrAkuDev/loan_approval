@@ -629,6 +629,140 @@ def plot_hyperparameter_heatmaps(
     _display_cached_fig(cache_key, _build)
 
 
+def plot_hyperparameter_effects(
+    model_effects: dict,
+    model_name: str,
+    metric_key: str,
+    metric_label: str,
+) -> None:
+    """Dibuja curvas 1D Train vs Validación (5-Fold CV) para cada hiperparámetro de un modelo."""
+    param_list = model_effects.get("params", [])
+    if not param_list:
+        st.info(f"No hay curvas de efecto por hiperparámetro disponibles para {model_name}.")
+        return
+
+    cache_key = (
+        "hp_effects",
+        model_name,
+        metric_key,
+        metric_label,
+        _hash_payload(param_list),
+    )
+
+    def _build():
+        n_params = len(param_list)
+        ncols = min(3, n_params)
+        nrows = int(np.ceil(n_params / ncols))
+        fig, axes = plt.subplots(nrows, ncols, figsize=(5.8 * ncols, 4.15 * nrows), squeeze=False)
+        axes_flat = axes.ravel()
+
+        val_key = f"val_{metric_key}_mean"
+        train_key = f"train_{metric_key}_mean"
+        val_std_key = f"val_{metric_key}_std"
+
+        for idx, (ax, p_info) in enumerate(zip(axes_flat, param_list)):
+            labels = p_info["values"]
+            x = np.arange(len(labels))
+            y_val = np.array(p_info[val_key], dtype=float)
+            y_train = np.array(p_info[train_key], dtype=float)
+
+            ax.plot(
+                x,
+                y_train,
+                color="#D97706",
+                linestyle="--",
+                marker="s",
+                markersize=5.5,
+                linewidth=1.9,
+                label="Train (en fold)",
+            )
+            ax.plot(
+                x,
+                y_val,
+                color="#2563EB",
+                linestyle="-",
+                marker="o",
+                markersize=6.5,
+                linewidth=2.3,
+                label="Validación (5-Fold CV)",
+            )
+
+            if val_std_key in p_info:
+                y_std = np.array(p_info[val_std_key], dtype=float)
+                ax.fill_between(x, y_val - y_std, y_val + y_std, color="#2563EB", alpha=0.14)
+
+            best_val = p_info.get("best_value")
+            if best_val in labels:
+                bx = labels.index(best_val)
+                by = float(y_val[bx])
+                ax.axvline(bx, color="#DC2626", linestyle=":", linewidth=1.7, alpha=0.85)
+                ax.scatter(
+                    [bx],
+                    [by],
+                    s=115,
+                    color="#DC2626",
+                    zorder=5,
+                    marker="*",
+                    label="Óptimo seleccionado",
+                )
+
+            all_y = np.concatenate([y_val, y_train])
+            y_lo, y_hi = float(np.nanmin(all_y)), float(np.nanmax(all_y))
+            span = max(y_hi - y_lo, 0.02)
+            pad_bot = max(0.04, span * 0.32)
+            pad_top = max(0.045, span * 0.30)
+            ax.set_ylim(max(-0.02, y_lo - pad_bot), min(1.05, y_hi + pad_top))
+
+            val_offset = max(0.008, span * 0.075)
+            for xi, (yv, yt) in enumerate(zip(y_val, y_train)):
+                close_above = yt >= yv and (yt - yv) < span * 0.28
+                place_below = yv > 0.92 or close_above
+                ax.text(
+                    xi,
+                    yv - val_offset if place_below else yv + val_offset,
+                    f"{yv:.3f}",
+                    ha="center",
+                    va="top" if place_below else "bottom",
+                    fontsize=8,
+                    fontweight="bold",
+                    color="#1E3A8A",
+                )
+
+            ax.set_xticks(x)
+            ax.set_xticklabels(labels, fontsize=8.5, rotation=15 if len(labels) > 4 else 0)
+            ax.set_xlim(-0.35, len(labels) - 0.65)
+            ax.set_ylabel(metric_label, fontsize=9)
+            ax.set_title(p_info["label"], fontsize=10, fontweight="bold", pad=8)
+            ax.grid(alpha=0.3, linestyle="--")
+
+        for ax_empty in axes_flat[n_params:]:
+            ax_empty.set_visible(False)
+
+        handles, leg_labels = axes_flat[0].get_legend_handles_labels()
+        legend_y = 0.915 if nrows == 1 else 0.955
+        top_rect = 0.83 if nrows == 1 else 0.91
+        fig.suptitle(
+            f"{model_name} — Sensibilidad de {metric_label} por Hiperparámetro (Train vs. 5-Fold CV)",
+            fontsize=11.5,
+            fontweight="bold",
+            y=0.985,
+        )
+        if handles:
+            fig.legend(
+                handles,
+                leg_labels,
+                loc="upper center",
+                bbox_to_anchor=(0.5, legend_y),
+                ncol=len(handles),
+                fontsize=8.5,
+                framealpha=0.95,
+            )
+        plt.tight_layout(rect=[0, 0, 1, top_rect], h_pad=2.2, w_pad=2.0)
+        return fig
+
+    _display_cached_fig(cache_key, _build)
+
+
 def _format_feature_value_label(col: str, val) -> str:
     """Formatea cada característica junto al valor ingresado para los ejes de explicabilidad."""
     label = FEATURE_SHORT_LABELS.get(col, col)

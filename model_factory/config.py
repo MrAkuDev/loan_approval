@@ -25,6 +25,18 @@ TUNING_SCORING = "f1"
 MAX_VALID_AGE = 100
 MAX_VALID_EMP_LENGTH = 60
 
+HYPERPARAMETER_LABELS = {
+    "C": "Regularización (C)",
+    "gamma": "Coeficiente Kernel (gamma)",
+    "class_weight": "Ponderación de Clases (class_weight)",
+    "n_estimators": "Número de Árboles (n_estimators)",
+    "max_depth": "Profundidad Máxima (max_depth)",
+    "min_samples_split": "Mín. Muestras para Dividir (min_samples_split)",
+    "min_samples_leaf": "Mín. Muestras por Hoja (min_samples_leaf)",
+    "max_features": "Máx. Variables por División (max_features)",
+    "solver": "Optimizador (solver)",
+}
+
 # Orden exacto de características tal como aparecen en credit_risk_dataset.csv (Kaggle: laotse/credit-risk-dataset)
 CATEGORICAL_COLUMNS = [
     "person_home_ownership",

@@ -23,6 +23,7 @@ from model_factory.data import (
 )
 from model_factory.evaluation import evaluate_baseline_cv
 from model_factory.tuning import (
+    compute_hyperparameter_effects,
     compute_tuning_heatmaps,
     save_evaluation_results,
     train_and_export_final_models,
@@ -62,6 +63,9 @@ def main() -> None:
     print("=" * 72)
     best_params_by_model = tune_all_models(specs, X_train, y_train, cv=cv_5)
     tuning_heatmaps = compute_tuning_heatmaps(specs, best_params_by_model, X_train, y_train, cv=cv_5)
+    hyperparameter_effects = compute_hyperparameter_effects(
+        specs, best_params_by_model, X_train, y_train, cv=cv_5
+    )
 
     print("\n" + "=" * 72)
     print("4. ETAPA 3 — ENTRENAMIENTO FINAL (100% X_train) Y EVALUACIÓN EN TEST SET")
@@ -100,6 +104,7 @@ def main() -> None:
         "baseline_cv": baseline_cv_results,
         "baseline_test": baseline_test_results,
         "tuning_heatmaps": tuning_heatmaps,
+        "hyperparameter_effects": hyperparameter_effects,
         "optimized_test": optimized_test_results,
     }
     save_evaluation_results(summary_payload, results_path=RESULTS_FILE)
