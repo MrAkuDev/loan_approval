@@ -21,27 +21,36 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
-\bibitem{zhang2025datadriven}
+\bibitem{pucar2026consumer}
 \BIBentryALTinterwordspacing
-X.~Zhang, T.~Zhang, L.~Hou, X.~Liu, Z.~Guo, Y.~Tian, and Y.~Liu, ``Data-driven
-  loan default prediction: A machine learning approach for enhancing business
-  process management,'' \emph{Systems}, vol.~13, no.~7, p. 581, 2025. [Online].
-  Available: \url{https://www.mdpi.com/2079-8954/13/7/581}
+{\DJ}.~Pucar and D.~Sole{\v{s}}a, ``Machine learning for consumer loan default
+  prediction in retail banking,'' \emph{The European Journal of Applied
+  Economics}, vol.~23, no.~2, pp. 72--88, 2026. [Online]. Available:
+  \url{https://www.researchgate.net/publication/416817308_Machine_learning_for_consumer_loan_default_prediction_in_retail_banking}
 \BIBentrySTDinterwordspacing
 
-\bibitem{gour2025ensemble}
+\bibitem{lin2026automl}
 \BIBentryALTinterwordspacing
-S.~Gour and P.~Soni, ``Loan default prediction using ensemble machine learning
-  algorithms,'' \emph{Journal of Smart Sensors and Computing}, Dec. 2025.
-  [Online]. Available:
-  \url{https://www.researchgate.net/publication/399598089_Journal_of_Smart_Sensors_and_Computing_Loan_Default_Prediction_Using_Ensemble_Machine_Learning_Algorithms}
+Z.~Lin, ``A comparison of {AutoML} platforms for loan default prediction: An
+  empirical study of {H2O AutoML}, {TPOT}, and {Azure AutoML},'' \emph{Applied
+  and Computational Engineering}, vol. 272, no.~1, 2026. [Online]. Available:
+  \url{https://www.researchgate.net/publication/415380572_A_Comparison_of_AutoML_Platforms_for_Loan_Default_Prediction_An_Empirical_Study_of_H2O_AutoML_TPOT_and_Azure_AutoML}
 \BIBentrySTDinterwordspacing
 
-\bibitem{gultom2026explainable}
-M.~Gultom, C.~R. Angelia, and V.~Krishnan, ``Explainable ensemble learning for
-  loan approval prediction using {XGBoost}, {LightGBM}, and {Random Forest}
-  with {SHAP} analysis,'' \emph{Journal of Digital Market and Digital
-  Currency}, vol.~3, no.~3, 2026.
+\bibitem{maurino2025dataquality}
+\BIBentryALTinterwordspacing
+A.~Maurino, ``How data quality issues affect machine learning models for credit
+  risk assessment,'' 2025. [Online]. Available:
+  \url{https://arxiv.org/pdf/2511.10964}
+\BIBentrySTDinterwordspacing
+
+\bibitem{bolikulov2024categorical}
+\BIBentryALTinterwordspacing
+F.~Bolikulov, R.~Nasimov, A.~Rashidov, F.~Akhmedov, and Y.-I. Cho, ``Effective
+  methods of categorical data encoding for artificial intelligence
+  algorithms,'' \emph{Mathematics}, vol.~12, no.~16, p. 2553, Aug. 2024.
+  [Online]. Available: \url{https://www.mdpi.com/2227-7390/12/16/2553}
+\BIBentrySTDinterwordspacing
 
 \bibitem{cox1958regression}
 D.~R. Cox, ``The regression analysis of binary sequences,'' \emph{Journal of
@@ -56,11 +65,13 @@ C.~Cortes and V.~Vapnik, ``Support-vector networks,'' \emph{Machine Learning},
 L.~Breiman, ``Random forests,'' \emph{Machine Learning}, vol.~45, no.~1, pp.
   5--32, 2001.
 
-\bibitem{kirui2025neural}
+\bibitem{mahmud2025stacking}
 \BIBentryALTinterwordspacing
-D.~K. Kirui, ``Loan approval prediction using neural networks,'' ResearchGate,
-  2025. [Online]. Available:
-  \url{https://www.researchgate.net/publication/392103275_Loan_Approval_Prediction_Using_Neural_Networks}
+M.~I. Mahmud, M.~S. Reza, F.~Elias \emph{et~al.}, ``Multi-domain validation of
+  bayesian optimized stacking ensembles for next-generation credit risk
+  modeling with granular explainability and robust statistical inference,''
+  Preprints / TechRxiv, 202510.0484, 2025. [Online]. Available:
+  \url{https://www.preprints.org/manuscript/202510.0484}
 \BIBentrySTDinterwordspacing
 
 \bibitem{laotse_credit_risk}
@@ -76,16 +87,12 @@ F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
   ``Scikit-learn: Machine learning in {Python},'' \emph{Journal of Machine
   Learning Research}, vol.~12, pp. 2825--2830, 2011.
 
-\bibitem{chawla2002smote}
-N.~V. Chawla, K.~W. Bowyer, L.~O. Hall, and W.~P. Kegelmeyer, ``{SMOTE}:
-  Synthetic minority over-sampling technique,'' \emph{Journal of Artificial
-  Intelligence Research}, vol.~16, pp. 321--357, 2002.
-
-\bibitem{hoo2025wqd7004}
+\bibitem{muller2016introduction}
 \BIBentryALTinterwordspacing
-Q.~N. Hoo, ``{WQD7004} group 7 project report: Loan application decision
-  classification and regression,'' RPubs, Universiti Malaya, 2025. [Online].
-  Available: \url{https://rpubs.com/qinnihoo/wqd7004project}
+A.~C. M{\"u}ller and S.~Guido, \emph{Introduction to Machine Learning with
+  Python: A Guide for Data Scientists}.\hskip 1em plus 0.5em minus 0.4em\relax
+  O'Reilly Media, 2016. [Online]. Available:
+  \url{https://www.nrigroupindia.com/e-book/Introduction%20to%20Machine%20Learning%20with%20Python%20(%20PDFDrive.com%20)-min.pdf}
 \BIBentrySTDinterwordspacing
 
 \bibitem{bergstra2012random}

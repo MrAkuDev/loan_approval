@@ -540,21 +540,16 @@ def render_lab_header(eval_results: dict | None = None) -> str:
             tot_n = max(ds_info.get("total_rows", c0_n + c1_n), 1)
             raw_n = ds_info.get("raw_rows", tot_n)
             dup_n = ds_info.get("duplicates_removed", 0)
+            miss_n = ds_info.get("missing_rows_removed", 0)
             out_n = ds_info.get("outliers_removed", 0)
-            nulls_map = ds_info.get("missing_values_clean", {})
-            null_txt = (
-                ", ".join(f"`{k}` ({v:,})" for k, v in nulls_map.items())
-                if nulls_map
-                else "0 nulos"
-            )
             with st.expander("📊 Ver detalle de la base de datos e hiperparámetros óptimos"):
                 c_ds, c_hp = st.columns(2)
                 with c_ds:
                     st.markdown(
                         f"""
                         - **Origen:** Kaggle — *Credit Risk Dataset* (`credit_risk_dataset.csv`)
-                        - **Registros:** **{raw_n:,}** brutos → **{tot_n:,}** limpios × **12** columnas (−{dup_n} duplicados, −{out_n} atípicos imposibles)
-                        - **Nulos imputados en Pipeline:** {null_txt}
+                        - **Registros:** **{raw_n:,}** brutos → **{tot_n:,}** limpios × **12** columnas (−{dup_n} duplicados, −{miss_n:,} filas vacías, −{out_n} atípicos)
+                        - **Calidad:** **0 valores vacíos** (el valor numérico `0` se conserva como válido)
                         - **Partición:** 80% Train (**{ds_info['train_rows']:,}**) / 20% Test (**{ds_info['test_rows']:,}**) estratificada
                         - **Clases:** `0` Sin Incumplimiento (**{c0_n:,}**, {c0_n / tot_n * 100:.2f}%) vs `1` Incumplimiento (**{c1_n:,}**, {c1_n / tot_n * 100:.2f}%)
                         """

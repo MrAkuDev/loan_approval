@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.11.14)  17 NOV 2026 20:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.11.14)  17 NOV 2026 23:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -592,10 +592,10 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 28
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count344
 ) (main.aux
-LaTeX Info: Redefining \. on input line 17.
-LaTeX Info: Redefining \% on input line 17.
+LaTeX Info: Redefining \. on input line 19.
+LaTeX Info: Redefining \% on input line 19.
 Package babel Info: 'spanish' activates 'spanish' shorthands.
-(babel)             Reported on input line 17.
+(babel)             Reported on input line 19.
 )
 \openout1 = `main.aux'.
 
@@ -653,435 +653,434 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 43.
  (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 56.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 52.
  (C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
-) [1{C:/Users/JoelA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
+)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [1{C:/Users/JoelA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
-] [2]
-Underfull \hbox (badness 10000) in paragraph at lines 103--103
+]
+Underfull \hbox (badness 1635) in paragraph at lines 69--70
+\T1/ptm/m/n/10 y $\OML/cmm/m/it/10 ^^T \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9147$ \T1/ptm/m/n/10 ($\OML/cmm/m/it/10 p < \OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 001$\T1/ptm/m/n/10 ), con ex-pli-ca-bi-li-dad
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 133--133
 []|$\OT1/cmr/m/n/7 $4[]000 \OMS/cmsy/m/n/7 ^^@
  []
 
 
-Underfull \hbox (badness 2229) in paragraph at lines 105--106
+Underfull \hbox (badness 2229) in paragraph at lines 135--136
 []|\T1/ptm/m/n/7 Monto prin-ci-pal del prés-ta-mo so-li-ci-ta-do
  []
 
 
-Underfull \hbox (badness 2903) in paragraph at lines 106--106
-[]|$\OT1/cmr/m/n/7 5\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 42 %[] \OMS/cmsy/m/n/7 ^^@ \OT1/cmr/m/n/7 23\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 22 %[]$
+Underfull \hbox (badness 1824) in paragraph at lines 141--141
+[]|\T1/pcr/m/n/7 EDUCATION \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]668$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 MEDICAL \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]269$\T1/ptm/m/n/7 ),
  []
 
 
-Underfull \hbox (badness 1824) in paragraph at lines 111--111
-[]|\T1/pcr/m/n/7 EDUCATION \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 6[]409$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 MEDICAL \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 6[]042$\T1/ptm/m/n/7 ),
+Underfull \hbox (badness 6236) in paragraph at lines 141--141
+\T1/pcr/m/n/7 VENTURE \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 4[]967$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 PERSONAL \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 4[]857$\T1/ptm/m/n/7 ),
  []
 
 
-Underfull \hbox (badness 6236) in paragraph at lines 111--111
-\T1/pcr/m/n/7 VENTURE \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]679$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 PERSONAL \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]496$\T1/ptm/m/n/7 ),
+Underfull \hbox (badness 10000) in paragraph at lines 141--141
+\T1/pcr/m/n/7 DEBTCONSOLIDATION \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 4[]547$\T1/ptm/m/n/7 ),
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 111--111
-\T1/pcr/m/n/7 DEBTCONSOLIDATION \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 5[]189$\T1/ptm/m/n/7 ),
- []
-
-
-Underfull \hbox (badness 2591) in paragraph at lines 112--112
-[]|\T1/pcr/m/n/7 A \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 10[]702$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 B \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 10[]384$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 C \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 6[]436$\T1/ptm/m/n/7 ), \T1/pcr/m/n/7 D
- []
-
-<figures/fig1_dataset_eda.pdf, id=137, 680.24538pt x 243.18013pt>
+<figures/fig1_dataset_eda.pdf, id=136, 680.24538pt x 243.18013pt>
 File: figures/fig1_dataset_eda.pdf Graphic file (type pdf)
 <use figures/fig1_dataset_eda.pdf>
-Package pdftex.def Info: figures/fig1_dataset_eda.pdf  used on input line 124.
+Package pdftex.def Info: figures/fig1_dataset_eda.pdf  used on input line 154.
 (pdftex.def)             Requested size: 474.71906pt x 169.71284pt.
 
-Underfull \hbox (badness 1354) in paragraph at lines 131--132
+Underfull \hbox (badness 1354) in paragraph at lines 161--162
 \T1/ptm/m/n/10 te las re-glas in-de-pen-dien-tes de la mues-tra com-ple-ta se
  []
 
-
-Underfull \hbox (badness 4341) in paragraph at lines 136--137
-[]\T1/ptm/b/n/10 Tratamiento de va-lo-res fal-tan-tes sin fu-ga de
+[2]
+Underfull \hbox (badness 5667) in paragraph at lines 166--167
+\T1/ptm/m/n/10 igual a $\OT1/cmr/m/n/10 123$ \T1/ptm/m/n/10 o $\OT1/cmr/m/n/10 144$ \T1/ptm/m/n/10 años y $\OT1/cmr/m/n/10 2$ \T1/ptm/m/n/10 so-li-ci-tan-tes con
  []
 
 
-Underfull \hbox (badness 6396) in paragraph at lines 136--137
-\T1/ptm/m/n/10 en \T1/pcr/m/n/10 person_emp_length \T1/ptm/m/n/10 ($\OT1/cmr/m/n/10 2\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 74 %[]$\T1/ptm/m/n/10 ) y $\OT1/cmr/m/n/10 3[]094$ \T1/ptm/m/n/10 en
+Underfull \hbox (badness 2096) in paragraph at lines 166--167
+\T1/pcr/m/n/10 person_emp_length \T1/ptm/m/n/10 de $\OT1/cmr/m/n/10 123\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 0$ \T1/ptm/m/n/10 años). Apli-can-do
  []
 
 
-Underfull \hbox (badness 2197) in paragraph at lines 136--137
-\T1/pcr/m/n/10 loan_int_rate \T1/ptm/m/n/10 ($\OT1/cmr/m/n/10 9\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 55 %[]$\T1/ptm/m/n/10 ). En lu-gar de des-car-tar
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [3]
+Underfull \hbox (badness 1496) in paragraph at lines 167--168
+\T1/ptm/m/n/10 tos de en-tre-na-mien-to pa-ra evi-tar fu-ga de in-for-ma-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--137
-\T1/pcr/m/n/10 SimpleImputer \T1/ptm/m/n/10 con \T1/pcr/m/n/10 strategy="median"
+Underfull \hbox (badness 1997) in paragraph at lines 167--168
+\T1/ptm/m/n/10 den-tro del \T1/pcr/m/n/10 ColumnTransformer \T1/ptm/m/n/10 me-dian-te es-tan-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--137
-\T1/ptm/m/n/10 y el ca-te-gó-ri-co \T1/pcr/m/n/10 SimpleImputer \T1/ptm/m/n/10 con
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 136--137
-\T1/pcr/m/n/10 strategy="most_frequent" \T1/ptm/m/n/10 den-tro del
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 136--137
-\T1/pcr/m/n/10 ColumnTransformer\T1/ptm/m/n/10 , cal-cu-lan-do las me-dia-nas
- []
-
-
-Underfull \hbox (badness 2173) in paragraph at lines 143--144
-[]\T1/ptm/b/n/10 Codificación ca-te-gó-ri-ca: \T1/ptm/m/n/10 Las $\OT1/cmr/m/n/10 4$ \T1/ptm/m/n/10 va-ria-bles ca-te-gó-ri-
- []
-
-
-Underfull \hbox (badness 2538) in paragraph at lines 144--145
+Underfull \hbox (badness 2538) in paragraph at lines 169--170
 \T1/ptm/m/n/10 de Pear-son se cal-cu-ló ex-clu-si-va-men-te so-bre $\OML/cmm/m/it/10 X[]$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 144--145
-\T1/ptm/m/n/10 ($\OT1/cmr/m/n/10 25[]927$ \T1/ptm/m/n/10 mues-tras) tras co-di-fi-ca-ción \T1/ptm/m/it/10 dummy \T1/ptm/m/n/10 con
+Underfull \hbox (badness 10000) in paragraph at lines 169--170
+\T1/ptm/m/n/10 ($\OT1/cmr/m/n/10 22[]796$ \T1/ptm/m/n/10 mues-tras) tras co-di-fi-ca-ción \T1/ptm/m/it/10 dummy \T1/ptm/m/n/10 con
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 144--145
-\T1/ptm/m/n/10 a \T1/pcr/m/n/10 loan_percent_income \T1/ptm/m/n/10 ($\OML/cmm/m/it/10 r \OT1/cmr/m/n/10 = +0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 3799$\T1/ptm/m/n/10 ),
+Underfull \hbox (badness 10000) in paragraph at lines 169--170
+\T1/ptm/m/n/10 a \T1/pcr/m/n/10 loan_percent_income \T1/ptm/m/n/10 ($\OML/cmm/m/it/10 r \OT1/cmr/m/n/10 = +0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 3754$\T1/ptm/m/n/10 ),
  []
 
 
-Underfull \hbox (badness 1448) in paragraph at lines 144--145
+Underfull \hbox (badness 1448) in paragraph at lines 169--170
 \T1/ptm/m/n/10 mien-tras que las co-rre-la-cio-nes ne-ga-ti-vas pro-tec-to-ras
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 144--145
+Underfull \hbox (badness 10000) in paragraph at lines 169--170
 \T1/ptm/m/n/10 más mar-ca-das re-caen en \T1/pcr/m/n/10 person_income
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 144--145
+Underfull \hbox (badness 10000) in paragraph at lines 169--170
 \T1/ptm/m/n/10 la co-li-nea-li-dad es-pe-ra-da en-tre \T1/pcr/m/n/10 person_age \T1/ptm/m/n/10 y
  []
 
-[3]
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-<figures/fig2_correlaciones.pdf, id=151, 520.10056pt x 369.56508pt>
+<figures/fig2_correlaciones.pdf, id=163, 520.10056pt x 369.56508pt>
 File: figures/fig2_correlaciones.pdf Graphic file (type pdf)
 <use figures/fig2_correlaciones.pdf>
-Package pdftex.def Info: figures/fig2_correlaciones.pdf  used on input line 150.
+Package pdftex.def Info: figures/fig2_correlaciones.pdf  used on input line 175.
 (pdftex.def)             Requested size: 252.0pt x 179.06403pt.
  [4 <./figures/fig1_dataset_eda.pdf>]
-Underfull \hbox (badness 2150) in paragraph at lines 213--214
+Underfull \hbox (badness 2150) in paragraph at lines 238--239
 \T1/ptm/m/n/10 es-tra-ti-fi-ca-da (\T1/pcr/m/n/10 train_test_split\T1/ptm/m/n/10 , \T1/pcr/m/n/10 test_size=0.20\T1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 1515) in paragraph at lines 213--214
-\T1/ptm/m/n/10 tre-na-mien-to y $\OT1/cmr/m/n/10 6[]482$ \T1/ptm/m/n/10 a prue-ba ($\OT1/cmr/m/n/10 5[]064$ \T1/ptm/m/n/10 cla-se \T1/pcr/m/n/10 0 \T1/ptm/m/n/10 y $\OT1/cmr/m/n/10 1[]418$
+Underfull \hbox (badness 1515) in paragraph at lines 238--239
+\T1/ptm/m/n/10 tre-na-mien-to y $\OT1/cmr/m/n/10 5[]699$ \T1/ptm/m/n/10 a prue-ba ($\OT1/cmr/m/n/10 4[]462$ \T1/ptm/m/n/10 cla-se \T1/pcr/m/n/10 0 \T1/ptm/m/n/10 y $\OT1/cmr/m/n/10 1[]237$
  []
 
 
-Underfull \hbox (badness 2941) in paragraph at lines 213--214
+Underfull \hbox (badness 2941) in paragraph at lines 238--239
 \T1/ptm/m/n/10 cla-se \T1/pcr/m/n/10 1\T1/ptm/m/n/10 ). Pa-ra to-das las va-li-da-cio-nes in-ter-nas se em-
  []
 
 
-Underfull \hbox (badness 1675) in paragraph at lines 215--216
-\T1/ptm/m/n/10 ba-se re-pro-du-ci-bles den-tro del \T1/pcr/m/n/10 Pipeline \T1/ptm/m/n/10 com-ple-to fue
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+[]\T1/ptm/m/n/10 En la \T1/ptm/b/n/10 Eta-pa 1 (Ba-se-li-ne)\T1/ptm/m/n/10 , ca-da mo-de-lo con
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--216
-\T1/ptm/m/n/10 bús-que-da exhaus-ti-va (\T1/pcr/m/n/10 GridSearchCV\T1/ptm/m/n/10 ) pa-ra las $\OT1/cmr/m/n/10 12$
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\T1/ptm/m/n/10 pa-rá-me-tros ba-se re-pro-du-ci-bles en-cap-su-la-do den-tro de
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--216
-\T1/ptm/m/n/10 con-fi-gu-ra-cio-nes de Re-gre-sión Lo-gís-ti-ca y bús-que-da
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\T1/ptm/m/n/10 un ob-je-to \T1/pcr/m/n/10 Pipeline \T1/ptm/m/n/10 com-ple-to fue eva-lua-do vía
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--216
-\T1/ptm/m/n/10 alea-to-ria [[]12[]] (\T1/pcr/m/n/10 RandomizedSearchCV\T1/ptm/m/n/10 , \T1/pcr/m/n/10 n_iter=12\T1/ptm/m/n/10 ,
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\T1/pcr/m/n/10 cross_validate \T1/ptm/m/n/10 y \T1/pcr/m/n/10 cross_val_predict \T1/ptm/m/n/10 so-bre
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--216
-\T1/pcr/m/n/10 random_state=42\T1/ptm/m/n/10 ) pa-ra \T1/ptm/m/it/10 SVM RBF \T1/ptm/m/n/10 y \T1/ptm/m/it/10 Ran-dom
+Underfull \hbox (badness 2707) in paragraph at lines 240--241
+\T1/ptm/m/n/10 por plie-gue [[]11[]]. En la \T1/ptm/b/n/10 Eta-pa 2 (Op-ti-mi-za-ción)\T1/ptm/m/n/10 , se
  []
 
 
-Underfull \hbox (badness 1895) in paragraph at lines 215--216
-\T1/ptm/m/it/10 Fo-rest\T1/ptm/m/n/10 , ma-xi-mi-zan-do siem-pre el pun-ta-je $\OML/cmm/m/it/10 F[]$\T1/ptm/m/n/10 . Asi-mis-mo,
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\T1/ptm/m/n/10 apli-có bús-que-da exhaus-ti-va (\T1/pcr/m/n/10 GridSearchCV\T1/ptm/m/n/10 ) [[]11[]]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--216
-\T1/ptm/m/n/10 (\T1/pcr/m/n/10 refit=False\T1/ptm/m/n/10 ) pa-ra ins-pec-cio-nar con-jun-ta-men-te $\OML/cmm/m/it/10 F[]$
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\T1/ptm/m/n/10 pa-ra las $\OT1/cmr/m/n/10 12$ \T1/ptm/m/n/10 con-fi-gu-ra-cio-nes de Re-gre-sión Lo-gís-ti-ca
  []
 
 
-Underfull \hbox (badness 3229) in paragraph at lines 215--216
-\T1/ptm/m/n/10 y $[]$. La Ta-bla []II[] re-su-me las con-fi-gu-ra-cio-nes
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\T1/ptm/m/n/10 y bús-que-da alea-to-ria [[]12[]] (\T1/pcr/m/n/10 RandomizedSearchCV\T1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--227
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\T1/pcr/m/n/10 n_iter=12\T1/ptm/m/n/10 , \T1/pcr/m/n/10 random_state=42\T1/ptm/m/n/10 ) pa-ra \T1/ptm/m/it/10 SVM RBF
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\T1/ptm/m/n/10 y \T1/ptm/m/it/10 Ran-dom Fo-rest\T1/ptm/m/n/10 , ma-xi-mi-zan-do siem-pre el pun-ta-je
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\OML/cmm/m/it/10 F[]$\T1/ptm/m/n/10 . Asi-mis-mo, \T1/pcr/m/n/10 compute_tuning_heatmaps
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 240--241
+\T1/ptm/m/n/10 eva-luó gra-fi-cas 2D com-ple-tas (\T1/pcr/m/n/10 refit=False\T1/ptm/m/n/10 ) y
+ []
+
+
+Underfull \hbox (badness 4001) in paragraph at lines 240--241
+\T1/pcr/m/n/10 compute_hyperparameter_effects \T1/ptm/m/n/10 cal-cu-ló cur-vas
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 []|\T1/pcr/m/n/7 RandomizedSearchCV
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--227
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 []|\T1/pcr/m/n/7 kernel="rbf"\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--227
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 \T1/pcr/m/n/7 random_state=42
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--227
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 \T1/ptm/m/n/7 (+ \T1/pcr/m/n/7 probability=True
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--227
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 []|\T1/pcr/m/n/7 C\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 01\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 1\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 1\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 5\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0]$\T1/ptm/m/n/7 ; \T1/pcr/m/n/7 gamma\T1/ptm/m/n/7 :
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--227
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 \OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; []; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 001\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 01]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--228
+Underfull \hbox (badness 10000) in paragraph at lines 252--253
 []|\T1/pcr/m/n/7 C=5.0\T1/ptm/m/n/7 , \T1/pcr/m/n/7 gamma="scale"\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
 []|\T1/pcr/m/n/7 RandomizedSearchCV
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
 []|\T1/pcr/m/n/7 random_state=42\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
 []|\T1/pcr/m/n/7 n_estimators\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [100\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 150\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 200\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 300]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
 \T1/pcr/m/n/7 max_depth\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 10\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 15\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 20\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 30]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
 \T1/pcr/m/n/7 min_samples_split\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [2\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 5\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 10]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
 \T1/pcr/m/n/7 min_samples_leaf\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [1\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 2\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 4]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
 \T1/pcr/m/n/7 max_features\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; []\OT1/cmr/m/n/7 ]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--230
+Underfull \hbox (badness 10000) in paragraph at lines 254--255
 []|\T1/pcr/m/n/7 n_estimators=200\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--230
+Underfull \hbox (badness 10000) in paragraph at lines 254--255
 \T1/pcr/m/n/7 max_depth=30\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--230
+Underfull \hbox (badness 10000) in paragraph at lines 254--255
 \T1/pcr/m/n/7 min_samples_split=2\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--230
+Underfull \hbox (badness 10000) in paragraph at lines 254--255
 \T1/pcr/m/n/7 min_samples_leaf=1\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 229--230
+Underfull \hbox (badness 10000) in paragraph at lines 254--255
 \T1/pcr/m/n/7 max_features="sqrt"\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 231--231
+Underfull \hbox (badness 10000) in paragraph at lines 256--256
 []|\T1/pcr/m/n/7 GridSearchCV \T1/ptm/m/n/7 ($\OT1/cmr/m/n/7 12$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 231--231
+Underfull \hbox (badness 10000) in paragraph at lines 256--256
 []|\T1/pcr/m/n/7 random_state=42\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 231--231
+Underfull \hbox (badness 10000) in paragraph at lines 256--256
 []|\T1/pcr/m/n/7 C\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 01\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 1\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 0\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 5\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 1\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 5\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0\OML/cmm/m/it/7 ; \OT1/cmr/m/n/7 10\OML/cmm/m/it/7 :\OT1/cmr/m/n/7 0]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 231--231
+Underfull \hbox (badness 10000) in paragraph at lines 256--256
 \T1/pcr/m/n/7 class_weight\T1/ptm/m/n/7 : $\OT1/cmr/m/n/7 [[]\OML/cmm/m/it/7 ; []\OT1/cmr/m/n/7 ]$\T1/ptm/m/n/7 ;
  []
 
 
-Underfull \hbox (badness 6157) in paragraph at lines 231--232
-[]|\T1/pcr/m/n/7 C=10.0\T1/ptm/m/n/7 , \T1/pcr/m/n/7 class_weight=None\T1/ptm/m/n/7 ,
+Underfull \hbox (badness 10000) in paragraph at lines 256--257
+[]|\T1/pcr/m/n/7 C=5.0\T1/ptm/m/n/7 , \T1/pcr/m/n/7 class_weight=None\T1/ptm/m/n/7 ,
  []
 
 
-Underfull \hbox (badness 3240) in paragraph at lines 241--243
+Underfull \hbox (badness 3240) in paragraph at lines 266--268
 \T1/ptm/m/n/10 donde la cla-se po-si-ti-va co-rres-pon-de al even-to de in-
  []
 
 
-Underfull \hbox (badness 2790) in paragraph at lines 241--243
+Underfull \hbox (badness 2790) in paragraph at lines 266--268
 \T1/ptm/m/n/10 cum-pli-mien-to (\T1/pcr/m/n/10 loan_status=1\T1/ptm/m/n/10 ). Los ex-pe-ri-men-tos se
  []
 
 
-Underfull \hbox (badness 1960) in paragraph at lines 241--243
+Underfull \hbox (badness 1960) in paragraph at lines 266--268
 \T1/ptm/m/n/10 eje-cu-ta-ron en Python $\OT1/cmr/m/n/10 3\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 15$ \T1/ptm/m/n/10 con \T1/pcr/m/n/10 scikit-learn $\OT1/cmr/m/n/10 1\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 1$\T1/ptm/m/n/10 ,
  []
 
 [5 <./figures/fig2_correlaciones.pdf>]
-Underfull \hbox (badness 1354) in paragraph at lines 292--293
+Underfull \hbox (badness 1354) in paragraph at lines 317--318
 []\T1/ptm/m/n/10 Los re-sul-ta-dos en $\OML/cmm/m/it/10 X[]$ \T1/ptm/m/n/10 mues-tran ga-nan-cias sus-tan-cia-
  []
 
 
-Underfull \hbox (badness 1412) in paragraph at lines 292--293
+Underfull \hbox (badness 1412) in paragraph at lines 317--318
 \T1/ptm/m/n/10 les de op-ti-mi-za-ción en los dos cla-si-fi-ca-do-res no li-nea-
  []
 
 
-Underfull \hbox (badness 2027) in paragraph at lines 292--293
+Underfull \hbox (badness 2027) in paragraph at lines 317--318
 \T1/ptm/m/n/10 fi-gu-ra-ción de $\OT1/cmr/m/n/10 200$ \T1/ptm/m/n/10 ár-bo-les con pro-fun-di-dad má-xi-ma de
  []
 
-[6]
-Underfull \hbox (badness 10000) in paragraph at lines 314--315
-[]\T1/ptm/m/n/10 La Ta-bla []VI[] con-tras-ta nues-tros re-sul-ta-dos so-bre
- []
 
+Underfull \vbox (badness 3635) has occurred while \output is active []
 
-Underfull \hbox (badness 10000) in paragraph at lines 314--315
-\T1/pcr/m/n/10 credit_risk_dataset.csv \T1/ptm/m/n/10 fren-te a cin-co
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 314--315
-\T1/ptm/m/n/10 in-ves-ti-ga-cio-nes cien-tí-fi-cas re-cien-tes en pre-dic-ción de
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 326--326
-[]|\T1/ptm/m/n/8 Credit Risk (Kag-gle,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 327--327
-[]|\T1/ptm/m/n/8 Credit Risk (Kag-gle,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 337--337
-[]|\T1/ptm/m/n/8 Random Fo-rest (+SMO-
- []
-
-<figures/fig3_tuning_heatmaps.pdf, id=362, 804.29482pt x 232.3455pt>
+ [6]
+<figures/fig3_tuning_heatmaps.pdf, id=377, 804.29482pt x 232.3455pt>
 File: figures/fig3_tuning_heatmaps.pdf Graphic file (type pdf)
 <use figures/fig3_tuning_heatmaps.pdf>
-Package pdftex.def Info: figures/fig3_tuning_heatmaps.pdf  used on input line 360.
+Package pdftex.def Info: figures/fig3_tuning_heatmaps.pdf  used on input line 378.
 (pdftex.def)             Requested size: 516.0pt x 149.06932pt.
-[7]
-<figures/fig4_baseline_vs_optimized.pdf, id=378, 789.05728pt x 254.1513pt>
+
+Underfull \hbox (badness 2269) in paragraph at lines 383--384
+\T1/ptm/m/n/10 mien-tras que in-cre-men-tar la pe-na-li-za-ción ha-cia \T1/pcr/m/n/10 C=5.0
+ []
+
+
+Underfull \hbox (badness 1675) in paragraph at lines 383--384
+\T1/ptm/m/n/10 con \T1/pcr/m/n/10 gamma="scale" \T1/ptm/m/n/10 ele-va pro-gre-si-va-men-te el de-sem-
+ []
+
+
+Underfull \hbox (badness 2050) in paragraph at lines 383--384
+\T1/ptm/m/n/10 pe-ño has-ta $\OML/cmm/m/it/10 F[] \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 777$\T1/ptm/m/n/10 . En \T1/ptm/m/it/10 Ran-dom Fo-rest\T1/ptm/m/n/10 , au-men-
+ []
+
+
+Underfull \hbox (badness 1418) in paragraph at lines 383--384
+\T1/ptm/m/n/10 me-se-ta en-tre $\OT1/cmr/m/n/10 200$ \T1/ptm/m/n/10 y $\OT1/cmr/m/n/10 300$ \T1/ptm/m/n/10 ár-bo-les que res-pal-da se-lec-cio-
+ []
+
+<figures/fig4_baseline_vs_optimized.pdf, id=379, 789.05728pt x 254.1513pt>
 File: figures/fig4_baseline_vs_optimized.pdf Graphic file (type pdf)
 <use figures/fig4_baseline_vs_optimized.pdf>
-Package pdftex.def Info: figures/fig4_baseline_vs_optimized.pdf  used on input line 369.
+Package pdftex.def Info: figures/fig4_baseline_vs_optimized.pdf  used on input line 387.
 (pdftex.def)             Requested size: 516.0pt x 166.21242pt.
-<figures/fig5_confusion_matrices.pdf, id=380, 760.64523pt x 228.89874pt>
+<figures/fig5_confusion_matrices.pdf, id=381, 760.64523pt x 228.89874pt>
 File: figures/fig5_confusion_matrices.pdf Graphic file (type pdf)
 <use figures/fig5_confusion_matrices.pdf>
-Package pdftex.def Info: figures/fig5_confusion_matrices.pdf  used on input line 378.
+Package pdftex.def Info: figures/fig5_confusion_matrices.pdf  used on input line 396.
 (pdftex.def)             Requested size: 495.36346pt x 149.0688pt.
-<figures/fig6_roc_pr_curves.pdf, id=382, 687.96684pt x 268.4909pt>
+<figures/fig6_roc_pr_curves.pdf, id=383, 687.96684pt x 268.4909pt>
 File: figures/fig6_roc_pr_curves.pdf Graphic file (type pdf)
 <use figures/fig6_roc_pr_curves.pdf>
-Package pdftex.def Info: figures/fig6_roc_pr_curves.pdf  used on input line 387.
+Package pdftex.def Info: figures/fig6_roc_pr_curves.pdf  used on input line 405.
 (pdftex.def)             Requested size: 490.19843pt x 191.31403pt.
+[7]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [8 <./figures/fig3_tuning_heatmaps.pdf>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [9 <./figures/fig4_baseline_vs_optimized.pdf> <./figures/fig5_confusion_matrices.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 408--409
+Underfull \hbox (badness 10000) in paragraph at lines 426--427
 \T1/ptm/m/it/10 Fo-rest \T1/ptm/m/n/10 (\T1/pcr/m/n/10 n_estimators=200\T1/ptm/m/n/10 , \T1/pcr/m/n/10 max_depth=30\T1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 408--409
+Underfull \hbox (badness 10000) in paragraph at lines 426--427
 \T1/pcr/m/n/10 max_features="sqrt"\T1/ptm/m/n/10 , \T1/pcr/m/n/10 class_weight=None\T1/ptm/m/n/10 )
  []
 
 
-Underfull \hbox (badness 1721) in paragraph at lines 408--409
-\T1/ptm/m/n/10 exac-ti-tud de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9351$\T1/ptm/m/n/10 , pre-ci-sión de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9594$\T1/ptm/m/n/10 , exhaus-ti-vi-dad
+Underfull \hbox (badness 1721) in paragraph at lines 426--427
+\T1/ptm/m/n/10 exac-ti-tud de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9347$\T1/ptm/m/n/10 , pre-ci-sión de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9586$\T1/ptm/m/n/10 , exhaus-ti-vi-dad
  []
 
 
-Underfull \hbox (badness 3068) in paragraph at lines 408--409
-\T1/ptm/m/n/10 de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 7341$\T1/ptm/m/n/10 , $\OML/cmm/m/it/10 F[] \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 8318$\T1/ptm/m/n/10 , $[] \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9348$ \T1/ptm/m/n/10 y
+Underfull \hbox (badness 3068) in paragraph at lines 426--427
+\T1/ptm/m/n/10 de $\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 7308$\T1/ptm/m/n/10 , $\OML/cmm/m/it/10 F[] \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 8294$\T1/ptm/m/n/10 , $[] \OT1/cmr/m/n/10 = 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 9377$ \T1/ptm/m/n/10 y
  []
 
-(main.bbl
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ (main.bbl
+Underfull \hbox (badness 3271) in paragraph at lines 34--39
+\T1/ptm/m/n/8 Avai-la-ble: []$https : / / www . researchgate . net / publication / 415380572 _ A _
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 34--39
-[]$\T1/ptm/m/n/8 https : / / www . researchgate . net / publication / 399598089 _ Journal _ of _
+\T1/ptm/m/n/8 Comparison _ of _ AutoML _ Platforms _ for _ Loan _ Default _ Prediction _ An _
+ []
+
+[9 <./figures/fig4_baseline_vs_optimized.pdf> <./figures/fig5_confusion_matrices.pdf>]
+Underfull \hbox (badness 1603) in paragraph at lines 92--97
+\T1/ptm/m/n/8 2016. [On-li-ne]. Avai-la-ble: []$https : / / www . nrigroupindia . com / e -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 34--39
-\T1/ptm/m/n/8 Smart _ Sensors _ and _ Computing _ Loan _ Default _ Prediction _ Using _
- []
-
-
-Underfull \hbox (badness 2564) in paragraph at lines 61--65
-[]\T1/ptm/m/n/8 D. K. Ki-rui, ``Loan ap-pro-val pre-dic-tion using
- []
-
-
-Underfull \hbox (badness 5878) in paragraph at lines 61--65
-\T1/ptm/m/n/8 neu-ral net-works,'' Re-search-Ga-te, 2025. [On-li-ne].
+Underfull \hbox (badness 10000) in paragraph at lines 92--97
+\T1/ptm/m/n/8 book / Introduction % 20to % 20Machine % 20Learning % 20with %
  []
 
 )
@@ -1096,29 +1095,31 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[10 <./figures/fig6_roc_pr_curves.pdf>] (main.aux
-LaTeX Info: Redefining \. on input line 17.
-LaTeX Info: Redefining \% on input line 17.
+[10
+
+ <./figures/fig6_roc_pr_curves.pdf>] (main.aux
+LaTeX Info: Redefining \. on input line 19.
+LaTeX Info: Redefining \% on input line 19.
 )
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 3259CADA92C3B0AEBB6716F8235B4410;3510.
+(rerunfilecheck)             Checksum: 87FA95B72EC5C9A344CB62EB86009FA5;3287.
  ) 
 Here is how much of TeX's memory you used:
- 24122 strings out of 467871
- 453927 string characters out of 5418375
- 880552 words of memory out of 5000000
- 52515 multiletter control sequences out of 15000+600000
- 764141 words of font info for 182 fonts, out of 8000000 for 9000
+ 24111 strings out of 467871
+ 453766 string characters out of 5418375
+ 883661 words of memory out of 5000000
+ 52509 multiletter control sequences out of 15000+600000
+ 762445 words of font info for 181 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
- 84i,14n,104p,1764b,806s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx6.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (10 pages, 559887 bytes).
+ 84i,14n,104p,1607b,806s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (10 pages, 552520 bytes).
 PDF statistics:
- 800 PDF objects out of 1000 (max. 8388607)
- 66 named destinations out of 1000 (max. 500000)
- 187 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 817 PDF objects out of 1000 (max. 8388607)
+ 61 named destinations out of 1000 (max. 500000)
+ 179 words of extra memory for PDF output out of 10000 (max. 10000000)
 

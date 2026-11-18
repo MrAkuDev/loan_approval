@@ -45,7 +45,7 @@ def render_tab_info(eval_results: dict) -> None:
         st.markdown(
             f"""
         - **Origen:** Kaggle — *Credit Risk Dataset* (`laotse/credit-risk-dataset`).
-        - **Registros limpios:** **{ds_info['total_rows']:,}** filas × **12** columnas (desde **{ds_info.get('raw_rows', ds_info['total_rows']):,}** brutos tras eliminar {ds_info.get('duplicates_removed', 0)} duplicados y {ds_info.get('outliers_removed', 0)} atípicos imposibles).
+        - **Registros limpios:** **{ds_info['total_rows']:,}** filas × **12** columnas (desde **{ds_info.get('raw_rows', ds_info['total_rows']):,}** brutos tras eliminar {ds_info.get('duplicates_removed', 0)} duplicados, {ds_info.get('missing_rows_removed', 0):,} filas con valores vacíos y {ds_info.get('outliers_removed', 0)} atípicos imposibles; **0 nulos restantes**).
         - **Partición utilizada:** 80% Entrenamiento (**{ds_info['train_rows']:,}**) / 20% Prueba (**{ds_info['test_rows']:,}**) estratificada (`random_state=42`).
         - **Distribución de la variable objetivo (`loan_status`):**
           - Clase `0` (**Sin Incumplimiento**): **{c0_n:,}** registros ({c0_n / tot_n * 100:.2f}%)

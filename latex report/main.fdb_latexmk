@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1794967916.44606 "main.aux" "main.bbl" "main" 1794968002.99928 0
-  "./referencias.bib" 1794720972 3951 5cfd50bf5e6be716f758f15f14ae39b3 ""
+["bibtex main"] 1794980464.16374 "main.aux" "main.bbl" "main" 1794980466.4196 0
+  "./referencias.bib" 1794972887 4433 338bb4d4bb6a52134293470fffc3ac2b ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/bibtex/bst/ieeetran/IEEEtran.bst" 1440622569 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "main.aux" 1794968002 12617 acf8762f28ccee9dbf177d4b121a8534 "pdflatex"
+  "main.aux" 1794980465 13465 374d4dcbc01be83c7559c6ed7b173daf "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1794968001.09048 "c:/archivos/docs maestria/practicas de machine learning/loan_approval/latex report/main.tex" "main.pdf" "main" 1794968003 0
+["pdflatex"] 1794980464.44244 "c:/archivos/docs maestria/practicas de machine learning/loan_approval/latex report/main.tex" "main.pdf" "main" 1794980466.4203 0
   "C:/Users/JoelA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1794716922 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/JoelA/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1794716872 13333488 cbdb6d4a30c2bf92ccb8dfc0002c1f41 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -51,7 +51,6 @@
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy8.tfm" 1136765053 1120 8b7d695260f3cff42e636090a8002094 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy9.tfm" 1136765053 1116 25a7bf822c58caf309a702ef79f4afbb ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb" 1247596666 34811 78b52f49e893bcba91bd7581cdc144c0 ""
-  "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx6.pfb" 1247596666 32378 2b20eba6bb36c716382b6d96240eaa69 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx7.pfb" 1247596667 32007 e8fa0078355f39467039935974716569 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb" 1247596666 32166 b0c356b15f19587482a9217ce1d8fa67 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb" 1247596667 30251 6afa5cb1d0204815a708a080681d4674 ""
@@ -210,17 +209,17 @@
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/tex/latex/tools/array.sty" 1761901070 15651 9d7c62df82cb29a555c00550babfe364 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "c:/archivos/docs maestria/practicas de machine learning/loan_approval/latex report/main.tex" 1794968000 57141 bebb349fe2443e4fbb579aecb035b5e8 ""
-  "figures/fig1_dataset_eda.pdf" 1794721828 27076 777961a1da3f766ff614a4066b3d29de ""
-  "figures/fig2_correlaciones.pdf" 1794721828 26196 e640c389bebdb822184781e86a9fa0a0 ""
-  "figures/fig3_tuning_heatmaps.pdf" 1794721828 36451 c9aca452163d0accbbfdd5d1cae7d7a7 ""
-  "figures/fig4_baseline_vs_optimized.pdf" 1794721829 26775 698ad9001bfcafb31783046547f6db6f ""
-  "figures/fig5_confusion_matrices.pdf" 1794721829 27260 b9f65657b73d1e00f391ca7c5c03ac21 ""
-  "figures/fig6_roc_pr_curves.pdf" 1794721832 47961 bee7d4597c396f5dda25a76c82e7af9c ""
-  "main.aux" 1794968002 12617 acf8762f28ccee9dbf177d4b121a8534 "pdflatex"
-  "main.bbl" 1794967916 4117 2da32b70d630826fc2516d29bd5d47b2 "bibtex main"
-  "main.out" 1794968002 3510 3259cada92c3b0aebb6716f8235b4410 "pdflatex"
-  "main.tex" 1794968000 57141 bebb349fe2443e4fbb579aecb035b5e8 ""
+  "c:/archivos/docs maestria/practicas de machine learning/loan_approval/latex report/main.tex" 1794980461 53888 ce5e2765d2a8201d2f1c8a9671d47a42 ""
+  "figures/fig1_dataset_eda.pdf" 1794970719 27097 9e56a9db477d811cbefbdea5e34a9790 ""
+  "figures/fig2_correlaciones.pdf" 1794970720 26191 c2656e734165f970dab30c32ac664681 ""
+  "figures/fig3_tuning_heatmaps.pdf" 1794970720 35825 657e3a3d6e2eeb31ef0dfd6e32a0f493 ""
+  "figures/fig4_baseline_vs_optimized.pdf" 1794970721 27230 d8f383e1f7af66e4ad9da61f43430599 ""
+  "figures/fig5_confusion_matrices.pdf" 1794970721 28049 10c4204a5ed5af6e6e02a1db37841a65 ""
+  "figures/fig6_roc_pr_curves.pdf" 1794970724 45148 42b21e6a48ddbe18874cd990f0bcfb88 ""
+  "main.aux" 1794980465 13465 374d4dcbc01be83c7559c6ed7b173daf "pdflatex"
+  "main.bbl" 1794980464 4628 8fbaa7dfc2f89a5df421ef0bf8b45be8 "bibtex main"
+  "main.out" 1794980465 3287 87fa95b72ec5c9a344cb62eb86009fa5 "pdflatex"
+  "main.tex" 1794980461 53888 ce5e2765d2a8201d2f1c8a9671d47a42 ""
   (generated)
   "main.aux"
   "main.log"

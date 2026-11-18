@@ -15,20 +15,39 @@ from model_factory.config import (
 )
 
 
+def _normalize_empty_strings(df: pd.DataFrame) -> pd.DataFrame:
+    """Convierte cadenas vacías o solo espacios a pd.NA sin alterar valores numéricos como 0."""
+    out = df.copy()
+    for col in out.columns:
+        if pd.api.types.is_string_dtype(out[col]) or out[col].dtype == object:
+            stripped = out[col].where(out[col].isna(), out[col].astype(str).str.strip())
+            out[col] = stripped.replace("", pd.NA)
+    return out
+
+
 def clean_credit_risk_dataframe(df_raw: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
-    """Elimina duplicados exactos y valores físicamente imposibles sin imputar ni filtrar por el objetivo."""
+    """Elimina duplicados exactos, filas con valores vacíos (cualquier columna) y atípicos imposibles."""
     raw_rows = int(len(df_raw))
-    df_dedup = df_raw.drop_duplicates().copy()
+    df_dedup = _normalize_empty_strings(df_raw.drop_duplicates())
     duplicates_removed = raw_rows - int(len(df_dedup))
 
-    valid_age = df_dedup["person_age"] <= MAX_VALID_AGE
-    valid_emp = df_dedup["person_emp_length"].isna() | (df_dedup["person_emp_length"] <= MAX_VALID_EMP_LENGTH)
-    df_clean = df_dedup[valid_age & valid_emp].reset_index(drop=True)
-    outliers_removed = int(len(df_dedup)) - int(len(df_clean))
+    empty_mask = df_dedup.isna().any(axis=1)
+    missing_by_column_removed = {
+        col: int(cnt) for col, cnt in df_dedup.isna().sum().items() if cnt > 0
+    }
+    df_nonempty = df_dedup[~empty_mask].copy()
+    missing_rows_removed = int(len(df_dedup)) - int(len(df_nonempty))
+
+    valid_age = df_nonempty["person_age"] <= MAX_VALID_AGE
+    valid_emp = df_nonempty["person_emp_length"] <= MAX_VALID_EMP_LENGTH
+    df_clean = df_nonempty[valid_age & valid_emp].reset_index(drop=True)
+    outliers_removed = int(len(df_nonempty)) - int(len(df_clean))
 
     stats = {
         "raw_rows": raw_rows,
         "duplicates_removed": duplicates_removed,
+        "missing_rows_removed": missing_rows_removed,
+        "missing_by_column_removed": missing_by_column_removed,
         "outliers_removed": outliers_removed,
         "clean_rows": int(len(df_clean)),
         "missing_values_clean": {

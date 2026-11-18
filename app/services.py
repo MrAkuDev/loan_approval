@@ -30,30 +30,39 @@ from app.config import (
 )
 
 
-def _load_clean_source_df() -> pd.DataFrame | None:
-    """Carga `credit_risk_dataset.csv` aplicando la misma limpieza determinista de `model_factory`."""
-    if not os.path.exists(CSV_PATH):
-        return None
-    df_raw = pd.read_csv(CSV_PATH)
-    df_dedup = df_raw.drop_duplicates().copy()
-    valid_age = df_dedup["person_age"] <= MAX_VALID_AGE
-    valid_emp = df_dedup["person_emp_length"].isna() | (df_dedup["person_emp_length"] <= MAX_VALID_EMP_LENGTH)
-    return df_dedup[valid_age & valid_emp].reset_index(drop=True)
+def _normalize_empty_strings(df: pd.DataFrame) -> pd.DataFrame:
+    """Convierte cadenas vacías o solo espacios a pd.NA sin afectar valores numéricos como 0."""
+    out = df.copy()
+    for col in out.columns:
+        if pd.api.types.is_string_dtype(out[col]) or out[col].dtype == object:
+            stripped = out[col].where(out[col].isna(), out[col].astype(str).str.strip())
+            out[col] = stripped.replace("", pd.NA)
+    return out
 
 
-@st.cache_data
-def load_cleaning_audit(csv_mtime: float) -> dict | None:
-    """Retorna el desglose y las filas eliminadas durante la limpieza determinista del CSV."""
+def _clean_and_audit_credit_risk_df() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame] | None:
+    """Ejecuta la limpieza determinista (duplicados, filas vacías y atípicos) y retorna datos + auditoría."""
     if not os.path.exists(CSV_PATH):
         return None
     df_raw = pd.read_csv(CSV_PATH)
     dup_mask = df_raw.duplicated(keep="first")
     df_duplicates = df_raw[dup_mask].copy()
-    df_dedup = df_raw[~dup_mask].copy()
+    df_dedup = _normalize_empty_strings(df_raw[~dup_mask])
 
-    bad_age = df_dedup["person_age"] > MAX_VALID_AGE
-    bad_emp = df_dedup["person_emp_length"].notna() & (df_dedup["person_emp_length"] > MAX_VALID_EMP_LENGTH)
-    df_outliers = df_dedup[bad_age | bad_emp].copy()
+    empty_mask = df_dedup.isna().any(axis=1)
+    df_missing = df_dedup[empty_mask].copy()
+    if not df_missing.empty:
+        empty_cols = [
+            ", ".join(col for col in df_missing.columns if pd.isna(row[col]))
+            for _, row in df_missing.iterrows()
+        ]
+        df_missing.insert(0, "Columnas Vacías", empty_cols)
+    df_nonempty = df_dedup[~empty_mask].copy()
+
+    bad_age = df_nonempty["person_age"] > MAX_VALID_AGE
+    bad_emp = df_nonempty["person_emp_length"] > MAX_VALID_EMP_LENGTH
+    out_mask = bad_age | bad_emp
+    df_outliers = df_nonempty[out_mask].copy()
     if not df_outliers.empty:
         reasons = []
         for idx in df_outliers.index:
@@ -65,9 +74,32 @@ def load_cleaning_audit(csv_mtime: float) -> dict | None:
             reasons.append(" y ".join(r_parts))
         df_outliers.insert(0, "Motivo de Exclusión", reasons)
 
+    df_clean = df_nonempty[~out_mask].reset_index(drop=True)
+    return (
+        df_clean,
+        df_outliers.reset_index(drop=True),
+        df_missing.reset_index(drop=True),
+        df_duplicates.reset_index(drop=True),
+    )
+
+
+def _load_clean_source_df() -> pd.DataFrame | None:
+    """Carga `credit_risk_dataset.csv` aplicando la misma limpieza determinista de `model_factory`."""
+    cleaned = _clean_and_audit_credit_risk_df()
+    return cleaned[0] if cleaned is not None else None
+
+
+@st.cache_data
+def load_cleaning_audit(csv_mtime: float) -> dict | None:
+    """Retorna las filas eliminadas durante la limpieza determinista del CSV."""
+    cleaned = _clean_and_audit_credit_risk_df()
+    if cleaned is None:
+        return None
+    _, df_outliers, df_missing, df_duplicates = cleaned
     return {
-        "outliers_df": df_outliers.reset_index(drop=True),
-        "duplicates_df": df_duplicates.reset_index(drop=True),
+        "outliers_df": df_outliers,
+        "missing_df": df_missing,
+        "duplicates_df": df_duplicates,
     }
 
 

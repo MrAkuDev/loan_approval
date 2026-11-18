@@ -64,7 +64,7 @@ credit_risk_dataset.csv
 
 1. **Data Loading, Cleaning & Stratified Split (`data.py`)**:
    - Reads `CSV_PATH` (`credit_risk_dataset.csv` in the project root, `32,581` raw rows × `12` columns).
-   - `clean_credit_risk_dataframe()` removes `165` exact duplicate rows (preventing train/test duplicate leakage) and `7` physically impossible outlier rows (`person_age > 100` or `person_emp_length > 60`), yielding `32,409` clean rows while keeping missing values (`person_emp_length`: `887`, `loan_int_rate`: `3,094`) untouched for leak-free in-pipeline imputation.
+   - `clean_credit_risk_dataframe()` removes `165` exact duplicate rows (preventing train/test duplicate leakage), `3,915` rows containing at least one empty/`NaN` value across all columns (`person_emp_length`: `887`, `loan_int_rate`: `3,095`, preserving numeric `0` as a valid value), and `6` physically impossible outlier rows (`person_age > 100` or `person_emp_length > 60`), yielding `28,495` complete, valid rows (`0` nulls remaining).
    - Selects `FEATURE_ORDER` (`11` input columns) and `TARGET_COLUMN` (`"loan_status"`).
    - Splits data with `train_test_split(..., test_size=0.20, random_state=42, stratify=y)`.
    - Instantiates a shared `StratifiedKFold(n_splits=5, shuffle=True, random_state=42)` via `build_cv_splitter()`.

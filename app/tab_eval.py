@@ -246,48 +246,58 @@ def _render_cleaning_summary(ds_info: dict, csv_mtime: float) -> None:
     """Muestra las cifras de limpieza determinista del dataset y el detalle de registros eliminados."""
     raw_n = ds_info.get("raw_rows", ds_info.get("total_rows", 0))
     dup_n = ds_info.get("duplicates_removed", 0)
+    miss_n = ds_info.get("missing_rows_removed", 0)
+    miss_cols = ds_info.get("missing_by_column_removed", {})
     out_n = ds_info.get("outliers_removed", 0)
-    clean_n = ds_info.get("total_rows", raw_n - dup_n - out_n)
+    clean_n = ds_info.get("total_rows", raw_n - dup_n - miss_n - out_n)
     cd = ds_info.get("class_distribution", {})
     c0_n = cd.get("0_no_default", cd.get("0_no_aprobado", 0))
     c1_n = cd.get("1_default", cd.get("1_aprobado", 0))
-    nulls_map = ds_info.get("missing_values_clean", {})
-    null_txt = (
-        ", ".join(f"`{col}` ({cnt:,} nulos)" for col, cnt in nulls_map.items())
-        if nulls_map
-        else "0 nulos"
+
+    miss_col_txt = (
+        " · ".join(f"{col}: {cnt:,}" for col, cnt in miss_cols.items())
+        if miss_cols
+        else "0 columnas con vacíos"
     )
 
     st.markdown("**🧹 Resumen de Limpieza y Datos Depurados (`credit_risk_dataset.csv`)**")
-    cl1, cl2, cl3, cl4 = st.columns(4)
+    cl1, cl2, cl3, cl4, cl5 = st.columns(5)
     cl1.metric("Registros brutos", f"{raw_n:,}")
     cl2.metric("Duplicados eliminados", f"-{dup_n:,}", f"{(dup_n / max(raw_n, 1)) * 100:.2f}% del bruto", delta_color="off")
-    cl3.metric(
+    cl3.metric("Filas con vacíos eliminadas", f"-{miss_n:,}", miss_col_txt, delta_color="off")
+    cl4.metric(
         "Atípicos imposibles eliminados",
         f"-{out_n:,}",
         f"edad > {MAX_VALID_AGE} o emp > {MAX_VALID_EMP_LENGTH}",
         delta_color="off",
     )
-    cl4.metric(
+    cl5.metric(
         "Dataset limpio total",
         f"{clean_n:,}",
         f"Train {ds_info['train_rows']:,} · Test {ds_info['test_rows']:,}",
         delta_color="off",
     )
     st.caption(
-        f"Sobre los **{clean_n:,}** registros limpios: **Sin Incumplimiento (0): {c0_n:,} ({(c0_n / max(clean_n, 1)) * 100:.2f}%)** · "
-        f"**Incumplimiento (1): {c1_n:,} ({(c1_n / max(clean_n, 1)) * 100:.2f}%)**. "
-        f"Valores faltantes conservados para imputación por mediana dentro del `Pipeline` (fit en `X_train`): {null_txt}."
+        f"Sobre los **{clean_n:,}** registros limpios (**0 valores vacíos/nulos**, conservando `0` numérico como valor válido): "
+        f"**Sin Incumplimiento (0): {c0_n:,} ({(c0_n / max(clean_n, 1)) * 100:.2f}%)** · "
+        f"**Incumplimiento (1): {c1_n:,} ({(c1_n / max(clean_n, 1)) * 100:.2f}%)**."
     )
 
     audit = load_cleaning_audit(csv_mtime)
     if audit is not None:
         df_out_rows = audit["outliers_df"]
+        df_miss_rows = audit["missing_df"]
         df_dup_rows = audit["duplicates_df"]
         with st.expander(
-            f"🔍 Ver valores eliminados durante la limpieza ({len(df_out_rows)} atípicos y {len(df_dup_rows)} duplicados)",
+            f"🔍 Ver valores eliminados durante la limpieza ({len(df_miss_rows):,} filas vacías, {len(df_out_rows)} atípicos y {len(df_dup_rows)} duplicados)",
             expanded=False,
         ):
+            st.markdown(f"**Filas con al menos una columna vacía eliminadas (`{len(df_miss_rows):,}` filas; `0` no cuenta como vacío):**")
+            if not df_miss_rows.empty:
+                st.dataframe(df_miss_rows, use_container_width=True, hide_index=True)
+            else:
+                st.info("No se detectaron columnas con valores vacíos.")
+
             st.markdown(f"**Atípicos imposibles eliminados (`{len(df_out_rows)}` filas):** `person_age > {MAX_VALID_AGE}` o `person_emp_length > {MAX_VALID_EMP_LENGTH}`")
             if not df_out_rows.empty:
                 st.dataframe(df_out_rows, use_container_width=True, hide_index=True)

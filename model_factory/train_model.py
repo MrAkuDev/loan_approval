@@ -44,11 +44,12 @@ def main() -> None:
     print(
         f"Dataset bruto: {cleaning_stats['raw_rows']:,} | "
         f"Duplicados eliminados: {cleaning_stats['duplicates_removed']:,} | "
+        f"Filas vacías eliminadas: {cleaning_stats['missing_rows_removed']:,} | "
         f"Atípicos imposibles eliminados: {cleaning_stats['outliers_removed']:,}"
     )
     print(
-        f"Dataset limpio: {len(df):,} registros | Train: {len(X_train):,} | Test: {len(X_test):,} | "
-        f"Nulos imputados en Pipeline: {cleaning_stats['missing_values_clean']}"
+        f"Dataset limpio: {len(df):,} registros (0 vacíos) | Train: {len(X_train):,} | Test: {len(X_test):,} | "
+        f"Vacíos por columna eliminados: {cleaning_stats['missing_by_column_removed']}"
     )
 
     print("\n" + "=" * 72)
@@ -87,6 +88,8 @@ def main() -> None:
             "source": "Kaggle — Credit Risk Dataset (laotse/credit-risk-dataset)",
             "raw_rows": cleaning_stats["raw_rows"],
             "duplicates_removed": cleaning_stats["duplicates_removed"],
+            "missing_rows_removed": cleaning_stats["missing_rows_removed"],
+            "missing_by_column_removed": cleaning_stats["missing_by_column_removed"],
             "outliers_removed": cleaning_stats["outliers_removed"],
             "total_rows": int(len(df)),
             "train_rows": int(len(X_train)),
