@@ -21,7 +21,7 @@ from model_factory.data import (
     compute_train_correlations,
     load_and_split_data,
 )
-from model_factory.evaluation import evaluate_baseline_cv
+from model_factory.evaluation import evaluate_baseline_cv, evaluate_optimized_cv, evaluate_threshold_tuning
 from model_factory.tuning import (
     compute_hyperparameter_effects,
     compute_tuning_heatmaps,
@@ -67,6 +67,16 @@ def main() -> None:
     hyperparameter_effects = compute_hyperparameter_effects(
         specs, best_params_by_model, X_train, y_train, cv=cv_5
     )
+    threshold_tuning_results = evaluate_threshold_tuning(
+        specs=specs,
+        best_params_by_model=best_params_by_model,
+        X_train=X_train,
+        y_train=y_train,
+        cv=cv_5,
+    )
+    optimized_cv_results = evaluate_optimized_cv(
+        specs, best_params_by_model, X_train, y_train, cv=cv_5
+    )
 
     print("\n" + "=" * 72)
     print("4. ETAPA 3 — ENTRENAMIENTO FINAL (100% X_train) Y EVALUACIÓN EN TEST SET")
@@ -108,7 +118,9 @@ def main() -> None:
         "baseline_test": baseline_test_results,
         "tuning_heatmaps": tuning_heatmaps,
         "hyperparameter_effects": hyperparameter_effects,
+        "optimized_cv": optimized_cv_results,
         "optimized_test": optimized_test_results,
+        "threshold_tuning": threshold_tuning_results,
     }
     save_evaluation_results(summary_payload, results_path=RESULTS_FILE)
 

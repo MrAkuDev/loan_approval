@@ -13,9 +13,11 @@ from app.config import CSV_PATH, FEATURE_ORDER, FEATURE_SHORT_LABELS, VALID_CATE
 from app.frontend import (
     render_hyperparameters_list,
     render_prediction_cards,
+    render_threshold_selector,
     show_inline_loading,
 )
 from app.services import (
+    apply_threshold_to_single_preds,
     compute_local_feature_contributions,
     load_explainability_background,
     predict_with_model,
@@ -243,22 +245,10 @@ def render_tab_predict(models: dict, eval_results: dict | None = None) -> None:
         preds = {name: predict_with_model(pipe, X_input) for name, pipe in models.items()}
         pred_loader.empty()
 
-        comp_rows = [
-            {
-                "Modelo": m_name,
-                "Clase Predicha": res["pred"],
-                "Etiqueta": res["label"],
-                "Prob. Sin Incumplimiento (Clase 0)": round(res["prob_0"], 4) if res["prob_0"] is not None else None,
-                "Prob. Incumplimiento (Clase 1)": round(res["prob_1"], 4) if res["prob_1"] is not None else None,
-                "Decision Function": round(res["decision_score"], 4) if res["decision_score"] is not None else None,
-            }
-            for m_name, res in preds.items()
-        ]
         st.session_state["home_last_prediction"] = {
             "val_warnings": val_warnings,
             "X_input": X_input,
             "preds": preds,
-            "comp_rows": comp_rows,
         }
 
     cached_pred = st.session_state.get("home_last_prediction")
@@ -268,15 +258,36 @@ def render_tab_predict(models: dict, eval_results: dict | None = None) -> None:
                 st.warning(f"⚠️ Advertencia de validación: {warn}")
 
             st.subheader("🎯 Resultados de Predicción por Modelo")
-            render_prediction_cards(cached_pred["preds"])
-            _render_consensus_summary(cached_pred["preds"])
+            active_thresholds = render_threshold_selector(
+                eval_results,
+                list(cached_pred["preds"].keys()),
+                key_prefix="predict",
+            )
+            effective_preds = apply_threshold_to_single_preds(
+                cached_pred["preds"],
+                active_thresholds,
+            )
+            comp_rows = [
+                {
+                    "Modelo": m_name,
+                    "Umbral": round(res.get("threshold", 0.5), 2),
+                    "Clase Predicha": res["pred"],
+                    "Etiqueta": res["label"],
+                    "Prob. Sin Incumplimiento (Clase 0)": round(res["prob_0"], 4) if res["prob_0"] is not None else None,
+                    "Prob. Incumplimiento (Clase 1)": round(res["prob_1"], 4) if res["prob_1"] is not None else None,
+                    "Decision Function": round(res["decision_score"], 4) if res["decision_score"] is not None else None,
+                }
+                for m_name, res in effective_preds.items()
+            ]
+            render_prediction_cards(effective_preds)
+            _render_consensus_summary(effective_preds)
 
-            df_comp = pd.DataFrame(cached_pred["comp_rows"])
+            df_comp = pd.DataFrame(comp_rows)
             c_tbl, c_fig = st.columns([1.2, 1])
             with c_tbl:
                 st.dataframe(df_comp, use_container_width=True, hide_index=True)
             with c_fig:
-                plot_single_prediction_confidence(cached_pred["comp_rows"])
+                plot_single_prediction_confidence(comp_rows)
 
             _render_local_explanations(models, cached_pred["X_input"])
 

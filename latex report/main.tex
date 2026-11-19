@@ -40,7 +40,7 @@ Chihuahua, México}
 \maketitle
 
 \begin{abstract}
-La evaluación del riesgo crediticio representa un problema de clasificación binaria debido al impacto financiero de otorgar préstamos con alta probabilidad de incumplimiento o rechazar solicitantes con capacidad de pago suficiente. El objetivo de este trabajo es diseñar, optimizar y evaluar experimentalmente un flujo aprendizaje para predecir el incumplimiento de préstamos. Utilizando el dataset \textit{Credit Risk Dataset} de Kaggle ($32{,}581$ instancias y $12$ caracteristicas) ademas se aplicó inspeccion y limpieza ($28{,}495$ registros válidos y completos tras eliminar $165$ duplicados, $3{,}915$ filas con valores vacíos y $6$ atípicos imposibles), partición estratificada $80/20$ ($22{,}796$ entrenamiento; $5{,}699$ prueba) y validación cruzada estratificada de $5$ pliegues dentro de arquitecturas \textit{Pipeline} y \textit{ColumnTransformer} con estandarización numérica y codificación \textit{One-Hot}. Se utilizo Regresión Logística, Máquinas de Vectores de Soporte con kernel RBF (\textit{SVM RBF}) y \textit{Random Forest}, optimizando hiperparámetros bajo la métrica $F_1$. Se concluyo que los ensambles de árboles capturan con superior eficacia caracteristicas no lineales asociados a la practica crediticia.
+La evaluación del riesgo crediticio representa un problema de clasificación binaria crítico por el costo asimétrico entre aprobar créditos con incumplimiento y rechazar solicitantes solventes. El objetivo de este trabajo es diseñar, optimizar y evaluar experimentalmente un flujo de aprendizaje automático libre de fuga de información para priorizar la detección de incumplimientos (\texttt{loan\_status=1}). Utilizando el \textit{Credit Risk Dataset} de Kaggle ($32{,}581$ instancias y $12$ atributos), se aplicó limpieza determinista ($28{,}495$ registros válidos tras eliminar $165$ duplicados, $3{,}915$ filas con valores vacíos y $6$ atípicos imposibles), partición estratificada $80/20$ ($22{,}796$ entrenamiento; $5{,}699$ prueba) y validación cruzada estratificada de $5$ pliegues dentro de arquitecturas \textit{Pipeline} y \textit{ColumnTransformer} con estandarización numérica y codificación \textit{One-Hot}. Se evaluaron Regresión Logística, Máquinas de Vectores de Soporte con kernel RBF (\textit{SVM RBF}) y \textit{Random Forest}, optimizando hiperparámetros y umbrales de decisión en entrenamiento bajo la métrica $F_2$ (ponderando la exhaustividad $2\times$ sobre la precisión). Bajo $F_2$, los tres modelos seleccionaron \texttt{class\_weight="balanced"} y \textit{Random Forest} obtuvo el mejor desempeño en prueba ($\text{Recall}=0.7898$, $F_2=0.7977$, $F_1=0.8098$, $\text{ROC-AUC}=0.9381$) en $0.55\text{ s}$, confirmando que los ensambles de árboles capturan con superior eficacia las relaciones no lineales del riesgo crediticio.
 \end{abstract}
 
 % =========================================================================
@@ -53,7 +53,7 @@ El problema técnico abordado consiste en la clasificación binaria supervisada 
 
 Para enfrentar estos retos, las soluciones computacionales modernas han utilizado desde modelos lineales generalizados como la Regresión Logística~\cite{cox1958regression} hasta clasificadores basados en márgenes no lineales como las Máquinas de Vectores de Soporte (\textit{Support Vector Machines}, SVM)~\cite{cortes1995support}, métodos de ensamble basados en árboles como \textit{Random Forest}~\cite{breiman2001random} y \textit{Gradient Boosting}~\cite{pucar2026consumer}, plataformas de aprendizaje automatizado (\textit{AutoML})~\cite{lin2026automl} y ensambles de apilamiento optimizados bayesianamente~\cite{mahmud2025stacking}. Si bien múltiples estudios reportan métricas prometedoras, un desafío metodológico recurrente radica en garantizar una depuración rigurosa de calidad de datos y la ausencia de fuga de información (\textit{data leakage}) durante el filtrado de duplicados, valores vacíos, atípicos, codificación categórica y búsqueda de hiperparámetros~\cite{maurino2025dataquality,bolikulov2024categorical}.
 
-El objetivo principal de este proyecto es desarrollar, optimizar y evaluar experimentalmente un sistema modular de aprendizaje automático en Python para predecir el incumplimiento crediticio sobre la base de datos pública \textit{Credit Risk Dataset}~\cite{laotse_credit_risk}, contrastando tres familias algorítmicas representativas: Regresión Logística (modelo lineal interpretable), SVM con kernel RBF (clasificador geométrico no lineal) y \textit{Random Forest} (ensamble paralelo de árboles de decisión). El alcance del trabajo comprende el análisis exploratorio y depuración determinista del conjunto de $32{,}581$ registros brutos ($28{,}495$ válidos completos), el diseño de un flujo encapsulado libre de fuga de datos mediante \texttt{scikit-learn}~\cite{pedregosa2011scikit}, la evaluación \textit{baseline} en validación cruzada estratificada de $5$ pliegues, la optimización sistemática de hiperparámetros con mapas de sensibilidad bidimensionales y curvas 1D por parámetro, la evaluación final en un conjunto de prueba independiente, el contraste con cinco investigaciones del estado del arte y la publicación del código reproducible y aplicación web en el repositorio del proyecto.\footnote{Código fuente y artefactos experimentales disponibles en \url{https://github.com/MrAkuDev/loan_approval}.}
+El objetivo principal de este proyecto es desarrollar, optimizar y evaluar experimentalmente un sistema modular de aprendizaje automático en Python para predecir el incumplimiento crediticio sobre la base de datos pública \textit{Credit Risk Dataset}~\cite{laotse_credit_risk}, contrastando tres familias algorítmicas representativas: Regresión Logística (modelo lineal interpretable), SVM con kernel RBF (clasificador geométrico no lineal) y \textit{Random Forest} (ensamble paralelo de árboles de decisión). Dado el mayor costo financiero de omitir casos de incumplimiento (clase $1$), la optimización de hiperparámetros y de umbrales de decisión en validación cruzada se orientó mediante el puntaje $F_2$. El alcance del trabajo comprende el análisis exploratorio y depuración determinista del conjunto de $32{,}581$ registros brutos ($28{,}495$ válidos completos), el diseño de un flujo encapsulado libre de fuga de datos mediante \texttt{scikit-learn}~\cite{pedregosa2011scikit}, la evaluación \textit{baseline} y optimizada en validación cruzada estratificada de $5$ pliegues en entrenamiento (incluyendo mapas 2D $F_2$, curvas 1D y ajuste de umbral en CV), la evaluación final en un conjunto de prueba independiente, el contraste con cinco investigaciones del estado del arte y la publicación del código reproducible y aplicación web en Streamlit.\footnote{Código fuente y artefactos experimentales disponibles en \url{https://github.com/MrAkuDev/loan_approval}.}
 
 % =========================================================================
 \section{Antecedentes y Trabajos Relacionados}
@@ -231,8 +231,8 @@ La investigacion consta de tres etapas secuenciales ejecutadas por \texttt{model
 \node[box] (data) {\textbf{Dataset y Limpieza}\\ {\scriptsize\texttt{credit\_risk\_dataset.csv}}\\ $32{,}581 \rightarrow 28{,}495$ filas\\ ($-165$ dup., $-3{,}915$ vac., $-6$ imp.)};
 \node[box, right=of data] (split) {\textbf{Partición Estratificada}\\ $80\%$ Train ($22{,}796$)\\ $20\%$ Test ($5{,}699$)\\ \texttt{random\_state=42}};
 \node[stage, right=of split] (stage1) {\textbf{Etapa 1: Baseline}\\ \texttt{StratifiedKFold(5)}\\ \texttt{Pipeline} completo\\ Métricas CV base};
-\node[stage, below=0.75cm of stage1] (stage2) {\textbf{Etapa 2: Optimización}\\ Preproc. en $X_{\text{train}}$\\ \texttt{Grid} / \texttt{RandomSearchCV}\\ Heatmaps 2D y Curvas 1D};
-\node[stage, left=of stage2] (stage3) {\textbf{Etapa 3: Ajuste Final}\\ Entreno $100\%$ $X_{\text{train}}$\\ con \texttt{best\_params}\\ Eval. única en $X_{\text{test}}$};
+\node[stage, below=0.75cm of stage1] (stage2) {\textbf{Etapa 2: Optimización ($F_2$)}\\ Preproc. en $X_{\text{train}}$\\ \texttt{Grid}/\texttt{RandomSearchCV}\\ Mapas 2D, 1D y Umbral CV};
+\node[stage, left=of stage2] (stage3) {\textbf{Etapa 3: Ajuste Final}\\ Reeval. CV en $X_{\text{train}}$\\ Entreno $100\%$ $X_{\text{train}}$\\ Eval. única en $X_{\text{test}}$};
 \node[outbox, left=of stage3] (export) {\textbf{Exportación}\\ $3$ archivos \texttt{.joblib}\\ (\texttt{compress=3}) y\\ \scriptsize\texttt{evaluation\_results.json}};
 
 \draw[arrow] (data) -- (split);
@@ -241,40 +241,41 @@ La investigacion consta de tres etapas secuenciales ejecutadas por \texttt{model
 \draw[arrow] (stage2) -- (stage3);
 \draw[arrow] (stage3) -- (export);
 \end{tikzpicture}
-\caption{Diagrama general del flujo experimental implementado en \texttt{model\_factory}: limpieza determinista ($0$ vacíos), separación estratificada inicial, evaluación \textit{baseline} en 5 pliegues, búsqueda de hiperparámetros con mapas 2D y curvas 1D libre de fuga de datos, ajuste final sobre $X_{\text{train}}$ y evaluación única en $X_{\text{test}}$.}
+\caption{Diagrama general del flujo experimental implementado en \texttt{model\_factory}: limpieza determinista ($0$ vacíos), separación estratificada inicial, evaluación \textit{baseline} en 5 pliegues, búsqueda de hiperparámetros bajo $F_2$ con mapas 2D, curvas 1D y ajuste de umbral exclusivamente en CV sobre $X_{\text{train}}$, reevaluación CV optimizada, ajuste final sobre $X_{\text{train}}$ y evaluación única en $X_{\text{test}}$.}
 \label{fig:methodology_diagram}
 \end{figure*}
 
 Tras la limpieza determinista ($N=28{,}495$), la partición estratificada (\texttt{train\_test\_split}, \texttt{test\_size=0.20}, \texttt{RANDOM\_STATE=42}) destinó $22{,}796$ observaciones a entrenamiento y $5{,}699$ a prueba ($4{,}462$ clase \texttt{0} y $1{,}237$ clase \texttt{1}). Para todas las validaciones internas se empleó un único divisor \texttt{StratifiedKFold(n\_splits=5, shuffle=True, random\_state=42)} con el fin de conservar en cada pliegue la proporción real de clases~\cite{muller2016introduction}.
 
-En la \textbf{Etapa 1 (Baseline)}, cada modelo con parámetros base reproducibles encapsulado dentro de un objeto \texttt{Pipeline} completo fue evaluado vía \texttt{cross\_validate} y \texttt{cross\_val\_predict} sobre $X_{\text{train}}$, garantizando el ajuste aislado del preprocesamiento por pliegue~\cite{muller2016introduction}. En la \textbf{Etapa 2 (Optimización)}, se aplicó búsqueda exhaustiva (\texttt{GridSearchCV})~\cite{muller2016introduction} para las $12$ configuraciones de Regresión Logística y búsqueda aleatoria~\cite{bergstra2012random} (\texttt{RandomizedSearchCV}, \texttt{n\_iter=12}, \texttt{random\_state=42}) para \textit{SVM RBF} y \textit{Random Forest}, maximizando siempre el puntaje $F_1$. Asimismo, \texttt{compute\_tuning\_heatmaps} evaluó graficas 2D completas (\texttt{refit=False}) y \texttt{compute\_hyperparameter\_effects} calculó curvas 1D Train vs.\ CV por parámetro. La Tabla~\ref{tab:hyperparams_space} resume las configuraciones exploradas y seleccionadas.
+En la \textbf{Etapa 1 (Baseline)}, cada modelo con parámetros base reproducibles encapsulado dentro de un objeto \texttt{Pipeline} completo fue evaluado vía \texttt{cross\_validate} y \texttt{cross\_val\_predict} sobre $X_{\text{train}}$, garantizando el ajuste aislado del preprocesamiento por pliegue~\cite{muller2016introduction}. En la \textbf{Etapa 2 (Optimización enfocada en Recall de clase $1$)}, se aplicó búsqueda exhaustiva (\texttt{GridSearchCV})~\cite{muller2016introduction} para las $12$ configuraciones de Regresión Logística y búsqueda aleatoria~\cite{bergstra2012random} (\texttt{RandomizedSearchCV}, \texttt{n\_iter=12}, \texttt{random\_state=42}) para \textit{SVM RBF} y \textit{Random Forest}, maximizando el puntaje $F_2$ ($\beta=2$). Asimismo, \texttt{compute\_tuning\_heatmaps} evaluó grillas 2D de $F_2$, $F_1$ y $\text{ROC-AUC}$ (\texttt{refit=False}), \texttt{compute\_hyperparameter\_effects} calculó curvas 1D Train vs.\ CV por parámetro, \texttt{evaluate\_threshold\_tuning} optimizó y probó el umbral de decisión sobre probabilidades fuera de pliegue ($X_{\text{train}}$ exclusivamente), y \texttt{evaluate\_optimized\_cv} midió el desempeño CV optimizado en entrenamiento antes de tocar prueba. La Tabla~\ref{tab:hyperparams_space} resume las configuraciones exploradas y seleccionadas.
 
 \begin{table*}[t]
 \centering
 \scriptsize
 \setlength{\tabcolsep}{4pt}
-\caption{Configuración Base, Espacios de Búsqueda y Hiperparámetros Seleccionados en Validación Cruzada ($5$-fold CV)}
+\caption{Configuración Base, Espacios de Búsqueda y Hiperparámetros Seleccionados bajo $F_2$-Score ($5$-fold CV)}
 \label{tab:hyperparams_space}
 \begin{tabular}{@{}lp{2.85cm}p{2.85cm}p{5.2cm}p{3.75cm}@{}}
 \toprule
-\textbf{Modelo} & \textbf{Estrategia} & \textbf{Parámetros Base} & \textbf{Espacio Explorado} & \textbf{Configuración Óptima Seleccionada} \\
+\textbf{Modelo} & \textbf{Estrategia} & \textbf{Parámetros Base} & \textbf{Espacio Explorado} & \textbf{Configuración Óptima Seleccionada ($F_2$)} \\
 \midrule
-SVM RBF & \texttt{RandomizedSearchCV} (\texttt{n\_iter=12}) & \texttt{kernel="rbf"}, \texttt{random\_state=42} (+ \texttt{probability=True} final) & \texttt{C}: $[0.01, 0.1, 1.0, 5.0]$; \texttt{gamma}: $[\texttt{"scale"}, \texttt{"auto"}, 0.001, 0.01]$; \texttt{class\_weight}: $[\texttt{None}, \texttt{"balanced"}]$ & \texttt{C=5.0}, \texttt{gamma="scale"}, \texttt{class\_weight=None} \\
+SVM RBF & \texttt{RandomizedSearchCV} (\texttt{n\_iter=12}) & \texttt{kernel="rbf"}, \texttt{random\_state=42} (+ \texttt{probability=True} final) & \texttt{C}: $[0.01, 0.1, 1.0, 5.0]$; \texttt{gamma}: $[\texttt{"scale"}, \texttt{"auto"}, 0.001, 0.01]$; \texttt{class\_weight}: $[\texttt{None}, \texttt{"balanced"}]$ & \texttt{C=5.0}, \texttt{gamma="auto"}, \texttt{class\_weight="balanced"} \\
 \midrule
-Random Forest & \texttt{RandomizedSearchCV} (\texttt{n\_iter=12}) & \texttt{random\_state=42}, \texttt{n\_jobs=-1} & \texttt{n\_estimators}: $[100, 150, 200, 300]$; \texttt{max\_depth}: $[\texttt{None}, 10, 15, 20, 30]$; \texttt{min\_samples\_split}: $[2, 5, 10]$; \texttt{min\_samples\_leaf}: $[1, 2, 4]$; \texttt{max\_features}: $[\texttt{"sqrt"}, \texttt{"log2"}]$; \texttt{class\_weight}: $[\texttt{None}, \texttt{"balanced"}]$ & \texttt{n\_estimators=200}, \texttt{max\_depth=30}, \texttt{min\_samples\_split=2}, \texttt{min\_samples\_leaf=1}, \texttt{max\_features="sqrt"}, \texttt{class\_weight=None} \\
+Random Forest & \texttt{RandomizedSearchCV} (\texttt{n\_iter=12}) & \texttt{random\_state=42}, \texttt{n\_jobs=-1} & \texttt{n\_estimators}: $[100, 150, 200, 300]$; \texttt{max\_depth}: $[\texttt{None}, 10, 15, 20, 30]$; \texttt{min\_samples\_split}: $[2, 5, 10]$; \texttt{min\_samples\_leaf}: $[1, 2, 4]$; \texttt{max\_features}: $[\texttt{"sqrt"}, \texttt{"log2"}]$; \texttt{class\_weight}: $[\texttt{None}, \texttt{"balanced"}]$ & \texttt{n\_estimators=200}, \texttt{max\_depth=30}, \texttt{min\_samples\_split=10}, \texttt{min\_samples\_leaf=2}, \texttt{max\_features="log2"}, \texttt{class\_weight="balanced"} \\
 \midrule
-Logistic Regression & \texttt{GridSearchCV} ($12$ comb.) & \texttt{random\_state=42}, \texttt{max\_iter=1000} & \texttt{C}: $[0.01, 0.1, 0.5, 1.0, 5.0, 10.0]$; \texttt{class\_weight}: $[\texttt{None}, \texttt{"balanced"}]$; \texttt{solver}: $[\texttt{"lbfgs"}]$ & \texttt{C=5.0}, \texttt{class\_weight=None}, \texttt{solver="lbfgs"} \\
+Logistic Regression & \texttt{GridSearchCV} ($12$ comb.) & \texttt{random\_state=42}, \texttt{max\_iter=1000} & \texttt{C}: $[0.01, 0.1, 0.5, 1.0, 5.0, 10.0]$; \texttt{class\_weight}: $[\texttt{None}, \texttt{"balanced"}]$; \texttt{solver}: $[\texttt{"lbfgs"}]$ & \texttt{C=10.0}, \texttt{class\_weight="balanced"}, \texttt{solver="lbfgs"} \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-Finalmente, en la \textbf{Etapa 3 (Entrenamiento Final y Prueba)}, los modelos óptimos se entrenaron sobre el $100\%$ de $X_{\text{train}}$, se exportaron en formato \texttt{.joblib} (\texttt{compress=3}) y se evaluaron una sola vez en $X_{\text{test}}$ ($n=5{,}699$) —manteniendo el conjunto de prueba completamente aislado hasta esta etapa~\cite{muller2016introduction}— usando las métricas~\eqref{eq:acc}--\eqref{eq:f1}, $\text{ROC-AUC}$ y $\text{PR-AUC}$ (\textit{Average Precision}), recomendadas para problemas con desbalance de clases~\cite{muller2016introduction}:
+Finalmente, en la \textbf{Etapa 3 (Entrenamiento Final y Prueba)}, los modelos con hiperparámetros óptimos se entrenaron sobre el $100\%$ de $X_{\text{train}}$, se exportaron en formato \texttt{.joblib} (\texttt{compress=3}) y se evaluaron una sola vez en $X_{\text{test}}$ ($n=5{,}699$) —manteniendo el conjunto de prueba completamente aislado hasta esta etapa~\cite{muller2016introduction}— usando las métricas~\eqref{eq:acc}--\eqref{eq:f2}, $\text{ROC-AUC}$ y $\text{PR-AUC}$ (\textit{Average Precision}), recomendadas para problemas con desbalance de clases~\cite{muller2016introduction}:
 \begin{align}
 \text{Accuracy} &= \frac{VP + VN}{VP + VN + FP + FN}, \label{eq:acc} \\
 \text{Precision} &= \frac{VP}{VP + FP}, \qquad \text{Recall} = \frac{VP}{VP + FN}, \label{eq:pr_rec} \\
-F_1 &= \frac{2 \cdot \text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}, \label{eq:f1}
+F_1 &= \frac{2 \cdot \text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}, \label{eq:f1} \\
+F_2 &= \frac{5 \cdot \text{Precision} \cdot \text{Recall}}{4 \cdot \text{Precision} + \text{Recall}}, \label{eq:f2}
 \end{align}
-donde la clase positiva corresponde al evento de incumplimiento (\texttt{loan\_status=1}). Los experimentos se ejecutaron en Python $3.15$ con \texttt{scikit-learn}~$1.9.1$, \texttt{pandas}~$3.1.1$, \texttt{numpy}~$2.5.4$ y \texttt{joblib}~$1.6.0$ bajo semilla fija \texttt{RANDOM\_STATE=42}.
+donde la clase positiva corresponde al evento de incumplimiento (\texttt{loan\_status=1}) y $F_2$ otorga el doble de peso a la exhaustividad (\textit{Recall}) frente a la precisión. Los experimentos se ejecutaron en Python $3.15$ con \texttt{scikit-learn}~$1.9.1$, \texttt{pandas}~$3.1.1$, \texttt{numpy}~$2.5.4$ y \texttt{joblib}~$1.6.0$ bajo semilla fija \texttt{RANDOM\_STATE=42}.
 
 % =========================================================================
 \section{Resultados y Discusión}
@@ -288,58 +289,87 @@ La Tabla~\ref{tab:baseline_cv} reporta el rendimiento \textit{baseline} promedio
 
 \begin{table*}[t]
 \centering
+\scriptsize
+\setlength{\tabcolsep}{4.5pt}
 \caption{Desempeño de Modelos Base en Validación Cruzada Estratificada ($5$-fold CV sobre $X_{\text{train}}$, $n=22{,}796$)}
 \label{tab:baseline_cv}
-\begin{tabular}{@{}lcccccc@{}}
+\begin{tabular}{@{}lccccccc@{}}
 \toprule
-\textbf{Modelo Base} & \textbf{Accuracy ($\mu \pm \sigma$)} & \textbf{Precision} & \textbf{Recall} & \textbf{$F_1$-Score ($\mu \pm \sigma$)} & \textbf{ROC-AUC} & \textbf{Tiempo CV (s)} \\
+\textbf{Modelo Base} & \textbf{Accuracy ($\mu \pm \sigma$)} & \textbf{Precision} & \textbf{Recall} & \textbf{$F_1$-Score ($\mu \pm \sigma$)} & \textbf{$F_2$-Score ($\mu \pm \sigma$)} & \textbf{ROC-AUC} & \textbf{Tiempo CV (s)} \\
 \midrule
-SVM RBF (por defecto) & $0.9129 \pm 0.0014$ & $0.9257$ & $0.6513$ & $0.7646 \pm 0.0043$ & $0.8957$ & $18.96$ \\
-Random Forest (por defecto) & $\mathbf{0.9288 \pm 0.0026}$ & $\mathbf{0.9466}$ & $\mathbf{0.7123}$ & $\mathbf{0.8129 \pm 0.0077}$ & $\mathbf{0.9289}$ & $3.32$ \\
-Logistic Regression (por defecto) & $0.8669 \pm 0.0045$ & $0.7648$ & $0.5590$ & $0.6459 \pm 0.0130$ & $0.8710$ & $\mathbf{0.38}$ \\
+SVM RBF (por defecto) & $0.9129 \pm 0.0014$ & $0.9257$ & $0.6513$ & $0.7646 \pm 0.0043$ & $0.6923 \pm 0.0055$ & $0.8957$ & $18.47$ \\
+Random Forest (por defecto) & $\mathbf{0.9288 \pm 0.0026}$ & $\mathbf{0.9466}$ & $\mathbf{0.7123}$ & $\mathbf{0.8129 \pm 0.0077}$ & $\mathbf{0.7494 \pm 0.0094}$ & $\mathbf{0.9289}$ & $3.78$ \\
+Logistic Regression (por defecto) & $0.8669 \pm 0.0045$ & $0.7648$ & $0.5590$ & $0.6459 \pm 0.0130$ & $0.5908 \pm 0.0131$ & $0.8710$ & $\mathbf{0.42}$ \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-El clasificador \textit{Random Forest} base superó holgadamente a los otros dos paradigmas en todas las métricas: aventajó por $+0.0483$ en $F_1$ ($0.8129$ vs.\ $0.7646$) y $+0.0332$ en $\text{ROC-AUC}$ ($0.9289$ vs.\ $0.8957$) a \textit{SVM RBF}, y por $+0.1670$ en $F_1$ a Regresión Logística ($0.6459$). En las matrices de confusión fuera de pliegue, Regresión Logística generó $851$ falsos positivos y omitió $2{,}183$ incumplimientos reales ($FN$), mientras que \textit{Random Forest} redujo los falsos positivos a $199$ ($-76.6\%$) y los falsos negativos a $1{,}424$ ($-34.8\%$). Esto confirma que la estructura de riesgo en \texttt{credit\_risk\_dataset.csv} —dominada por interacciones entre umbral de carga préstamo-ingreso, grado crediticio y tipo de vivienda— dista de ser linealmente separable. En tiempo de cómputo CV, Regresión Logística fue la más veloz ($0.38\text{ s}$), seguida de \textit{Random Forest} ($3.32\text{ s}$) y \textit{SVM RBF} ($18.96\text{ s}$).
+El clasificador \textit{Random Forest} base superó holgadamente a los otros dos paradigmas en todas las métricas: aventajó por $+0.0571$ en $F_2$ ($0.7494$ vs.\ $0.6923$), $+0.0483$ en $F_1$ ($0.8129$ vs.\ $0.7646$) y $+0.0332$ en $\text{ROC-AUC}$ ($0.9289$ vs.\ $0.8957$) a \textit{SVM RBF}, y por $+0.1586$ en $F_2$ a Regresión Logística ($0.5908$). En las matrices de confusión fuera de pliegue, Regresión Logística generó $851$ falsos positivos y omitió $2{,}183$ incumplimientos reales ($FN$), mientras que \textit{Random Forest} redujo los falsos positivos a $199$ ($-76.6\%$) y los falsos negativos a $1{,}424$ ($-34.8\%$). Esto confirma que la estructura de riesgo en \texttt{credit\_risk\_dataset.csv} —dominada por interacciones entre umbral de carga préstamo-ingreso, grado crediticio y tipo de vivienda— dista de ser linealmente separable. En tiempo de cómputo CV, Regresión Logística fue la más veloz ($0.42\text{ s}$), seguida de \textit{Random Forest} ($3.78\text{ s}$) y \textit{SVM RBF} ($18.47\text{ s}$).
 
-\subsection{Resultados de los Modelos Optimizados}
+\subsection{Optimización en Entrenamiento: Hiperparámetros y Umbral (\texorpdfstring{$F_2$}{F2})}
 
-Tras ejecutar la búsqueda de hiperparámetros (Etapa 2) y entrenar los pipelines finales sobre el $100\%$ de $X_{\text{train}}$ (Etapa 3), la Tabla~\ref{tab:optimized_test} resume la evaluación única sobre el conjunto independiente de prueba ($X_{\text{test}}$, $n=5{,}699$) junto con la variación $\Delta$ respecto al \textit{baseline} de CV.
+Antes de evaluar sobre $X_{\text{test}}$, todos los experimentos de sintonización se condujeron íntegramente dentro de $X_{\text{train}}$ ($n=22{,}796$) mediante $5$-fold CV. Primero, al optimizar hiperparámetros bajo \texttt{TUNING\_SCORING=f2}, los tres modelos seleccionaron \texttt{class\_weight="balanced"}, incrementando drásticamente la exhaustividad en CV respecto al \textit{baseline}: en \textit{SVM RBF}, $F_2$ subió de $0.6923$ a $0.7500$ ($\text{Recall}: 0.6513 \rightarrow 0.7624$; $\text{AUC}: 0.8957 \rightarrow 0.9102$); en \textit{Random Forest}, $F_2$ pasó de $0.7494$ a $0.7717$ ($\text{Recall}: 0.7123 \rightarrow 0.7632$; $\text{AUC}: 0.9289 \rightarrow 0.9302$); y en Regresión Logística, $F_2$ saltó de $0.5908$ a $0.7161$ ($\text{Recall}: 0.5590 \rightarrow 0.7754$).
+
+Adicionalmente, sobre las probabilidades fuera de pliegue (\textit{OOF}) en $X_{\text{train}}$, la Tabla~\ref{tab:threshold_cv} muestra que ajustar el umbral de decisión por debajo de $0.50$ permite elevar aún más la detección de clase $1$ dentro de entrenamiento (reduciendo falsos negativos en CV de $1{,}172$ a $876$ en \textit{Random Forest} con umbral $0.37$, y de $1{,}506$ a $1{,}054$ en \textit{SVM RBF} con umbral $0.21$), sin comprometer la independencia del conjunto de prueba.
 
 \begin{table*}[t]
 \centering
 \scriptsize
-\setlength{\tabcolsep}{4pt}
-\caption{Resultados Finales en Conjunto Independiente de Prueba ($X_{\text{test}}$, $n=5{,}699$) y Variación Frente al Baseline}
-\label{tab:optimized_test}
-\begin{tabular}{@{}lccccccc@{}}
+\setlength{\tabcolsep}{3pt}
+\caption{Optimización y Prueba de Umbral de Decisión bajo $F_2$-Score Exclusivamente en Validación Cruzada ($5$-fold CV en $X_{\text{train}}$)}
+\label{tab:threshold_cv}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccc@{}}
 \toprule
-\textbf{Modelo Optimizado} & \textbf{Accuracy ($\Delta$)} & \textbf{Precision} & \textbf{Recall} & \textbf{$F_1$-Score ($\Delta$)} & \textbf{ROC-AUC ($\Delta$)} & \textbf{PR-AUC} & \textbf{Ajuste Final (s)} \\
+\textbf{Modelo} & \textbf{Umbral $F_2$} & \textbf{Recall CV ($0.50 \rightarrow$ Ópt.)} & \textbf{Precision CV ($0.50 \rightarrow$ Ópt.)} & \textbf{$F_1$ CV ($0.50 \rightarrow$ Ópt.)} & \textbf{$F_2$ CV ($0.50 \rightarrow$ Ópt.)} & \textbf{FN en Train CV ($0.50 \rightarrow$ Ópt.)} \\
 \midrule
-SVM RBF (\texttt{C=5.0, gamma="scale"}) & $0.9223$ ($+0.0094$) & $0.9574$ & $0.6718$ & $0.7895$ ($+0.0249$) & $0.9136$ ($+0.0179$) & $0.8592$ & $37.79$ \\
-Random Forest (\texttt{n\_est=200, depth=30}) & $\mathbf{0.9347}$ ($+0.0059$) & $\mathbf{0.9586}$ & $\mathbf{0.7308}$ & $\mathbf{0.8294}$ ($+0.0165$) & $\mathbf{0.9377}$ ($+0.0088$) & $\mathbf{0.8943}$ & $0.56$ \\
-Logistic Regression (\texttt{C=5.0, lbfgs}) & $0.8652$ ($-0.0017$) & $0.7656$ & $0.5465$ & $0.6377$ ($-0.0082$) & $0.8718$ ($+0.0008$) & $0.7284$ & $\mathbf{0.10}$ \\
+SVM RBF & $0.21$ & $0.6958 \rightarrow 0.7871$ ($+0.0913$) & $0.8437 \rightarrow 0.6551$ & $0.7626 \rightarrow 0.7151$ & $0.7210 \rightarrow 0.7566$ ($+0.0356$) & $1{,}506 \rightarrow 1{,}054$ ($-452$) \\
+Random Forest & $0.37$ & $0.7632 \rightarrow 0.8230$ ($+0.0598$) & $0.8078 \rightarrow 0.6573$ & $0.7849 \rightarrow 0.7309$ & $0.7717 \rightarrow \mathbf{0.7835}$ ($+0.0118$) & $1{,}172 \rightarrow 876$ ($-296$) \\
+Logistic Regression & $0.40$ & $0.7754 \rightarrow \mathbf{0.8257}$ ($+0.0503$) & $0.5486 \rightarrow 0.4734$ & $0.6426 \rightarrow 0.6018$ & $0.7162 \rightarrow 0.7187$ ($+0.0025$) & $1{,}112 \rightarrow 863$ ($-249$) \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table*}
 
-Los resultados en $X_{\text{test}}$ muestran ganancias sustanciales de optimización en los dos clasificadores no lineales. En \textit{SVM RBF}, relajar la regularización hacia \texttt{C=5.0} con \texttt{gamma="scale"} elevó la exhaustividad de $0.6513$ a $0.6718$ y la precisión a $0.9574$, generando el mayor salto en $F_1$ ($+0.0249$, alcanzando $0.7895$) y en $\text{ROC-AUC}$ ($+0.0179$, hasta $0.9136$), aunque con un costo de $37.79\text{ s}$ en el ajuste final debido a la calibración de Platt interna (\texttt{probability=True}). En \textit{Random Forest}, la configuración de $200$ árboles con profundidad máxima de $30$ (\texttt{min\_samples\_split=2}, \texttt{max\_features="sqrt"}) alcanzó $\text{Accuracy}=0.9347$, $\text{Precision}=0.9586$, $\text{Recall}=0.7308$, $F_1=0.8294$ ($+0.0165$), $\text{ROC-AUC}=0.9377$ y $\text{PR-AUC}=0.8943$ en tan solo $0.56\text{ s}$. En contraste, Regresión Logística exhibió un techo estructural claro: reducir la penalización a \texttt{C=5.0} apenas modificó su $F_1$ en CV ($0.6459 \rightarrow 0.6467$) y cerró en $0.6377$ en prueba ($-0.0082$), confirmando que el límite lineal no logra capturar las interacciones multiplicativas del riesgo crediticio.
+\subsection{Resultados de los Modelos Optimizados en Prueba}
 
-Al analizar el parámetro \texttt{class\_weight} en las tres graficas de validación cruzada (Tabla~\ref{tab:opt_insight} y Fig.~\ref{fig:tuning_heatmaps}), ninguno de los modelos óptimos seleccionó \texttt{"balanced"}. Aunque en Regresión Logística bajo regularización extrema ($C=0.01$) la ponderación balanceada elevó momentáneamente $F_1$ de $0.6132$ a $0.6385$, a partir de $C \ge 0.1$ la configuración sin ponderación (\texttt{None}) superó consistentemente a \texttt{"balanced"} ($0.6467$ vs.\ $0.6427$ en $C=5.0$), pues sobreponderar la clase minoritaria ($3.61\times$) incrementa desproporcionadamente las falsas alarmas de incumplimiento y degrada la precisión global y el puntaje $F_1$.
+Tras entrenar los pipelines finales con los hiperparámetros seleccionados bajo $F_2$ sobre el $100\%$ de $X_{\text{train}}$ (Etapa 3), la Tabla~\ref{tab:optimized_test} resume la evaluación única sobre el conjunto independiente de prueba ($X_{\text{test}}$, $n=5{,}699$) junto con la variación $\Delta$ respecto al \textit{baseline} de CV.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Resultados Finales en Conjunto Independiente de Prueba ($X_{\text{test}}$, $n=5{,}699$) de Modelos Optimizados por $F_2$-Score}
+\label{tab:optimized_test}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\textbf{Modelo Optimizado ($F_2$)} & \textbf{Accuracy ($\Delta$)} & \textbf{Precision} & \textbf{Recall ($\Delta$)} & \textbf{$F_1$-Score} & \textbf{$F_2$-Score ($\Delta$)} & \textbf{ROC-AUC ($\Delta$)} & \textbf{PR-AUC} & \textbf{Ajuste (s)} \\
+\midrule
+SVM RBF (\texttt{C=5.0, auto, bal.}) & $0.8895$ ($-0.0234$) & $0.7298$ & $0.7793$ ($+0.1280$) & $0.7537$ & $0.7689$ ($+0.0766$) & $0.9195$ ($+0.0238$) & $0.8511$ & $54.85$ \\
+Random Forest (\texttt{n=200, d=30, bal.}) & $\mathbf{0.9195}$ ($-0.0093$) & $\mathbf{0.8308}$ & $\mathbf{0.7898}$ ($+0.0775$) & $\mathbf{0.8098}$ & $\mathbf{0.7977}$ ($+0.0483$) & $\mathbf{0.9381}$ ($+0.0092$) & $\mathbf{0.8908}$ & $0.55$ \\
+Logistic Regression (\texttt{C=10.0, bal.}) & $0.8177$ ($-0.0492$) & $0.5574$ & $0.7777$ ($+0.2187$) & $0.6493$ & $0.7207$ ($+0.1299$) & $0.8731$ ($+0.0021$) & $0.7184$ & $\mathbf{0.12}$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+Los resultados en $X_{\text{test}}$ confirman el cumplimiento del objetivo prioritario sobre la clase $1$: todos los modelos incrementaron notablemente su exhaustividad (\textit{Recall}) y su puntaje $F_2$ frente al \textit{baseline}. En \textit{Random Forest} (\texttt{n\_estimators=200, max\_depth=30, min\_samples\_split=10, min\_samples\_leaf=2, max\_features="log2", class\_weight="balanced"}), la exhaustividad alcanzó $0.7898$ ($+0.0775$), con $\text{Precision}=0.8308$, $F_2=0.7977$ ($+0.0483$), $F_1=0.8098$, $\text{ROC-AUC}=0.9381$ y $\text{PR-AUC}=0.8908$ en solo $0.55\text{ s}$. En \textit{SVM RBF} (\texttt{C=5.0, gamma="auto", class\_weight="balanced"}), la exhaustividad saltó de $0.6513$ a $0.7793$ ($+0.1280$), elevando $F_2$ a $0.7689$ ($+0.0766$) y $\text{ROC-AUC}$ a $0.9195$, con un tiempo de ajuste final de $54.85\text{ s}$ debido a la calibración de Platt interna (\texttt{probability=True}). Regresión Logística también aumentó su \textit{Recall} hasta $0.7777$ ($+0.2187$) y $F_2=0.7207$ ($+0.1299$), aunque a costa de bajar su precisión a $0.5574$ debido a su frontera lineal.
+
+La Tabla~\ref{tab:opt_insight} y la Fig.~\ref{fig:tuning_heatmaps} evidencian el impacto decisivo de cambiar la función objetivo de $F_1$ a $F_2$ sobre \texttt{class\_weight}: mientras bajo $F_1$ la ponderación balanceada era descartada por penalizar la precisión, bajo $F_2$ la configuración \texttt{"balanced"} supera sistemáticamente a \texttt{None} en todo el rango de regularización $C$ ($0.7165$ vs.\ $0.5921$ en $C=10.0$), motivo por el cual los tres clasificadores adoptaron \texttt{class\_weight="balanced"}.
 
 \begin{table}[t]
 \centering
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\caption{Efecto de \texttt{class\_weight="balanced"} vs.\ \texttt{None} en Regresión Logística ($5$-fold CV)}
+\caption{Efecto de \texttt{class\_weight="balanced"} vs.\ \texttt{None} en Regresión Logística ($F_2$-Score, $5$-fold CV)}
 \label{tab:opt_insight}
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
 \textbf{Peso} & \textbf{0.01} & \textbf{0.1} & \textbf{0.5} & \textbf{1.0} & \textbf{5.0} & \textbf{10.0} \\
 \midrule
-\texttt{None} ($F_1$ CV) & $0.6132$ & $0.6409$ & $0.6453$ & $0.6452$ & $\mathbf{0.6467}$ & $0.6465$ \\
-\texttt{balanced} ($F_1$ CV) & $0.6385$ & $0.6396$ & $0.6421$ & $0.6419$ & $0.6427$ & $0.6430$ \\
+\texttt{None} ($F_2$ CV) & $0.5460$ & $0.5842$ & $0.5902$ & $0.5903$ & $0.5921$ & $0.5921$ \\
+\texttt{balanced} ($F_2$ CV) & $0.7160$ & $0.7148$ & $0.7163$ & $0.7159$ & $0.7164$ & $\mathbf{0.7165}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -377,42 +407,42 @@ Bolikulov \textit{et al.} (2024)~\cite{bolikulov2024categorical} & Logistic Regr
 & Random Forest & 0.9454 & 0.9588 & 0.9318 & 0.9453 \\
 & Logistic Regression & 0.7031 & 0.7127 & 0.6933 & 0.7030 \\
 \midrule
-\multirow{3}{*}{\textbf{Este estudio (2026)}} & \textbf{Random Forest (Optimizado)} & \textbf{0.9347} & \textbf{0.9586} & \textbf{0.7308} & \textbf{0.8294} \\
-& Support Vector Machine RBF (Optimizado) & 0.9223 & 0.9574 & 0.6718 & 0.7895 \\
-& Logistic Regression (Optimizado) & 0.8652 & 0.7656 & 0.5465 & 0.6377 \\
+\multirow{3}{*}{\textbf{Este estudio (2026, Opt. $F_2$)}} & \textbf{Random Forest (Optimizado)} & \textbf{0.9195} & \textbf{0.8308} & \textbf{0.7898} & \textbf{0.8098} \\
+& Support Vector Machine RBF (Optimizado) & 0.8895 & 0.7298 & 0.7793 & 0.7537 \\
+& Logistic Regression (Optimizado) & 0.8177 & 0.5574 & 0.7777 & 0.6493 \\
 \bottomrule
-\multicolumn{6}{@{}p{13.8cm}@{}}{\scriptsize $^{*}$Para Mahmud \textit{et al.}~\cite{mahmud2025stacking}, \textit{Precision} corresponde a especificidad, \textit{Recall} a sensibilidad y \textit{F1\_Score} al promedio $(\text{Recall}+\text{Precision})/2$.}
+\multicolumn{6}{@{}p{13.8cm}@{}}{\scriptsize $^{*}$Para Mahmud \textit{et al.}~\cite{mahmud2025stacking}, \textit{Precision} corresponde a especificidad, \textit{Recall} a sensibilidad y \textit{F1\_Score} al promedio $(\text{Recall}+\text{Precision})/2$. En este estudio ($F_2$-Score): Random Forest $0.7977$, SVM RBF $0.7689$, Logistic Regression $0.7207$.}
 \end{tabular}
 \end{table*}
 
-Las Fig.~\ref{fig:tuning_heatmaps}--\ref{fig:roc_pr} complementan las tablas cuantitativas permitiendo diagnosticar sensibilidad paramétrica, errores específicos y calibración por umbral.
+Las Fig.~\ref{fig:tuning_heatmaps}--\ref{fig:roc_pr} complementan las tablas cuantitativas permitiendo diagnosticar sensibilidad paramétrica bajo $F_2$, errores específicos y calibración probabilística.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig3_tuning_heatmaps.pdf}
-\caption{Mapas de calor de validación cruzada 5-fold ($F_1$-Score promedio) sobre $X_{\text{train}}$ para las combinaciones bidimensionales clave manteniendo fijos los restantes hiperparámetros ganadores. El recuadro rojo señala la combinación seleccionada en la Etapa 2.}
+\caption{Mapas de calor de validación cruzada 5-fold ($F_2$-Score promedio) sobre $X_{\text{train}}$ para las combinaciones bidimensionales clave manteniendo fijos los restantes hiperparámetros ganadores. El recuadro rojo señala la combinación seleccionada en la Etapa 2.}
 \label{fig:tuning_heatmaps}
 \end{figure*}
 
-La Fig.~\ref{fig:tuning_heatmaps} expone el comportamiento de la búsqueda de hiperparámetros. En \textit{SVM RBF}, valores débiles de $C$ ($0.01$) combinados con núcleos anchos (\texttt{gamma=0.001} o \texttt{0.01}) colapsan hacia la clase mayoritaria ($F_1=0.000$), mientras que incrementar la penalización hacia \texttt{C=5.0} con \texttt{gamma="scale"} eleva progresivamente el desempeño hasta $F_1=0.777$. En \textit{Random Forest}, aumentar \texttt{max\_depth} de $10$ ($F_1 \approx 0.797$) a $20$--$30$ ($F_1 \approx 0.815$--$0.817$) aporta la mayor ganancia, observándose una meseta entre $200$ y $300$ árboles que respalda seleccionar \texttt{n\_estimators=200, max\_depth=30} para equilibrar desempeño y tamaño del artefacto ($14.04\text{ MB}$). En Regresión Logística se evidencia la meseta estable a partir de \texttt{C=0.5} con \texttt{class\_weight=None} (culminando en \texttt{C=5.0}, $F_1=0.647$) y el ligero deterioro sistemático de \texttt{balanced} en regímenes poco regularizados.
+La Fig.~\ref{fig:tuning_heatmaps} expone el comportamiento de la búsqueda de hiperparámetros bajo $F_2$-Score. En \textit{SVM RBF} (con \texttt{class\_weight="balanced"}), incrementar $C$ hacia $5.0$ con \texttt{gamma="auto"} alcanza el máximo $F_2=0.7500$ (frente a $0.6659$ con $C=0.01$ y \texttt{gamma=0.001}). En \textit{Random Forest} (\texttt{min\_samples\_split=10, min\_samples\_leaf=2, max\_features="log2", balanced}), elevar \texttt{max\_depth} de $10$ ($F_2 \approx 0.763$) a $30$ ($F_2=0.7720$) alcanza la meseta óptima junto con \texttt{n\_estimators=200} (compactando el artefacto a $9.46\text{ MB}$). En Regresión Logística se observa un salto claro desde las combinaciones \texttt{None} ($F_2 \le 0.5921$) hacia \texttt{balanced} ($F_2 \approx 0.715$--$0.7165$, óptimo en \texttt{C=10.0}).
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig4_baseline_vs_optimized.pdf}
-\caption{Comparativa de desempeño entre los modelos base (validación cruzada 5-fold en $X_{\text{train}}$) y los modelos optimizados evaluados sobre el conjunto independiente de prueba ($X_{\text{test}}$, $n=5{,}699$).}
+\caption{Comparativa de desempeño entre los modelos base (CV en $X_{\text{train}}$), modelos optimizados por $F_2$ en CV ($X_{\text{train}}$) y evaluación final en el conjunto independiente de prueba ($X_{\text{test}}$, $n=5{,}699$), incluyendo $F_2$-Score.}
 \label{fig:baseline_vs_opt}
 \end{figure*}
 
-En la Fig.~\ref{fig:baseline_vs_opt} se confirma una generalización limpia hacia $X_{\text{test}}$: \textit{Random Forest} y \textit{SVM RBF} mejoran respecto a su referente CV en exactitud, precisión, exhaustividad, $F_1$ y $\text{ROC-AUC}$, preservándose estrictamente la jerarquía $\text{Random Forest} > \text{SVM RBF} > \text{Logistic Regression}$ en las cinco métricas evaluadas.
+En la Fig.~\ref{fig:baseline_vs_opt} se confirma una generalización consistente hacia $X_{\text{test}}$: los tres modelos optimizados superan sus referentes de CV en exhaustividad, $F_2$-Score y $\text{ROC-AUC}$, preservándose estrictamente la jerarquía $\text{Random Forest} > \text{SVM RBF} > \text{Logistic Regression}$ en todas las métricas compuestas ($F_1$, $F_2$, $\text{ROC-AUC}$ y exactitud).
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/fig5_confusion_matrices.pdf}
-\caption{Matrices de confusión sobre el conjunto de prueba ($n=5{,}699$: $4{,}462$ sin incumplimiento y $1{,}237$ con incumplimiento), mostrando conteos absolutos y porcentajes normalizados por clase real.}
+\caption{Matrices de confusión en el conjunto de prueba ($n=5{,}699$: $4{,}462$ sin incumplimiento y $1{,}237$ con incumplimiento) para los modelos optimizados bajo $F_2$-Score, mostrando conteos absolutos, porcentajes por clase real y métricas $F_2$ / $F_1$.}
 \label{fig:confusion_matrices}
 \end{figure*}
 
-La Fig.~\ref{fig:confusion_matrices} desglosa los aciertos y errores sobre las $5{,}699$ instancias de prueba. En la clase negativa (\textbf{Sin Incumplimiento (0)}), \textit{Random Forest} y \textit{SVM RBF} cometen apenas $39$ ($0.9\%$) y $37$ ($0.8\%$) falsos positivos entre los solicitantes solventes, frente a $207$ ($4.6\%$) de Regresión Logística —reduciendo en un $81.2\%$ las falsas alarmas de \textit{Random Forest} respecto al clasificador lineal—. Simultáneamente, en la detección de incumplimientos reales (\textbf{Incumplimiento (1)}), \textit{Random Forest} identifica correctamente $904$ de $1{,}237$ casos ($73.1\%$, con $333$ falsos negativos), superando claramente a \textit{SVM RBF} ($831$; $67.2\%$) y Regresión Logística ($676$; $54.6\%$).
+La Fig.~\ref{fig:confusion_matrices} desglosa los aciertos y errores sobre las $5{,}699$ instancias de prueba para los clasificadores optimizados por $F_2$. En la detección de incumplimientos reales (\textbf{Incumplimiento (1)}), \textit{Random Forest} identifica correctamente $977$ de $1{,}237$ casos ($79.0\%$, reduciendo los falsos negativos a $260$), superando a \textit{SVM RBF} ($964$; $77.9\%$, $273$ $FN$) y Regresión Logística ($962$; $77.8\%$, $275$ $FN$). Sin embargo, la diferencia crítica radica en el control de falsos positivos sobre solicitantes solventes (\textbf{Sin Incumplimiento (0)}): \textit{Random Forest} mantiene apenas $199$ falsos positivos ($4.5\%$), frente a $357$ ($8.0\%$) en \textit{SVM RBF} y $764$ ($17.1\%$) en Regresión Logística —reduciendo un $74.0\%$ las falsas alarmas respecto al modelo lineal—.
 
 \begin{figure*}[t]
 \centering
@@ -421,25 +451,25 @@ La Fig.~\ref{fig:confusion_matrices} desglosa los aciertos y errores sobre las $
 \label{fig:roc_pr}
 \end{figure*}
 
-Finalmente, la Fig.~\ref{fig:roc_pr} ilustra la separación continua a través de todo el rango de umbrales. En la curva ROC (Fig.~\ref{fig:roc_pr}(a)), \textit{Random Forest} domina el cuadrante superior izquierdo ($\text{ROC-AUC}=0.9377$). En la curva Precision-Recall (Fig.~\ref{fig:roc_pr}(b)) —especialmente exigente ante el $21.71\%$ de prevalencia de incumplimiento—, \textit{Random Forest} alcanza $\text{PR-AUC}=0.8943$ (frente a $0.8592$ de \textit{SVM RBF} y $0.7284$ de Regresión Logística), sosteniendo una precisión superior a $0.95$ hasta niveles de exhaustividad cercanos a $0.70$, lo que permite operar con altísima confiabilidad al priorizar solicitudes de alto riesgo.
+Finalmente, la Fig.~\ref{fig:roc_pr} ilustra la separación continua a través de todo el rango de umbrales. En la curva ROC (Fig.~\ref{fig:roc_pr}(a)), \textit{Random Forest} domina el cuadrante superior izquierdo ($\text{ROC-AUC}=0.9381$). En la curva Precision-Recall (Fig.~\ref{fig:roc_pr}(b)) —especialmente exigente ante el $21.71\%$ de prevalencia de incumplimiento—, \textit{Random Forest} alcanza $\text{PR-AUC}=0.8908$ (frente a $0.8511$ de \textit{SVM RBF} y $0.7184$ de Regresión Logística), ofreciendo la mejor capacidad de discriminación para operar a distintos umbrales de riesgo.
 
 \subsection{Discusión de Resultados}
 
-¿Por qué \textit{Random Forest} dominó tan ampliamente tanto en CV como en prueba? La ventaja del bosque aleatorio ($F_1=0.8294$, $\text{ROC-AUC}=0.9377$, $\text{PR-AUC}=0.8943$) deriva directamente de la estructura heterogénea del riesgo crediticio en \texttt{credit\_risk\_dataset.csv}. La transición no lineal en \texttt{loan\_grade} (de $20.33\%$ en \texttt{C} a $59.22\%$ en \texttt{D} y $98.31\%$ en \texttt{G}), combinada con umbrales conjuntos en \texttt{loan\_percent\_income}, tipo de vivienda (\texttt{RENT} vs.\ \texttt{OWN}), \texttt{loan\_int\_rate} e historial de mora, genera regiones rectangulares complejas en el espacio de atributos. Mientras la Regresión Logística queda limitada a un único hiperplano global ($F_1=0.6377$) y el núcleo gaussiano de \textit{SVM RBF} sufre en precisión y tiempo de cómputo al medir distancias isotrópicas sobre $22$ dimensiones con colas de ingreso extremas, los árboles de \textit{Random Forest} aislan de forma natural las interacciones jerárquicas y mantienen un tiempo de entrenamiento final inferior a un segundo ($0.56\text{ s}$).
+¿Por qué \textit{Random Forest} dominó tan ampliamente tanto en CV como en prueba? La ventaja del bosque aleatorio ($F_2=0.7977$, $F_1=0.8098$, $\text{ROC-AUC}=0.9381$, $\text{PR-AUC}=0.8908$) deriva directamente de la estructura heterogénea del riesgo crediticio en \texttt{credit\_risk\_dataset.csv}. La transición no lineal en \texttt{loan\_grade} (de $20.33\%$ en \texttt{C} a $59.22\%$ en \texttt{D} y $98.31\%$ en \texttt{G}), combinada con umbrales conjuntos en \texttt{loan\_percent\_income}, tipo de vivienda (\texttt{RENT} vs.\ \texttt{OWN}), \texttt{loan\_int\_rate} e historial de mora, genera regiones rectangulares complejas en el espacio de atributos. Mientras la Regresión Logística queda limitada a un único hiperplano global ($F_2=0.7207$, con $764$ falsos positivos al activar \texttt{balanced}) y el núcleo gaussiano de \textit{SVM RBF} sufre en costo computacional al medir distancias isotrópicas sobre $22$ dimensiones ($54.85\text{ s}$), los árboles de \textit{Random Forest} aislan de forma natural las interacciones jerárquicas y mantienen un tiempo de entrenamiento final inferior a un segundo ($0.55\text{ s}$).
 
-Respecto al impacto de la optimización, el ajuste de hiperparámetros aportó ganancias claras en \textit{SVM RBF} ($+0.0249$ en $F_1$) y \textit{Random Forest} ($+0.0165$ en $F_1$), mientras que confirmó que las limitaciones de Regresión Logística son geométricas y no de regularización. Asimismo, las curvas de validación 1D por hiperparámetro mostraron cómo el incremento de \texttt{max\_depth} en \textit{Random Forest} eleva el ajuste de entrenamiento hasta $1.000$ mientras la validación CV estabiliza en $0.815$, y cómo \texttt{min\_samples\_split} y \texttt{min\_samples\_leaf} controlan la brecha de varianza. Excluir registros con columnas vacías garantizó datos $100\%$ íntegros ($28{,}495$ filas), conservando además `SimpleImputer` en el \texttt{Pipeline} como salvaguarda operativa en la aplicación Streamlit.
+Respecto al impacto de la optimización bajo $F_2$, priorizar la exhaustividad $2\times$ sobre la precisión produjo saltos sustanciales frente al \textit{baseline} en los tres modelos ($+0.0483$ en \textit{Random Forest}, $+0.0766$ en \textit{SVM RBF} y $+0.1299$ en Regresión Logística sobre el $F_2$ de prueba), gracias a la adopción unánime de \texttt{class\_weight="balanced"}. Asimismo, las curvas de validación 1D por hiperparámetro en $F_2$ mostraron que combinar \texttt{max\_depth=30} con \texttt{min\_samples\_split=10} y \texttt{min\_samples\_leaf=2} modera la memorización de entrenamiento en \textit{Random Forest} ($F_2$ en fold de entrenamiento $0.9551$ frente a $0.7717$ en validación), conteniendo la varianza. Por su parte, la optimización del umbral de decisión exclusivamente sobre CV en $X_{\text{train}}$ (Tabla~\ref{tab:threshold_cv}) evidenció un margen adicional de hasta $+0.0598$ a $+0.0913$ en \textit{Recall} para escenarios donde minimizar falsos negativos prime sobre la precisión, capacidad integrada de forma interactiva en la aplicación Streamlit sin contaminar la evaluación final en $X_{\text{test}}$.
 
-Entre las limitaciones principales del estudio destacan cuatro aspectos: (i) no se incluyeron algoritmos de \textit{Gradient Boosting} (\textit{XGBoost}, \textit{LightGBM}, \textit{CatBoost}) ni ensambles de apilamiento, los cuales han alcanzado métricas superiores en la literatura reciente~\cite{pucar2026consumer,mahmud2025stacking}; (ii) se mantuvo fijo el umbral de clasificación en $0.50$, dejando pendiente el ajuste sensible a costos de pérdida esperada (donde reducir los $333$ falsos negativos de \textit{Random Forest} podría ser prioritario para una entidad conservadora); (iii) la búsqueda aleatoria de $12$ iteraciones en \textit{Random Forest} cubre solo una muestra del espacio completo, aunque las graficas 2D confirmaron estabilidad en meseta; y (iv) descartar $3{,}915$ filas incompletas reduce el volumen disponible frente a estrategias de imputación condicional por grupo (\textit{Group-Median} por \texttt{loan\_grade}). Como trabajo futuro se propone integrar \textit{XGBoost} y \textit{LightGBM}, evaluar imputación condicional o \textit{Target Encoding}~\cite{bolikulov2024categorical}, calibrar umbrales orientados a costo financiero.
+Entre las limitaciones principales del estudio destacan cuatro aspectos: (i) no se incluyeron algoritmos de \textit{Gradient Boosting} (\textit{XGBoost}, \textit{LightGBM}, \textit{CatBoost}) ni ensambles de apilamiento, los cuales han alcanzado métricas superiores en la literatura reciente~\cite{pucar2026consumer,mahmud2025stacking}; (ii) la evaluación oficial en $X_{\text{test}}$ mantuvo el umbral estándar de $0.50$ para preservar comparabilidad homogénea con la literatura (dejando el umbral CV $F_2$ como opción operativa interactiva en inferencia); (iii) la búsqueda aleatoria de $12$ iteraciones en \textit{Random Forest} cubre solo una muestra del espacio completo, aunque las gráficas 2D confirmaron estabilidad en meseta; y (iv) descartar $3{,}915$ filas incompletas reduce el volumen disponible frente a estrategias de imputación condicional por grupo (\textit{Group-Median} por \texttt{loan\_grade}). Como trabajo futuro se propone integrar \textit{XGBoost} y \textit{LightGBM}, evaluar imputación condicional o \textit{Target Encoding}~\cite{bolikulov2024categorical} y calibrar matrices de costo financiero real para la selección automática de umbrales en producción.
 
 % =========================================================================
 \section{Conclusiones}
 % =========================================================================
 
-Este trabajo cumplió con el objetivo de diseñar, optimizar y evaluar rigurosamente un flujo reproducible de aprendizaje automático libre de fuga de información para la predicción de incumplimiento crediticio dentro del módulo \texttt{model\_factory}. La depuración determinista previa ($165$ duplicados, $3{,}915$ filas con valores vacíos —preservando el cero numérico— y $6$ atípicos imposibles eliminados sobre $32{,}581$ registros) combinada con la estandarización y codificación encapsuladas dentro de \texttt{Pipeline} y \texttt{ColumnTransformer} garantizó una comparación justa entre Regresión Logística, \textit{SVM RBF} y \textit{Random Forest} sobre una partición estratificada $80/20$ de $28{,}495$ observaciones completas y validación cruzada de $5$ pliegues.
+Este trabajo cumplió con el objetivo de diseñar, optimizar y evaluar rigurosamente un flujo reproducible de aprendizaje automático libre de fuga de información orientado a maximizar la detección de incumplimientos crediticios dentro del módulo \texttt{model\_factory}. La depuración determinista previa ($165$ duplicados, $3{,}915$ filas con valores vacíos —preservando el cero numérico— y $6$ atípicos imposibles eliminados sobre $32{,}581$ registros) combinada con la estandarización y codificación encapsuladas dentro de \texttt{Pipeline} y \texttt{ColumnTransformer} garantizó una comparación justa entre Regresión Logística, \textit{SVM RBF} y \textit{Random Forest} sobre una partición estratificada $80/20$ de $28{,}495$ observaciones completas y validación cruzada de $5$ pliegues.
 
-Los resultados experimentales demuestran que \textit{Random Forest} (\texttt{n\_estimators=200}, \texttt{max\_depth=30}, \texttt{max\_features="sqrt"}, \texttt{class\_weight=None}) ofrece el mejor desempeño predictivo y eficiencia operativa, alcanzando en el conjunto independiente de prueba una exactitud de $0.9347$, precisión de $0.9586$, exhaustividad de $0.7308$, $F_1=0.8294$, $\text{ROC-AUC}=0.9377$ y $\text{PR-AUC}=0.8943$ en solo $0.56\text{ s}$ de entrenamiento final, reduciendo en $81.2\%$ los falsos positivos respecto al modelo lineal. \textit{SVM RBF} obtuvo el segundo lugar ($F_1=0.7895$, $\text{ROC-AUC}=0.9136$, $\text{PR-AUC}=0.8592$) con un tiempo de ajuste $67.5\times$ mayor ($37.79\text{ s}$), mientras que Regresión Logística resultó insuficiente para capturar las no linealidades del riesgo crediticio ($F_1=0.6377$, $\text{ROC-AUC}=0.8718$).
+Los resultados experimentales demuestran que \textit{Random Forest} (\texttt{n\_estimators=200}, \texttt{max\_depth=30}, \texttt{min\_samples\_split=10}, \texttt{min\_samples\_leaf=2}, \texttt{max\_features="log2"}, \texttt{class\_weight="balanced"}) ofrece el mejor equilibrio predictivo y eficiencia operativa, alcanzando en el conjunto independiente de prueba una exactitud de $0.9195$, precisión de $0.8308$, exhaustividad de $0.7898$, $F_2=0.7977$, $F_1=0.8098$, $\text{ROC-AUC}=0.9381$ y $\text{PR-AUC}=0.8908$ en solo $0.55\text{ s}$ de entrenamiento final, detectando $977$ de $1{,}237$ incumplimientos con un $74.0\%$ menos falsos positivos que el modelo lineal. \textit{SVM RBF} obtuvo el segundo lugar ($F_2=0.7689$, $F_1=0.7537$, $\text{ROC-AUC}=0.9195$) con un costo computacional $99.7\times$ superior ($54.85\text{ s}$), mientras que Regresión Logística alcanzó alta exhaustividad ($0.7777$) a costa de $764$ falsas alarmas ($\text{Precision}=0.5574$, $F_2=0.7207$).
 
-Adicionalmente, se evidenció empíricamente que activar \texttt{class\_weight="balanced"} no mejora la métrica $F_1$ en ninguno de los modelos ganadores sobre la distribución natural $78.29\% / 21.71\%$, pues penaliza excesivamente la precisión. Los tres modelos entrenados y serializados en \texttt{models/*.joblib} junto con su aplicación interactiva en Streamlit proporcionan una plataforma práctica, explicable e integrada con análisis por hiperparámetro y auditoría de limpieza para apoyar el análisis de riesgo crediticio.
+Adicionalmente, se demostró empíricamente que cuando se prioriza la clase minoritaria ($1$) mediante $F_2$-Score, \texttt{class\_weight="balanced"} resulta consistentemente superior en los tres modelos frente a la ponderación uniforme, y que el ajuste de umbral sobre CV en entrenamiento ($0.37$ en \textit{Random Forest}, $0.21$ en \textit{SVM RBF}) permite elevar el \textit{Recall} por encima de $0.78$--$0.82$ sin fuga hacia prueba. Los modelos serializados en \texttt{models/*.joblib} junto con la aplicación interactiva en Streamlit integran selector dinámico de umbral, análisis por hiperparámetro bajo $F_2$ y auditoría completa para apoyar decisiones de riesgo crediticio.
 
 \bibliographystyle{IEEEtran}
 \bibliography{referencias}

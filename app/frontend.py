@@ -2,6 +2,8 @@
 
 import streamlit as st
 
+from app.services import get_model_thresholds
+
 CUSTOM_CSS = """
 <style>
     /* --- Ocultar panel lateral izquierdo y header nativo de Streamlit --- */
@@ -582,6 +584,7 @@ def render_prediction_cards(preds: dict[str, dict]) -> None:
             icon = "⚠️" if is_default else "✅"
             prob_1_pct = f"{res['prob_1'] * 100:.2f}%" if res["prob_1"] is not None else "N/D"
             prob_0_pct = f"{res['prob_0'] * 100:.2f}%" if res["prob_0"] is not None else "N/D"
+            thr_pct = f"{res.get('threshold', 0.5) * 100:.0f}%"
             dec_txt = f"{res['decision_score']:+.4f}" if res["decision_score"] is not None else "N/A"
 
             st.markdown(
@@ -592,6 +595,7 @@ def render_prediction_cards(preds: dict[str, dict]) -> None:
                     <div class="model-card-meta">
                         <b>Prob. Sin Incumplimiento (0):</b> {prob_0_pct}<br>
                         <b>Prob. Incumplimiento (1):</b> {prob_1_pct}<br>
+                        <b>Umbral Decisión (Clase 1):</b> P ≥ {thr_pct}<br>
                         <b>Score de Decisión:</b> <code>{dec_txt}</code>
                     </div>
                 </div>
@@ -622,3 +626,41 @@ def show_loading_screen(slot, title: str, subtitle: str = "Cargando información
 def show_inline_loading(slot, title: str, subtitle: str = "Procesando con los 3 modelos...") -> None:
     """Muestra una tarjeta de carga Material 3 inline para cálculos locales en curso."""
     slot.markdown(_loader_card_html(title, subtitle, overlay=False), unsafe_allow_html=True)
+
+
+def render_threshold_selector(
+    eval_results: dict | None,
+    model_names: list[str],
+    key_prefix: str,
+) -> dict[str, float]:
+    """Renderiza el selector de umbral de decisión (Óptimo F2/Recall, Estándar 0.50 o Personalizado)."""
+    mode_label = st.radio(
+        "Umbral de decisión para detectar Incumplimiento (Clase 1):",
+        options=[
+            "Óptimo F2 en CV (prioriza Recall)",
+            "Estándar (0.50)",
+            "Personalizado (slider)",
+        ],
+        index=0,
+        horizontal=True,
+        key=f"{key_prefix}_thr_mode",
+    )
+
+    if mode_label == "Personalizado (slider)":
+        custom_val = st.slider(
+            "Umbral personalizado P(Incumplimiento = 1) ≥",
+            min_value=0.10,
+            max_value=0.90,
+            value=0.30,
+            step=0.01,
+            key=f"{key_prefix}_thr_slider",
+        )
+        thresholds = get_model_thresholds(eval_results, model_names, mode="custom", custom_threshold=custom_val)
+    elif mode_label == "Estándar (0.50)":
+        thresholds = get_model_thresholds(eval_results, model_names, mode="default")
+    else:
+        thresholds = get_model_thresholds(eval_results, model_names, mode="optimal")
+
+    thr_summary = " · ".join(f"**{m}**: `{thresholds[m]:.2f}`" for m in model_names)
+    st.caption(f"Umbrales activos sobre P(Incumplimiento = 1): {thr_summary}")
+    return thresholds

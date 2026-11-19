@@ -11,7 +11,7 @@ from app.charts import (
     plot_test_metrics_and_roc,
 )
 from app.config import FEATURE_ORDER
-from app.frontend import show_inline_loading
+from app.frontend import render_threshold_selector, show_inline_loading
 from app.services import (
     balance_binary_target,
     compute_batch_eval_metrics,
@@ -357,6 +357,23 @@ def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
         cached_batch = st.session_state["upload_batch_results"]
 
     if cached_batch:
+        model_names = list(models.keys())
+        active_thresholds = render_threshold_selector(
+            eval_results,
+            model_names,
+            key_prefix=f"upload_{file_sig}",
+        )
+        df_thresholded = cached_batch["df_out"].copy()
+        pred_cols = cached_batch["pred_cols"]
+        for m_name in model_names:
+            short_key = m_name.lower().replace(" ", "_")
+            df_thresholded[f"pred_{short_key}"] = (
+                df_thresholded[f"prob1_{short_key}"] >= active_thresholds[m_name]
+            ).astype(int)
+        df_thresholded["consenso_3_modelos"] = df_thresholded[pred_cols].nunique(axis=1).map(
+            lambda n: "Unánime (3/3)" if n == 1 else "Discrepancia (2/1)"
+        )
+
         batch_loader = st.empty()
         show_inline_loading(
             batch_loader,
@@ -366,8 +383,8 @@ def render_tab_upload(models: dict, eval_results: dict | None = None) -> None:
         _render_batch_results(
             models=models,
             df_raw=df_raw,
-            df_out=cached_batch["df_out"],
-            pred_cols=cached_batch["pred_cols"],
+            df_out=df_thresholded,
+            pred_cols=pred_cols,
             file_name=file_name,
             file_sig=file_sig,
             eval_results=eval_results,

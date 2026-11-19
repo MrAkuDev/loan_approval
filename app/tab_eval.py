@@ -17,6 +17,7 @@ from app.charts import (
     plot_random_forest_top_importance,
     plot_status_boxplot,
     plot_test_metrics_and_roc,
+    plot_threshold_tradeoff,
 )
 from app.charts_3d import render_interactive_3d_scatter
 from app.config import CSV_PATH, MAX_VALID_AGE, MAX_VALID_EMP_LENGTH, TOP_BOUNDARY_FEATURES, VALID_CATEGORIES
@@ -200,6 +201,168 @@ def render_decision_boundary_section(
     )
 
 
+def _render_optimized_train_cv_section(eval_results: dict, model_names: list[str]) -> None:
+    """Muestra los resultados de 5-Fold CV en Train con hiperparámetros óptimos y su comparativa vs Default."""
+    st.subheader("3.4 Etapa Optimizada en Train — Después de Ajustar Hiperparámetros (5-Fold CV en Train)")
+    optimized_cv_map = eval_results.get("optimized_cv", {})
+    baseline_cv_map = eval_results.get("baseline_cv", {})
+    optimized_test_map = eval_results.get("optimized_test", {})
+
+    if not optimized_cv_map:
+        st.info(
+            "No se encontraron métricas de 5-Fold CV optimizado en `evaluation_results.json`. "
+            "Ejecuta `python model_factory/train_model.py` para generarlas."
+        )
+        return
+
+    st.caption(
+        "Reevaluación en **5-Fold Cross-Validation sobre `X_train`** aplicando los hiperparámetros óptimos "
+        "encontrados en 3.1 y 3.2 (bajo `F2-Score`), antes de tocar el conjunto de prueba (`Test Set`), para comparar directamente "
+        "el desempeño en Train **antes vs. después** del ajuste."
+    )
+
+    opt_cv_rows = []
+    train_diff_rows = []
+    for m_name in model_names:
+        vals = optimized_cv_map.get(m_name)
+        base = baseline_cv_map.get(m_name)
+        if not vals:
+            continue
+        best_params = vals.get("best_params", optimized_test_map.get(m_name, {}).get("best_params", {}))
+        f2_opt = vals.get("f2_mean", vals["f1_mean"])
+        f2_base = (base.get("f2_mean", base["f1_mean"])) if base else f2_opt
+        delta_f2 = f2_opt - f2_base
+        row_entry = {
+            "Modelo (Optimizado)": m_name,
+            "Mejores Hiperparámetros": str(best_params),
+            "Accuracy (CV)": f"{vals['accuracy_mean']:.4f} (±{vals['accuracy_std']:.4f})",
+            "Precision (CV)": f"{vals['precision_mean']:.4f}",
+            "Recall (CV)": f"{vals['recall_mean']:.4f}",
+            "F1-Score (CV)": f"{vals['f1_mean']:.4f} (±{vals['f1_std']:.4f})",
+        }
+        if "f2_mean" in vals:
+            row_entry["F2-Score (CV)"] = f"{vals['f2_mean']:.4f} (±{vals['f2_std']:.4f})"
+            row_entry["Δ F2 vs Default"] = f"{delta_f2:+.4f}"
+        else:
+            row_entry["Δ F1 vs Default"] = f"{(vals['f1_mean'] - base['f1_mean']) if base else 0.0:+.4f}"
+        row_entry["ROC-AUC (CV)"] = f"{vals['roc_auc_mean']:.4f}"
+        opt_cv_rows.append(row_entry)
+
+        if base:
+            diff_entry = {
+                "Modelo": m_name,
+                "Accuracy (Antes → Después)": (
+                    f"{base['accuracy_mean']:.4f} → {vals['accuracy_mean']:.4f} "
+                    f"({vals['accuracy_mean'] - base['accuracy_mean']:+.4f})"
+                ),
+                "Precision (Antes → Después)": (
+                    f"{base['precision_mean']:.4f} → {vals['precision_mean']:.4f} "
+                    f"({vals['precision_mean'] - base['precision_mean']:+.4f})"
+                ),
+                "Recall (Antes → Después)": (
+                    f"{base['recall_mean']:.4f} → {vals['recall_mean']:.4f} "
+                    f"({vals['recall_mean'] - base['recall_mean']:+.4f})"
+                ),
+                "F1-Score (Antes → Después)": (
+                    f"{base['f1_mean']:.4f} → {vals['f1_mean']:.4f} "
+                    f"({vals['f1_mean'] - base['f1_mean']:+.4f})"
+                ),
+            }
+            if "f2_mean" in vals and "f2_mean" in base:
+                diff_entry["F2-Score (Antes → Después)"] = (
+                    f"{base['f2_mean']:.4f} → {vals['f2_mean']:.4f} "
+                    f"({vals['f2_mean'] - base['f2_mean']:+.4f})"
+                )
+            diff_entry["ROC-AUC (Antes → Después)"] = (
+                f"{base['roc_auc_mean']:.4f} → {vals['roc_auc_mean']:.4f} "
+                f"({vals['roc_auc_mean'] - base['roc_auc_mean']:+.4f})"
+            )
+            train_diff_rows.append(diff_entry)
+
+    st.dataframe(pd.DataFrame(opt_cv_rows), use_container_width=True, hide_index=True)
+    if train_diff_rows:
+        st.markdown("**Comparativa en Train (`5-Fold CV`): Antes (Default) → Después (Optimizado):**")
+        st.dataframe(pd.DataFrame(train_diff_rows), use_container_width=True, hide_index=True)
+
+
+def _render_threshold_tuning_section(eval_results: dict, model_names: list[str]) -> None:
+    """Muestra la optimización y prueba de umbral F2 en 5-Fold CV sobre Train y su explorador interactivo."""
+    st.subheader("3.3 Optimización de Umbral de Decisión — Priorizando Recall de Clase 1 (5-Fold CV en Train)")
+    thr_map = eval_results.get("threshold_tuning", {})
+    if not thr_map:
+        st.info(
+            "No se encontraron resultados de optimización de umbral en `evaluation_results.json`. "
+            "Ejecuta `python model_factory/train_model.py` para generarlos."
+        )
+        return
+
+    st.caption(
+        "El umbral óptimo por modelo se busca y se prueba **exclusivamente sobre probabilidades out-of-fold de `5-Fold CV` (`X_train`)** "
+        "maximizando el **F2-Score** (pondera **Recall 2× más que Precision**), comparando el umbral estándar `0.50` vs. el umbral óptimo "
+        "en **`Train`** sin involucrar al `Test Set`."
+    )
+
+    cv_thr_rows = []
+    for m_name in model_names:
+        entry = thr_map.get(m_name)
+        if not entry:
+            continue
+        c0 = entry["cv_at_050"]
+        c_opt = entry["cv_at_optimal"]
+        fn0 = c0["confusion_matrix"][1][0]
+        fn1 = c_opt["confusion_matrix"][1][0]
+        cv_thr_rows.append(
+            {
+                "Modelo": m_name,
+                "Umbral F2 (CV)": f"{entry['optimal_threshold']:.2f}",
+                "Recall Train CV (0.50 → Óptimo)": f"{c0['recall']:.4f} → {c_opt['recall']:.4f} ({c_opt['recall'] - c0['recall']:+.4f})",
+                "Precision Train CV (0.50 → Óptimo)": f"{c0['precision']:.4f} → {c_opt['precision']:.4f} ({c_opt['precision'] - c0['precision']:+.4f})",
+                "F1 Train CV (0.50 → Óptimo)": f"{c0['f1']:.4f} → {c_opt['f1']:.4f} ({c_opt['f1'] - c0['f1']:+.4f})",
+                "F2 Train CV (0.50 → Óptimo)": f"{c0['f2']:.4f} → {c_opt['f2']:.4f} ({c_opt['f2'] - c0['f2']:+.4f})",
+                "Morosos No Detectados en Train CV (FN)": f"{fn0:,} → {fn1:,} ({fn1 - fn0:+d})",
+            }
+        )
+    st.dataframe(pd.DataFrame(cv_thr_rows), use_container_width=True, hide_index=True)
+
+    available_models = [m for m in model_names if m in thr_map]
+    if not available_models:
+        return
+
+    st.markdown("**Explorador Interactivo de Umbral en Validación Cruzada (`5-Fold CV` en `X_train`):**")
+    c_sel1, c_sel2 = st.columns([1.2, 1])
+    with c_sel1:
+        thr_model = st.radio(
+            "Modelo para analizar curva Recall / Precision:",
+            options=available_models,
+            index=available_models.index("Random Forest") if "Random Forest" in available_models else 0,
+            horizontal=True,
+            key="thr_explorer_model",
+        )
+    entry_sel = thr_map[thr_model]
+    opt_val = float(entry_sel["optimal_threshold"])
+    with c_sel2:
+        chosen_thr = st.slider(
+            f"Explorar umbral para {thr_model} (óptimo F2 = {opt_val:.2f}):",
+            min_value=0.10,
+            max_value=0.90,
+            value=opt_val,
+            step=0.01,
+            key=f"thr_explorer_slider_{thr_model}",
+        )
+
+    curve = entry_sel["cv_curve"]
+    thresholds_list = curve["thresholds"]
+    idx = min(range(len(thresholds_list)), key=lambda i: abs(thresholds_list[i] - chosen_thr))
+    k1, k2, k3, k4, k5 = st.columns(5)
+    k1.metric("Umbral CV", f"{thresholds_list[idx]:.2f}")
+    k2.metric("Recall CV (Clase 1)", f"{curve['recall'][idx]:.4f}")
+    k3.metric("Precision CV (Clase 1)", f"{curve['precision'][idx]:.4f}")
+    k4.metric("F2-Score CV", f"{curve['f2'][idx]:.4f}")
+    k5.metric("Accuracy CV", f"{curve['accuracy'][idx]:.4f}")
+
+    plot_threshold_tradeoff(entry_sel, thr_model, thresholds_list[idx])
+
+
 def _render_before_vs_after_table(eval_results: dict, model_names: list[str], baseline_test_map: dict) -> None:
     """Renderiza la tabla comparativa Antes vs Después del ajuste de hiperparámetros."""
     bva_rows = []
@@ -228,16 +391,21 @@ def _render_before_vs_after_table(eval_results: dict, model_names: list[str], ba
         for m_name in model_names:
             cv_b = eval_results["baseline_cv"][m_name]
             opt_a = eval_results["optimized_test"][m_name]
-            bva_rows.append(
-                {
-                    "Modelo": m_name,
-                    "Accuracy (CV Base → Test Opt)": f"{cv_b['accuracy_mean']:.4f} → {opt_a['accuracy']:.4f} ({opt_a['accuracy'] - cv_b['accuracy_mean']:+.4f})",
-                    "Precision (CV Base → Test Opt)": f"{cv_b['precision_mean']:.4f} → {opt_a['precision']:.4f} ({opt_a['precision'] - cv_b['precision_mean']:+.4f})",
-                    "Recall (CV Base → Test Opt)": f"{cv_b['recall_mean']:.4f} → {opt_a['recall']:.4f} ({opt_a['recall'] - cv_b['recall_mean']:+.4f})",
-                    "F1-Score (CV Base → Test Opt)": f"{cv_b['f1_mean']:.4f} → {opt_a['f1']:.4f} ({opt_a['f1'] - cv_b['f1_mean']:+.4f})",
-                    "ROC-AUC (CV Base → Test Opt)": f"{cv_b['roc_auc_mean']:.4f} → {opt_a['roc_auc']:.4f} ({opt_a['roc_auc'] - cv_b['roc_auc_mean']:+.4f})",
-                }
+            row_bva = {
+                "Modelo": m_name,
+                "Accuracy (CV Base → Test Opt)": f"{cv_b['accuracy_mean']:.4f} → {opt_a['accuracy']:.4f} ({opt_a['accuracy'] - cv_b['accuracy_mean']:+.4f})",
+                "Precision (CV Base → Test Opt)": f"{cv_b['precision_mean']:.4f} → {opt_a['precision']:.4f} ({opt_a['precision'] - cv_b['precision_mean']:+.4f})",
+                "Recall (CV Base → Test Opt)": f"{cv_b['recall_mean']:.4f} → {opt_a['recall']:.4f} ({opt_a['recall'] - cv_b['recall_mean']:+.4f})",
+                "F1-Score (CV Base → Test Opt)": f"{cv_b['f1_mean']:.4f} → {opt_a['f1']:.4f} ({opt_a['f1'] - cv_b['f1_mean']:+.4f})",
+            }
+            if "f2" in opt_a and "f2_mean" in cv_b:
+                row_bva["F2-Score (CV Base → Test Opt)"] = (
+                    f"{cv_b['f2_mean']:.4f} → {opt_a['f2']:.4f} ({opt_a['f2'] - cv_b['f2_mean']:+.4f})"
+                )
+            row_bva["ROC-AUC (CV Base → Test Opt)"] = (
+                f"{cv_b['roc_auc_mean']:.4f} → {opt_a['roc_auc']:.4f} ({opt_a['roc_auc'] - cv_b['roc_auc_mean']:+.4f})"
             )
+            bva_rows.append(row_bva)
         st.markdown("**Comparativa Antes (5-Fold CV Train Default) vs Después (Test Set Optimizado):**")
     st.dataframe(pd.DataFrame(bva_rows), use_container_width=True, hide_index=True)
 
@@ -399,15 +567,19 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
     st.subheader("3.1 Exploración de Hiperparámetros — Heatmaps Comparativos por Modelo (5-Fold CV en Train)")
     tuning_heatmaps = eval_results.get("tuning_heatmaps", {})
     if tuning_heatmaps:
+        use_f2_hm = all("scores_f2" in tuning_heatmaps.get(m, {}) for m in model_names if m in tuning_heatmaps)
+        hm_key = "scores_f2" if use_f2_hm else "scores_f1"
+        hm_label = "F2-Score" if use_f2_hm else "F1-Score"
+        hm_scoring_tag = "f2" if use_f2_hm else "f1"
         st.caption(
-            "Comparación del desempeño promedio (**F1-Score**) en validación cruzada (5-Fold CV sobre `X_train`) al variar dos hiperparámetros clave "
-            "por modelo. El recuadro rojo marca la combinación seleccionada como óptima (`TUNING_SCORING = f1`)."
+            f"Comparación del desempeño promedio (**{hm_label}**, ponderando Recall 2× sobre Precision) en validación cruzada (5-Fold CV sobre `X_train`) "
+            f"al variar dos hiperparámetros clave por modelo. El recuadro rojo marca la combinación seleccionada como óptima (`TUNING_SCORING = {hm_scoring_tag}`)."
         )
         plot_hyperparameter_heatmaps(
             tuning_heatmaps=tuning_heatmaps,
             model_names=model_names,
-            metric_key="scores_f1",
-            metric_label="F1-Score",
+            metric_key=hm_key,
+            metric_label=hm_label,
         )
         fixed_notes = []
         for m_name in model_names:
@@ -428,9 +600,13 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
     hp_effects = eval_results.get("hyperparameter_effects", {})
     available_fx_models = [m for m in model_names if m in hp_effects]
     if available_fx_models:
+        first_params = hp_effects[available_fx_models[0]].get("params", [])
+        use_f2_fx = bool(first_params and "val_f2_mean" in first_params[0])
+        fx_key = "f2" if use_f2_fx else "f1"
+        fx_label = "F2-Score" if use_f2_fx else "F1-Score"
         st.caption(
-            "Variación controlada de un hiperparámetro a la vez (manteniendo los demás fijos en su valor óptimo) "
-            "mostrando **F1-Score en entrenamiento (naranja discontinuo)** vs **validación 5-Fold CV (azul sólido ±1σ)** "
+            f"Variación controlada de un hiperparámetro a la vez (manteniendo los demás fijos en su valor óptimo) "
+            f"mostrando **{fx_label} en entrenamiento (naranja discontinuo)** vs **validación 5-Fold CV (azul sólido ±1σ)** "
             "para detectar subajuste, sobreajuste y punto óptimo de generalización (estrella roja)."
         )
         fx_model = st.radio(
@@ -443,8 +619,8 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
         plot_hyperparameter_effects(
             model_effects=hp_effects[fx_model],
             model_name=fx_model,
-            metric_key="f1",
-            metric_label="F1-Score",
+            metric_key=fx_key,
+            metric_label=fx_label,
         )
         fixed_best = hp_effects[fx_model].get("fixed_best_params", {})
         if fixed_best:
@@ -456,25 +632,38 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
             "Ejecuta `python model_factory/train_model.py` para generarlas."
         )
 
+    # 3.3 Optimización y Prueba de Umbral de Decisión en Train (5-Fold CV)
+    _render_threshold_tuning_section(eval_results, model_names)
+
+    # 3.4 Etapa Optimizada en Train (5-Fold CV con mejores hiperparámetros)
+    _render_optimized_train_cv_section(eval_results, model_names)
+
     # 4. Etapa Optimizada (Test Set Holdout)
     st.subheader("4. Etapa Optimizada — Después de Ajustar Hiperparámetros (Test Set 20% Holdout)")
     baseline_test_map = eval_results.get("baseline_test", {})
     test_rows = []
     for m_name, vals in eval_results["optimized_test"].items():
-        base_f1 = baseline_test_map[m_name]["f1"] if m_name in baseline_test_map else eval_results["baseline_cv"][m_name]["f1_mean"]
-        delta_f1 = vals["f1"] - base_f1
-        test_rows.append(
-            {
-                "Modelo": m_name,
-                "Mejores Hiperparámetros": str(vals["best_params"]),
-                "Accuracy": vals["accuracy"],
-                "Precision": vals["precision"],
-                "Recall": vals["recall"],
-                "F1-Score": vals["f1"],
-                "Δ F1 vs Default": f"{delta_f1:+.4f}",
-                "ROC-AUC": vals["roc_auc"],
-            }
+        base_f2 = (
+            baseline_test_map[m_name]["f2"]
+            if m_name in baseline_test_map and "f2" in baseline_test_map[m_name]
+            else eval_results["baseline_cv"][m_name].get("f2_mean", eval_results["baseline_cv"][m_name]["f1_mean"])
         )
+        row_t = {
+            "Modelo": m_name,
+            "Mejores Hiperparámetros": str(vals["best_params"]),
+            "Accuracy": vals["accuracy"],
+            "Precision": vals["precision"],
+            "Recall": vals["recall"],
+            "F1-Score": vals["f1"],
+        }
+        if "f2" in vals:
+            row_t["F2-Score"] = vals["f2"]
+            row_t["Δ F2 vs Default"] = f"{vals['f2'] - base_f2:+.4f}"
+        else:
+            base_f1 = baseline_test_map[m_name]["f1"] if m_name in baseline_test_map else eval_results["baseline_cv"][m_name]["f1_mean"]
+            row_t["Δ F1 vs Default"] = f"{vals['f1'] - base_f1:+.4f}"
+        row_t["ROC-AUC"] = vals["roc_auc"]
+        test_rows.append(row_t)
     st.dataframe(pd.DataFrame(test_rows), use_container_width=True, hide_index=True)
 
     df_test_eval = load_test_eda_data(csv_mtime)
@@ -489,18 +678,33 @@ def render_tab_eval(models: dict, eval_results: dict) -> None:
         )
 
     # 5. Gráficas comparativas
-    st.subheader("5. Visualización Comparativa en Test Set (Modelos Optimizados)")
+    st.subheader("5. Visualización Comparativa en Test Set (Modelos Optimizados por F2-Score)")
     plot_test_metrics_and_roc(eval_results["optimized_test"], model_names)
 
     # 6. Matrices de Confusión Finales
-    st.subheader("6. Matrices de Confusión Finales — Test Set Después del Ajuste de Hiperparámetros")
-    opt_subtitles = {
-        m: (
-            f"Test Optimizado | Acc: {eval_results['optimized_test'][m]['accuracy']:.4f} | "
-            f"F1: {eval_results['optimized_test'][m]['f1']:.4f} "
-            f"({eval_results['optimized_test'][m]['f1'] - (baseline_test_map[m]['f1'] if m in baseline_test_map else eval_results['baseline_cv'][m]['f1_mean']):+.4f})"
-        )
-        for m in model_names
-    }
+    st.subheader("6. Matrices de Confusión Finales — Modelos Optimizados por F2-Score en Test Set")
+    st.caption(
+        "Evaluación final sobre `Test Set (20% Holdout)` con los hiperparámetros optimizados bajo **`F2-Score`** "
+        "(ponderando **Recall de Clase 1 dos veces más que Precision**)."
+    )
+    opt_subtitles = {}
+    for m in model_names:
+        opt_m = eval_results["optimized_test"][m]
+        if "f2" in opt_m:
+            base_f2 = (
+                baseline_test_map[m]["f2"]
+                if m in baseline_test_map and "f2" in baseline_test_map[m]
+                else eval_results["baseline_cv"][m].get("f2_mean", eval_results["baseline_cv"][m]["f1_mean"])
+            )
+            opt_subtitles[m] = (
+                f"Test Opt. (F2) | Acc: {opt_m['accuracy']:.4f} | "
+                f"F2: {opt_m['f2']:.4f} ({opt_m['f2'] - base_f2:+.4f}) | F1: {opt_m['f1']:.4f}"
+            )
+        else:
+            base_f1 = baseline_test_map[m]["f1"] if m in baseline_test_map else eval_results["baseline_cv"][m]["f1_mean"]
+            opt_subtitles[m] = (
+                f"Test Optimizado | Acc: {opt_m['accuracy']:.4f} | "
+                f"F1: {opt_m['f1']:.4f} ({opt_m['f1'] - base_f1:+.4f})"
+            )
     plot_confusion_matrices_row(eval_results["optimized_test"], model_names, cmap="Blues", subtitle_map=opt_subtitles)
     _render_before_vs_after_table(eval_results, model_names, baseline_test_map)

@@ -55,9 +55,24 @@ def plot_single_prediction_confidence(comp_rows: list[dict]) -> None:
     """Dibuja la gráfica horizontal de probabilidad de riesgo (Incumplimiento, Clase 1) por modelo."""
     fig, ax = plt.subplots(figsize=(6, 3.2))
     probs_plot = [r["Prob. Incumplimiento (Clase 1)"] * 100 for r in comp_rows]
+    thresholds_pct = [float(r.get("Umbral", 0.5)) * 100 for r in comp_rows]
     colors = ["#DC2626" if r["Clase Predicha"] == 1 else "#059669" for r in comp_rows]
     bars = ax.barh([r["Modelo"] for r in comp_rows], probs_plot, color=colors)
-    ax.axvline(50, color="#374151", linestyle="--", linewidth=1, label="Umbral 50%")
+
+    if len(set(round(t, 1) for t in thresholds_pct)) == 1:
+        t0 = thresholds_pct[0]
+        ax.axvline(t0, color="#374151", linestyle="--", linewidth=1.2, label=f"Umbral {t0:.0f}%")
+    else:
+        for i, thr_pct in enumerate(thresholds_pct):
+            ax.plot(
+                [thr_pct, thr_pct],
+                [i - 0.36, i + 0.36],
+                color="#1E293B",
+                linestyle="--",
+                linewidth=1.6,
+                label="Umbral aplicado" if i == 0 else None,
+            )
+
     ax.set_xlim(0, 108)
     ax.set_xlabel("Probabilidad de Incumplimiento (Clase 1) (%)")
     ax.set_title("Riesgo de Incumplimiento Estimado por Modelo")
@@ -376,6 +391,7 @@ def plot_random_forest_top_importance(rf_pipe) -> None:
 
 def plot_test_metrics_and_roc(optimized_test: dict, model_names: list[str]) -> None:
     """Dibuja las gráficas comparativas de métricas en Test Set y las curvas ROC lado a lado."""
+    has_f2 = all("f2" in optimized_test[m] for m in model_names)
     sig = _hash_payload(
         {
             m: {
@@ -383,6 +399,7 @@ def plot_test_metrics_and_roc(optimized_test: dict, model_names: list[str]) -> N
                 "precision": optimized_test[m]["precision"],
                 "recall": optimized_test[m]["recall"],
                 "f1": optimized_test[m]["f1"],
+                "f2": optimized_test[m].get("f2"),
                 "roc_auc": optimized_test[m]["roc_auc"],
             }
             for m in model_names
@@ -392,9 +409,9 @@ def plot_test_metrics_and_roc(optimized_test: dict, model_names: list[str]) -> N
 
     with gcol1:
         def _build_bar():
-            fig_bar, ax_bar = plt.subplots(figsize=(7, 4.5))
-            metric_keys = ["accuracy", "precision", "recall", "f1", "roc_auc"]
-            metric_labels = ["Accuracy", "Precision", "Recall", "F1-Score", "ROC-AUC"]
+            fig_bar, ax_bar = plt.subplots(figsize=(7.4, 4.5))
+            metric_keys = ["accuracy", "precision", "recall", "f1"] + (["f2"] if has_f2 else []) + ["roc_auc"]
+            metric_labels = ["Accuracy", "Precision", "Recall", "F1-Score"] + (["F2-Score"] if has_f2 else []) + ["ROC-AUC"]
             x = np.arange(len(metric_labels))
             width = 0.25
 
@@ -403,10 +420,10 @@ def plot_test_metrics_and_roc(optimized_test: dict, model_names: list[str]) -> N
                 bars = ax_bar.bar(x + (i - 1) * width, vals, width, label=m_name, color=MODEL_PALETTE[i])
                 for b in bars:
                     h = b.get_height()
-                    ax_bar.text(b.get_x() + b.get_width() / 2, h + 0.01, f"{h:.2f}", ha="center", va="bottom", fontsize=7.5)
+                    ax_bar.text(b.get_x() + b.get_width() / 2, h + 0.01, f"{h:.2f}", ha="center", va="bottom", fontsize=7.0)
 
             ax_bar.set_xticks(x)
-            ax_bar.set_xticklabels(metric_labels)
+            ax_bar.set_xticklabels(metric_labels, fontsize=9)
             ax_bar.set_ylim(0, 1.09)
             ax_bar.set_ylabel("Puntaje")
             ax_bar.set_title("Comparación de Métricas en Test Set")
@@ -839,5 +856,51 @@ def plot_instance_feature_contributions(
         ax.grid(axis="x", linestyle="--", alpha=0.35)
 
     plt.tight_layout(w_pad=2.6)
+    st.pyplot(fig)
+    plt.close(fig)
+
+
+def plot_threshold_tradeoff(
+    threshold_entry: dict,
+    model_name: str,
+    selected_threshold: float,
+) -> None:
+    """Grafica Recall, Precision, F1 y F2 en 5-Fold CV respecto al umbral de decisión."""
+    curve = threshold_entry.get("cv_curve", {})
+    thresholds = np.array(curve.get("thresholds", []), dtype=float)
+    if thresholds.size == 0:
+        return
+
+    opt_thr = float(threshold_entry.get("optimal_threshold", 0.5))
+    fig, ax = plt.subplots(figsize=(9.5, 3.9))
+
+    ax.plot(thresholds, curve["recall"], color="#DC2626", linewidth=2.3, label="Recall (Clase 1)")
+    ax.plot(thresholds, curve["precision"], color="#2563EB", linewidth=2.1, label="Precision (Clase 1)")
+    ax.plot(thresholds, curve["f2"], color="#7C3AED", linewidth=2.2, linestyle="-.", label="F2-Score (prioriza Recall 2×)")
+    ax.plot(thresholds, curve["f1"], color="#059669", linewidth=1.8, linestyle="--", label="F1-Score (equilibrio 1:1)")
+
+    ax.axvline(0.50, color="#6B7280", linestyle=":", linewidth=1.4, label="Umbral estándar (0.50)")
+    ax.axvline(opt_thr, color="#7C3AED", linestyle="--", linewidth=1.6, label=f"Óptimo F2 en CV ({opt_thr:.2f})")
+    if abs(selected_threshold - opt_thr) > 0.005 and abs(selected_threshold - 0.50) > 0.005:
+        ax.axvline(
+            selected_threshold,
+            color="#D97706",
+            linestyle="-",
+            linewidth=1.8,
+            label=f"Umbral seleccionado ({selected_threshold:.2f})",
+        )
+
+    ax.set_xlim(float(thresholds.min()), float(thresholds.max()))
+    ax.set_ylim(0.0, 1.03)
+    ax.set_xlabel("Umbral de Decisión sobre P(Incumplimiento = 1)")
+    ax.set_ylabel("Score en Validación Cruzada (5-Fold CV)")
+    ax.set_title(
+        f"{model_name} — Compensación Recall vs. Precision por Umbral (5-Fold CV en X_train)",
+        fontweight="bold",
+        fontsize=10.5,
+    )
+    ax.grid(alpha=0.3, linestyle="--")
+    ax.legend(loc="lower left", ncol=2, fontsize=8.5, framealpha=0.95)
+    plt.tight_layout()
     st.pyplot(fig)
     plt.close(fig)

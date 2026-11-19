@@ -8,11 +8,13 @@ import pandas as pd
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, cross_validate
 
 from model_factory.config import (
+    F2_SCORER,
     HYPERPARAMETER_LABELS,
     MODELS_DIR,
     RANDOM_STATE,
     RESULTS_FILE,
     TUNING_SCORING,
+    TUNING_SCORING_NAME,
 )
 from model_factory.evaluation import evaluate_on_test
 from model_factory.preprocessing import build_preprocessor, build_training_pipeline
@@ -66,7 +68,7 @@ def tune_all_models(
         print(f"\n[{idx}/{total}] Buscando mejores hiperparámetros para {name}...")
         best_params, best_score = tune_single_model(cfg, X_train_proc, y_train, cv)
         best_params_by_model[name] = best_params
-        print(f"   Mejores hiperparámetros {name}: {best_params} (CV F1={best_score:.4f})")
+        print(f"   Mejores hiperparámetros {name}: {best_params} (CV {TUNING_SCORING_NAME.upper()}={best_score:.4f})")
 
     return best_params_by_model
 
@@ -78,7 +80,7 @@ def compute_tuning_heatmaps(
     y_train: pd.Series,
     cv,
 ) -> dict[str, dict]:
-    """Evalúa grillas 2D de hiperparámetros en 5-fold CV (F1 y ROC-AUC) para los heatmaps."""
+    """Evalúa grillas 2D de hiperparámetros en 5-fold CV (F2, F1 y ROC-AUC) para los heatmaps."""
     search_pre = build_preprocessor()
     X_train_proc = search_pre.fit_transform(X_train)
 
@@ -105,7 +107,7 @@ def compute_tuning_heatmaps(
             estimator,
             param_grid={y_param: y_values, x_param: x_values},
             cv=cv,
-            scoring={"f1": "f1", "roc_auc": "roc_auc"},
+            scoring={"f2": F2_SCORER, "f1": "f1", "roc_auc": "roc_auc"},
             refit=False,
             n_jobs=-1,
         )
@@ -113,18 +115,21 @@ def compute_tuning_heatmaps(
 
         lookup = {
             (params[y_param], params[x_param]): (
+                round(float(f2_val), 4),
                 round(float(f1_val), 4),
                 round(float(auc_val), 4),
             )
-            for params, f1_val, auc_val in zip(
+            for params, f2_val, f1_val, auc_val in zip(
                 grid_search.cv_results_["params"],
+                grid_search.cv_results_["mean_test_f2"],
                 grid_search.cv_results_["mean_test_f1"],
                 grid_search.cv_results_["mean_test_roc_auc"],
             )
         }
 
-        scores_f1 = [[lookup[(yv, xv)][0] for xv in x_values] for yv in y_values]
-        scores_roc_auc = [[lookup[(yv, xv)][1] for xv in x_values] for yv in y_values]
+        scores_f2 = [[lookup[(yv, xv)][0] for xv in x_values] for yv in y_values]
+        scores_f1 = [[lookup[(yv, xv)][1] for xv in x_values] for yv in y_values]
+        scores_roc_auc = [[lookup[(yv, xv)][2] for xv in x_values] for yv in y_values]
 
         best_model_params = best_params_by_model.get(name, {})
         best_x = best_model_params.get(x_param)
@@ -142,6 +147,7 @@ def compute_tuning_heatmaps(
                 "x": "None" if best_x is None else str(best_x),
                 "y": "None" if best_y is None else str(best_y),
             },
+            "scores_f2": scores_f2,
             "scores_f1": scores_f1,
             "scores_roc_auc": scores_roc_auc,
         }
@@ -164,7 +170,7 @@ def compute_hyperparameter_effects(
     cv,
 ) -> dict[str, dict]:
     """Evalúa curvas 1D Train vs Validación (5-fold CV) para cada hiperparámetro en `param_space`."""
-    scoring = {"f1": "f1", "roc_auc": "roc_auc", "accuracy": "accuracy"}
+    scoring = {"f2": F2_SCORER, "f1": "f1", "roc_auc": "roc_auc", "accuracy": "accuracy"}
     effects: dict[str, dict] = {}
 
     for name, cfg in specs.items():
@@ -180,6 +186,10 @@ def compute_hyperparameter_effects(
 
             value_labels: list[str] = []
             metrics_series: dict[str, list[float]] = {
+                "train_f2_mean": [],
+                "train_f2_std": [],
+                "val_f2_mean": [],
+                "val_f2_std": [],
                 "train_f1_mean": [],
                 "train_f1_std": [],
                 "val_f1_mean": [],
@@ -208,6 +218,10 @@ def compute_hyperparameter_effects(
                         n_jobs=-1,
                     )
                     eval_cache[cache_key] = {
+                        "train_f2_mean": round(float(np.mean(cv_out["train_f2"])), 4),
+                        "train_f2_std": round(float(np.std(cv_out["train_f2"])), 4),
+                        "val_f2_mean": round(float(np.mean(cv_out["test_f2"])), 4),
+                        "val_f2_std": round(float(np.std(cv_out["test_f2"])), 4),
                         "train_f1_mean": round(float(np.mean(cv_out["train_f1"])), 4),
                         "train_f1_std": round(float(np.std(cv_out["train_f1"])), 4),
                         "val_f1_mean": round(float(np.mean(cv_out["test_f1"])), 4),

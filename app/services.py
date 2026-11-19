@@ -11,6 +11,7 @@ from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,
     f1_score,
+    fbeta_score,
     precision_score,
     recall_score,
     roc_auc_score,
@@ -203,15 +204,52 @@ def compute_corr_payload_from_df(df_sub: pd.DataFrame) -> dict:
     }
 
 
-def predict_with_model(pipeline, X_df: pd.DataFrame) -> dict:
-    """Genera predicción real, probabilidad de clase 1 (y 0) y decision_function si aplica."""
-    pred_class = int(pipeline.predict(X_df)[0])
+def get_model_thresholds(
+    eval_results: dict | None,
+    model_names: list[str],
+    mode: str = "optimal",
+    custom_threshold: float = 0.5,
+) -> dict[str, float]:
+    """Devuelve el umbral de decisión por modelo ('optimal' F2 en CV, 'default' 0.50 o 'custom')."""
+    if mode == "custom":
+        return {m: round(float(custom_threshold), 2) for m in model_names}
+    if mode == "default" or not eval_results:
+        return {m: 0.5 for m in model_names}
+    thr_map = eval_results.get("threshold_tuning", {})
+    return {
+        m: round(float(thr_map.get(m, {}).get("optimal_threshold", 0.5)), 2)
+        for m in model_names
+    }
 
+
+def apply_threshold_to_single_preds(
+    preds: dict[str, dict],
+    thresholds_by_model: dict[str, float],
+) -> dict[str, dict]:
+    """Recalcula clase predicha y etiqueta sobre predicciones individuales según los umbrales activos."""
+    updated = {}
+    for m_name, res in preds.items():
+        thr = float(thresholds_by_model.get(m_name, 0.5))
+        prob_1 = res.get("prob_1")
+        pred_class = int(prob_1 >= thr) if prob_1 is not None else int(res["pred"])
+        updated[m_name] = {
+            **res,
+            "pred": pred_class,
+            "label": "Incumplimiento (1)" if pred_class == 1 else "Sin Incumplimiento (0)",
+            "threshold": round(thr, 2),
+        }
+    return updated
+
+
+def predict_with_model(pipeline, X_df: pd.DataFrame, threshold: float = 0.5) -> dict:
+    """Genera predicción real, probabilidad de clase 1 (y 0), umbral y decision_function."""
     prob_0, prob_1 = None, None
     if hasattr(pipeline, "predict_proba"):
         probs = pipeline.predict_proba(X_df)[0]
         prob_0 = float(probs[0])
         prob_1 = float(probs[1])
+
+    pred_class = int(prob_1 >= threshold) if prob_1 is not None else int(pipeline.predict(X_df)[0])
 
     dec_score = None
     if hasattr(pipeline, "decision_function"):
@@ -222,6 +260,7 @@ def predict_with_model(pipeline, X_df: pd.DataFrame) -> dict:
         "label": "Incumplimiento (1)" if pred_class == 1 else "Sin Incumplimiento (0)",
         "prob_0": prob_0,
         "prob_1": prob_1,
+        "threshold": round(float(threshold), 2),
         "decision_score": dec_score,
     }
 
@@ -375,6 +414,7 @@ def compute_batch_eval_metrics(
             "precision": round(float(precision_score(y_arr, preds, zero_division=0)), 4),
             "recall": round(float(recall_score(y_arr, preds, zero_division=0)), 4),
             "f1": round(float(f1_score(y_arr, preds, zero_division=0)), 4),
+            "f2": round(float(fbeta_score(y_arr, preds, beta=2, zero_division=0)), 4),
             "roc_auc": auc_val,
             "roc_curve": roc_payload,
             "confusion_matrix": confusion_matrix(y_arr, preds, labels=[0, 1]).tolist(),

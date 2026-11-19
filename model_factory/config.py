@@ -5,6 +5,7 @@ from typing import Any
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import fbeta_score, make_scorer
 from sklearn.svm import SVC
 
 PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,8 +20,17 @@ TARGET_COLUMN = "loan_status"
 TEST_SIZE = 0.20
 RANDOM_STATE = 42
 CV_SPLITS = 5
-SCORING_METRICS = ["accuracy", "precision", "recall", "f1", "roc_auc"]
-TUNING_SCORING = "f1"
+F2_SCORER = make_scorer(fbeta_score, beta=2, zero_division=0)
+SCORING_METRICS = {
+    "accuracy": "accuracy",
+    "precision": "precision",
+    "recall": "recall",
+    "f1": "f1",
+    "f2": F2_SCORER,
+    "roc_auc": "roc_auc",
+}
+TUNING_SCORING_NAME = "f2"
+TUNING_SCORING = F2_SCORER
 
 MAX_VALID_AGE = 100
 MAX_VALID_EMP_LENGTH = 60

@@ -71,16 +71,16 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-C}3}Random Forest}{5}{subsubsection.3.3.3}\protected@file@percent }
 \newlabel{eq:gini}{{3}{5}{Random Forest}{equation.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Configuración Experimental}{5}{subsection.3.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Diagrama general del flujo experimental implementado en \texttt  {model\_factory}: limpieza determinista ($0$ vacíos), separación estratificada inicial, evaluación \textit  {baseline} en 5 pliegues, búsqueda de hiperparámetros con mapas 2D y curvas 1D libre de fuga de datos, ajuste final sobre $X_{\text  {train}}$ y evaluación única en $X_{\text  {test}}$.}}{6}{figure.3}\protected@file@percent }
-\newlabel{fig:methodology_diagram}{{3}{6}{Diagrama general del flujo experimental implementado en \texttt {model\_factory}: limpieza determinista ($0$ vacíos), separación estratificada inicial, evaluación \textit {baseline} en 5 pliegues, búsqueda de hiperparámetros con mapas 2D y curvas 1D libre de fuga de datos, ajuste final sobre $X_{\text {train}}$ y evaluación única en $X_{\text {test}}$}{figure.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Configuración Base, Espacios de Búsqueda y Hiperparámetros Seleccionados en Validación Cruzada ($5$-fold CV)}}{6}{table.3}\protected@file@percent }
-\newlabel{tab:hyperparams_space}{{III}{6}{Configuración Base, Espacios de Búsqueda y Hiperparámetros Seleccionados en Validación Cruzada ($5$-fold CV)}{table.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Diagrama general del flujo experimental implementado en \texttt  {model\_factory}: limpieza determinista ($0$ vacíos), separación estratificada inicial, evaluación \textit  {baseline} en 5 pliegues, búsqueda de hiperparámetros bajo $F_2$ con mapas 2D, curvas 1D y ajuste de umbral exclusivamente en CV sobre $X_{\text  {train}}$, reevaluación CV optimizada, ajuste final sobre $X_{\text  {train}}$ y evaluación única en $X_{\text  {test}}$.}}{6}{figure.3}\protected@file@percent }
+\newlabel{fig:methodology_diagram}{{3}{6}{Diagrama general del flujo experimental implementado en \texttt {model\_factory}: limpieza determinista ($0$ vacíos), separación estratificada inicial, evaluación \textit {baseline} en 5 pliegues, búsqueda de hiperparámetros bajo $F_2$ con mapas 2D, curvas 1D y ajuste de umbral exclusivamente en CV sobre $X_{\text {train}}$, reevaluación CV optimizada, ajuste final sobre $X_{\text {train}}$ y evaluación única en $X_{\text {test}}$}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Configuración Base, Espacios de Búsqueda y Hiperparámetros Seleccionados bajo $F_2$-Score ($5$-fold CV)}}{6}{table.3}\protected@file@percent }
+\newlabel{tab:hyperparams_space}{{III}{6}{Configuración Base, Espacios de Búsqueda y Hiperparámetros Seleccionados bajo $F_2$-Score ($5$-fold CV)}{table.3}{}}
 \newlabel{eq:acc}{{4}{6}{Configuración Experimental}{equation.4}{}}
 \newlabel{eq:pr_rec}{{5}{6}{Configuración Experimental}{equation.5}{}}
 \newlabel{eq:f1}{{6}{6}{Configuración Experimental}{equation.6}{}}
+\newlabel{eq:f2}{{7}{6}{Configuración Experimental}{equation.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {IV}Resultados y Discusión}{6}{section.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Resultados de los Modelos Base}{6}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Resultados de los Modelos Optimizados}{6}{subsection.4.2}\protected@file@percent }
 \citation{maurino2025dataquality}
 \citation{pucar2026consumer}
 \citation{lin2026automl}
@@ -89,23 +89,26 @@
 \citation{mahmud2025stacking}
 \@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Desempeño de Modelos Base en Validación Cruzada Estratificada ($5$-fold CV sobre $X_{\text  {train}}$, $n=22{,}796$)}}{7}{table.4}\protected@file@percent }
 \newlabel{tab:baseline_cv}{{IV}{7}{Desempeño de Modelos Base en Validación Cruzada Estratificada ($5$-fold CV sobre $X_{\text {train}}$, $n=22{,}796$)}{table.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Resultados Finales en Conjunto Independiente de Prueba ($X_{\text  {test}}$, $n=5{,}699$) y Variación Frente al Baseline}}{7}{table.5}\protected@file@percent }
-\newlabel{tab:optimized_test}{{V}{7}{Resultados Finales en Conjunto Independiente de Prueba ($X_{\text {test}}$, $n=5{,}699$) y Variación Frente al Baseline}{table.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Efecto de \texttt  {class\_weight="balanced"} vs.\ \texttt  {None} en Regresión Logística ($5$-fold CV)}}{7}{table.6}\protected@file@percent }
-\newlabel{tab:opt_insight}{{VI}{7}{Efecto de \texttt {class\_weight="balanced"} vs.\ \texttt {None} en Regresión Logística ($5$-fold CV)}{table.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Comparación con el Estado del Arte}{7}{subsection.4.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Comparación Directa con Modelos de Referencia del Estado del Arte}}{8}{table.7}\protected@file@percent }
-\newlabel{tab:sota_comparison}{{VII}{8}{Comparación Directa con Modelos de Referencia del Estado del Arte}{table.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Mapas de calor de validación cruzada 5-fold ($F_1$-Score promedio) sobre $X_{\text  {train}}$ para las combinaciones bidimensionales clave manteniendo fijos los restantes hiperparámetros ganadores. El recuadro rojo señala la combinación seleccionada en la Etapa 2.}}{8}{figure.4}\protected@file@percent }
-\newlabel{fig:tuning_heatmaps}{{4}{8}{Mapas de calor de validación cruzada 5-fold ($F_1$-Score promedio) sobre $X_{\text {train}}$ para las combinaciones bidimensionales clave manteniendo fijos los restantes hiperparámetros ganadores. El recuadro rojo señala la combinación seleccionada en la Etapa 2}{figure.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Discusión de Resultados}{8}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Optimización en Entrenamiento: Hiperparámetros y Umbral ($F_2$)}{7}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Resultados de los Modelos Optimizados en Prueba}{7}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Comparación con el Estado del Arte}{7}{subsection.4.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Optimización y Prueba de Umbral de Decisión bajo $F_2$-Score Exclusivamente en Validación Cruzada ($5$-fold CV en $X_{\text  {train}}$)}}{8}{table.5}\protected@file@percent }
+\newlabel{tab:threshold_cv}{{V}{8}{Optimización y Prueba de Umbral de Decisión bajo $F_2$-Score Exclusivamente en Validación Cruzada ($5$-fold CV en $X_{\text {train}}$)}{table.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Resultados Finales en Conjunto Independiente de Prueba ($X_{\text  {test}}$, $n=5{,}699$) de Modelos Optimizados por $F_2$-Score}}{8}{table.6}\protected@file@percent }
+\newlabel{tab:optimized_test}{{VI}{8}{Resultados Finales en Conjunto Independiente de Prueba ($X_{\text {test}}$, $n=5{,}699$) de Modelos Optimizados por $F_2$-Score}{table.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Mapas de calor de validación cruzada 5-fold ($F_2$-Score promedio) sobre $X_{\text  {train}}$ para las combinaciones bidimensionales clave manteniendo fijos los restantes hiperparámetros ganadores. El recuadro rojo señala la combinación seleccionada en la Etapa 2.}}{8}{figure.4}\protected@file@percent }
+\newlabel{fig:tuning_heatmaps}{{4}{8}{Mapas de calor de validación cruzada 5-fold ($F_2$-Score promedio) sobre $X_{\text {train}}$ para las combinaciones bidimensionales clave manteniendo fijos los restantes hiperparámetros ganadores. El recuadro rojo señala la combinación seleccionada en la Etapa 2}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Comparativa de desempeño entre los modelos base (CV en $X_{\text  {train}}$), modelos optimizados por $F_2$ en CV ($X_{\text  {train}}$) y evaluación final en el conjunto independiente de prueba ($X_{\text  {test}}$, $n=5{,}699$), incluyendo $F_2$-Score.}}{8}{figure.5}\protected@file@percent }
+\newlabel{fig:baseline_vs_opt}{{5}{8}{Comparativa de desempeño entre los modelos base (CV en $X_{\text {train}}$), modelos optimizados por $F_2$ en CV ($X_{\text {train}}$) y evaluación final en el conjunto independiente de prueba ($X_{\text {test}}$, $n=5{,}699$), incluyendo $F_2$-Score}{figure.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Efecto de \texttt  {class\_weight="balanced"} vs.\ \texttt  {None} en Regresión Logística ($F_2$-Score, $5$-fold CV)}}{8}{table.7}\protected@file@percent }
+\newlabel{tab:opt_insight}{{VII}{8}{Efecto de \texttt {class\_weight="balanced"} vs.\ \texttt {None} en Regresión Logística ($F_2$-Score, $5$-fold CV)}{table.7}{}}
 \citation{pucar2026consumer,mahmud2025stacking}
 \citation{bolikulov2024categorical}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Comparativa de desempeño entre los modelos base (validación cruzada 5-fold en $X_{\text  {train}}$) y los modelos optimizados evaluados sobre el conjunto independiente de prueba ($X_{\text  {test}}$, $n=5{,}699$).}}{9}{figure.5}\protected@file@percent }
-\newlabel{fig:baseline_vs_opt}{{5}{9}{Comparativa de desempeño entre los modelos base (validación cruzada 5-fold en $X_{\text {train}}$) y los modelos optimizados evaluados sobre el conjunto independiente de prueba ($X_{\text {test}}$, $n=5{,}699$)}{figure.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Matrices de confusión sobre el conjunto de prueba ($n=5{,}699$: $4{,}462$ sin incumplimiento y $1{,}237$ con incumplimiento), mostrando conteos absolutos y porcentajes normalizados por clase real.}}{9}{figure.6}\protected@file@percent }
-\newlabel{fig:confusion_matrices}{{6}{9}{Matrices de confusión sobre el conjunto de prueba ($n=5{,}699$: $4{,}462$ sin incumplimiento y $1{,}237$ con incumplimiento), mostrando conteos absolutos y porcentajes normalizados por clase real}{figure.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusiones}{9}{section.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Comparación Directa con Modelos de Referencia del Estado del Arte}}{9}{table.8}\protected@file@percent }
+\newlabel{tab:sota_comparison}{{VIII}{9}{Comparación Directa con Modelos de Referencia del Estado del Arte}{table.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Matrices de confusión en el conjunto de prueba ($n=5{,}699$: $4{,}462$ sin incumplimiento y $1{,}237$ con incumplimiento) para los modelos optimizados bajo $F_2$-Score, mostrando conteos absolutos, porcentajes por clase real y métricas $F_2$ / $F_1$.}}{9}{figure.6}\protected@file@percent }
+\newlabel{fig:confusion_matrices}{{6}{9}{Matrices de confusión en el conjunto de prueba ($n=5{,}699$: $4{,}462$ sin incumplimiento y $1{,}237$ con incumplimiento) para los modelos optimizados bajo $F_2$-Score, mostrando conteos absolutos, porcentajes por clase real y métricas $F_2$ / $F_1$}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Discusión de Resultados}{9}{subsection.4.5}\protected@file@percent }
 \bibstyle{IEEEtran}
 \bibdata{referencias}
 \bibcite{pucar2026consumer}{1}
@@ -113,6 +116,10 @@
 \bibcite{maurino2025dataquality}{3}
 \bibcite{bolikulov2024categorical}{4}
 \bibcite{cox1958regression}{5}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Curvas de discriminación probabilística sobre el conjunto independiente de prueba ($n=5{,}699$): (a) curvas ROC con área $\text  {ROC-AUC}$; (b) curvas Precision-Recall con área promedio $\text  {AP}$ frente a la prevalencia base de $0.2171$.}}{10}{figure.7}\protected@file@percent }
+\newlabel{fig:roc_pr}{{7}{10}{Curvas de discriminación probabilística sobre el conjunto independiente de prueba ($n=5{,}699$): (a) curvas ROC con área $\text {ROC-AUC}$; (b) curvas Precision-Recall con área promedio $\text {AP}$ frente a la prevalencia base de $0.2171$}{figure.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusiones}{10}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Referencias}{10}{section*.1}\protected@file@percent }
 \bibcite{cortes1995support}{6}
 \bibcite{breiman2001random}{7}
 \bibcite{mahmud2025stacking}{8}
@@ -120,7 +127,4 @@
 \bibcite{pedregosa2011scikit}{10}
 \bibcite{muller2016introduction}{11}
 \bibcite{bergstra2012random}{12}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Curvas de discriminación probabilística sobre el conjunto independiente de prueba ($n=5{,}699$): (a) curvas ROC con área $\text  {ROC-AUC}$; (b) curvas Precision-Recall con área promedio $\text  {AP}$ frente a la prevalencia base de $0.2171$.}}{10}{figure.7}\protected@file@percent }
-\newlabel{fig:roc_pr}{{7}{10}{Curvas de discriminación probabilística sobre el conjunto independiente de prueba ($n=5{,}699$): (a) curvas ROC con área $\text {ROC-AUC}$; (b) curvas Precision-Recall con área promedio $\text {AP}$ frente a la prevalencia base de $0.2171$}{figure.7}{}}
-\@writefile{toc}{\contentsline {section}{Referencias}{10}{section*.1}\protected@file@percent }
-\gdef \@abspage@last{10}
+\gdef \@abspage@last{11}
