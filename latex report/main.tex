@@ -66,7 +66,7 @@ La literatura reciente sobre riesgo crediticio contiene cinco referencias direct
 \item \textbf{Ensambles en banca minorista:} Pucar y Soleša~\cite{pucar2026consumer} compararon Regresión Logística, \textit{Random Forest} y \textit{Gradient Boosting}, evidenciando la brecha de exhaustividad frente al modelo lineal y el peso dominante de la calificación crediticia, tasa de interés y razón préstamo-ingreso.
 \item \textbf{Comparativa AutoML:} Lin~\cite{lin2026automl} evaluó \textit{H2O AutoML}, \textit{Azure AutoML} y \textit{TPOT} frente a Regresión Logística en predicción de incumplimiento. \textit{H2O AutoML} y \textit{Azure AutoML} alcanzaron el mejor balance ($\text{AUC}=0.918$ y $0.917$; $F_1=0.724$ y $0.718$), mientras que \textit{TPOT} maximizó la precisión ($0.948$) sacrificando exhaustividad ($0.524$).
 \item \textbf{Codificación categórica:} Bolikulov \textit{et al.}~\cite{bolikulov2024categorical} contrastaron $14$ técnicas (\textit{One-Hot}, \textit{Target}, \textit{Binary}, \textit{Gray}, ordinal, \textit{CatBoost}, \textit{Label}) sobre riesgo crediticio real evaluado con un clasificador logístico, demostrando que codificaciones sin sesgo ordinal artificial evitan degradaciones severas en $F_1$ ($0.5645$ con \textit{Gray} frente a $\approx 0.38$ con \textit{Label Encoding}) y que \textit{One-Hot Encoding} es esencial para modelos lineales y geométricos.
-\item \textbf{Apilamiento bayesiano (\textit{BO-StaEnsemble}):} Mahmud \textit{et al.}~\cite{mahmud2025stacking} combinaron \textit{Random Forest}, \textit{XGBoost} y Regresión Logística optimizados con Optuna bajo un meta-clasificador logístico y balanceo ADASYN sobre tres conjuntos, logrando en el \textit{Credit Risk Dataset} (CRD) $\text{Acc}=0.9871$, $\text{ROC-AUC}=0.998$, $\text{MCC}=0.9159$ y $\kappa=0.9147$ ($p < 0.001$), con explicabilidad SHAP/LIME.
+\item \textbf{Apilamiento bayesiano (\textit{BO-StaEnsemble}):} Mahmud \textit{et al.}~\cite{mahmud2025stacking} compararon $9$ clasificadores base (\textit{Decision Tree}, \textit{Logistic Regression}, \textit{Random Forest}, \textit{K-Nearest Neighbors}, \textit{AdaBoost}, \textit{Gradient Boosting}, \textit{XGBoost}, \textit{LightGBM} y \textit{CatBoost}) frente a su ensamble \textit{BO-StaEnsemble} (Optuna + meta-clasificador logístico + ADASYN) sobre el \textit{Credit Risk Dataset}, logrando $\text{Accuracy}=0.9600$, especificidad (\textit{Precision}) $=0.9822$, sensibilidad (\textit{Recall}) $=0.9323$, $\text{MCC}=0.9159$, $\kappa=0.9147$ y $\text{ROC-AUC}=0.998$ ($p < 0.001$), con explicabilidad SHAP/LIME.
 \end{itemize}
 
 \begin{table*}[t]
@@ -100,8 +100,18 @@ La literatura reciente sobre riesgo crediticio contiene cinco referencias direct
 \multirow{2}{*}{Bolikulov \textit{et al.} (2024)~\cite{bolikulov2024categorical}} & Logistic Regression + Gray Coding & \textbf{0.8203} & \textbf{0.4454} & \textbf{0.7704} & \textbf{0.5645} \\
 & Logistic Regression + Label Encoding & 0.7719 & 0.2701 & 0.6551 & $\approx 0.38$ \\
 \midrule
-Mahmud \textit{et al.} (2025)~\cite{mahmud2025stacking}$^{\mathrm{c}}$ & BO-StaEnsemble (Credit Risk Dataset) & \textbf{0.9871} & --- & --- & --- \\
+\multirow{10}{*}{Mahmud \textit{et al.} (2025)~\cite{mahmud2025stacking}$^{\mathrm{c}}$} & Decision Tree & 0.8770 & 0.8721 & 0.8820 & 0.8770 \\
+& Logistic Regression & 0.7031 & 0.7127 & 0.6933 & 0.7030 \\
+& Random Forest & 0.9454 & 0.9588 & 0.9318 & 0.9453 \\
+& K-Nearest Neighbors & 0.8597 & 0.7406 & \textbf{0.9804} & 0.8605 \\
+& AdaBoost & 0.7840 & 0.8043 & 0.7635 & 0.7839 \\
+& Gradient Boosting & 0.8749 & 0.9173 & 0.8319 & 0.8746 \\
+& XGBoost & 0.9484 & 0.9862 & 0.9102 & 0.9482 \\
+& LightGBM & 0.9477 & 0.9920 & 0.9030 & 0.9475 \\
+& CatBoost & 0.9534 & \textbf{0.9955} & 0.9106 & 0.9530 \\
+& \textbf{BO-StaEnsemble} & \textbf{0.9600} & 0.9822 & 0.9323 & \textbf{0.9572} \\
 \bottomrule
+\multicolumn{6}{@{}p{13.8cm}@{}}{\scriptsize $^{\mathrm{a}}$AUC-ROC reportado: Gradient Boosting $0.950$, Random Forest $0.927$, Logistic Regression $0.845$. $^{\mathrm{b}}$ROC-AUC reportado: H2O $0.918$, Azure $0.917$. $^{\mathrm{c}}$En Mahmud \textit{et al.}~\cite{mahmud2025stacking} se homologan \textit{Specificity} $\rightarrow$ \textit{Precision}, \textit{Sensitivity} $\rightarrow$ \textit{Recall} y \textit{F1\_Score} $= (\text{Recall}+\text{Precision})/2$ ($\text{MCC}=0.9159$, $\kappa=0.9147$ para \textit{BO-StaEnsemble}).}
 \end{tabular}
 \end{table*}
 
@@ -362,12 +372,16 @@ La Tabla~\ref{tab:sota_comparison} contrasta directamente nuestros resultados so
 \midrule
 Bolikulov \textit{et al.} (2024)~\cite{bolikulov2024categorical} & Logistic Regression + Gray Coding & 0.8203 & 0.4454 & \textbf{0.7704} & 0.5645 \\
 \midrule
-Mahmud \textit{et al.} (2025)~\cite{mahmud2025stacking} & BO-StaEnsemble (Credit Risk Dataset + ADASYN) & \textbf{0.9871} & --- & --- & --- \\
+\multirow{4}{*}{Mahmud \textit{et al.} (2025)~\cite{mahmud2025stacking}$^{*}$} & \textbf{BO-StaEnsemble} & \textbf{0.9600} & 0.9822 & \textbf{0.9323} & \textbf{0.9572} \\
+& CatBoost & 0.9534 & \textbf{0.9955} & 0.9106 & 0.9530 \\
+& Random Forest & 0.9454 & 0.9588 & 0.9318 & 0.9453 \\
+& Logistic Regression & 0.7031 & 0.7127 & 0.6933 & 0.7030 \\
 \midrule
 \multirow{3}{*}{\textbf{Este estudio (2026)}} & \textbf{Random Forest (Optimizado)} & \textbf{0.9347} & \textbf{0.9586} & \textbf{0.7308} & \textbf{0.8294} \\
 & Support Vector Machine RBF (Optimizado) & 0.9223 & 0.9574 & 0.6718 & 0.7895 \\
 & Logistic Regression (Optimizado) & 0.8652 & 0.7656 & 0.5465 & 0.6377 \\
 \bottomrule
+\multicolumn{6}{@{}p{13.8cm}@{}}{\scriptsize $^{*}$Para Mahmud \textit{et al.}~\cite{mahmud2025stacking}, \textit{Precision} corresponde a especificidad, \textit{Recall} a sensibilidad y \textit{F1\_Score} al promedio $(\text{Recall}+\text{Precision})/2$.}
 \end{tabular}
 \end{table*}
 

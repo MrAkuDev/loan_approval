@@ -1,6 +1,6 @@
-PWD c:\archivos\docs maestria\practicas de machine learning\loan_approval\latex report
+PWD C:\archivos\docs maestria\practicas de machine learning\loan_approval\latex report
 INPUT C:\Users\JoelA\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\archivos\docs maestria\practicas de machine learning\loan_approval\latex report\main.tex
+INPUT main.tex
 OUTPUT main.log
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex\latex\ieeetran\IEEEtran.cls
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\tex\latex\ieeetran\IEEEtran.cls
@@ -412,13 +412,8 @@ INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\times\ptmb8t.v
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\times\ptmb8r.tfm
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\times\ptmri8t.vf
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\times\ptmri8r.tfm
-INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\courier\pcrrc8t.vf
-INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\courier\pcrr8r.tfm
-INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\courier\pcrr8r.tfm
-INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\times\ptmb8t.vf
-INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\times\ptmb8r.tfm
-INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\courier\pcrr8t.vf
-INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\courier\pcrr8r.tfm
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\times\ptmri8t.vf
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\times\ptmri8r.tfm
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\courier\pcrr8t.tfm
 INPUT .\figures\fig2_correlaciones.pdf
 INPUT .\figures\fig2_correlaciones.pdf
@@ -426,10 +421,17 @@ INPUT .\figures\fig2_correlaciones.pdf
 INPUT .\figures\fig2_correlaciones.pdf
 INPUT .\figures\fig2_correlaciones.pdf
 INPUT .\figures\fig2_correlaciones.pdf
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\courier\pcrrc8t.vf
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\courier\pcrr8r.tfm
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\courier\pcrr8r.tfm
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\times\ptmb8t.vf
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\times\ptmb8r.tfm
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\courier\pcrr8t.vf
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\courier\pcrr8r.tfm
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\courier\pcrr8t.vf
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx10.tfm
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx7.tfm
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx5.tfm
-INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\courier\pcrr8t.vf
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx8.tfm
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbx6.tfm
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\times\ptmrc8t.tfm
@@ -496,6 +498,10 @@ INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\c
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr9.pfb
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy10.pfb
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy10.pfb
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy5.pfb
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy5.pfb
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy6.pfb
+INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy6.pfb
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy7.pfb
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy7.pfb
 INPUT C:\Users\JoelA\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmsy8.pfb

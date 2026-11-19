@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1794980464.16374 "main.aux" "main.bbl" "main" 1794980466.4196 0
+["bibtex main"] 1795054650.32499 "main.aux" "main.bbl" "main" 1795054652.76069 0
   "./referencias.bib" 1794972887 4433 338bb4d4bb6a52134293470fffc3ac2b ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/bibtex/bst/ieeetran/IEEEtran.bst" 1440622569 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "main.aux" 1794980465 13465 374d4dcbc01be83c7559c6ed7b173daf "pdflatex"
+  "main.aux" 1795054651 13526 1891f942bfc8a715385410a9b123de0d "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1794980464.44244 "c:/archivos/docs maestria/practicas de machine learning/loan_approval/latex report/main.tex" "main.pdf" "main" 1794980466.4203 0
+["pdflatex"] 1795054650.59322 "main.tex" "main.pdf" "main" 1795054652.76165 0
   "C:/Users/JoelA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1794716922 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/JoelA/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1794716872 13333488 cbdb6d4a30c2bf92ccb8dfc0002c1f41 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -65,6 +65,8 @@
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1247596667 32726 39f0f9e62e84beb801509898a605dbd5 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb" 1247596666 33993 9b89b85fd2d9df0482bd47194d1d3bf3 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1247596667 32569 5e5ddc8df908dea60932f3c484a54c0d ""
+  "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy5.pfb" 1247596666 32915 7bf7720c61a5b3a7ff25b0964421c9b6 ""
+  "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb" 1247596667 32587 65067f817f408bc71a7312f3d9828a9b ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1247596666 32716 08e384dc442464e7285e891af9f45947 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1247596667 32626 5abc8bb2f28aa647d4c70f8ea38cc0d3 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1247596673 34694 870c211f62cb72718a00e353f14f254d ""
@@ -209,17 +211,16 @@
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/tex/latex/tools/array.sty" 1761901070 15651 9d7c62df82cb29a555c00550babfe364 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/JoelA/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "c:/archivos/docs maestria/practicas de machine learning/loan_approval/latex report/main.tex" 1794980461 53888 ce5e2765d2a8201d2f1c8a9671d47a42 ""
   "figures/fig1_dataset_eda.pdf" 1794970719 27097 9e56a9db477d811cbefbdea5e34a9790 ""
   "figures/fig2_correlaciones.pdf" 1794970720 26191 c2656e734165f970dab30c32ac664681 ""
   "figures/fig3_tuning_heatmaps.pdf" 1794970720 35825 657e3a3d6e2eeb31ef0dfd6e32a0f493 ""
   "figures/fig4_baseline_vs_optimized.pdf" 1794970721 27230 d8f383e1f7af66e4ad9da61f43430599 ""
   "figures/fig5_confusion_matrices.pdf" 1794970721 28049 10c4204a5ed5af6e6e02a1db37841a65 ""
   "figures/fig6_roc_pr_curves.pdf" 1794970724 45148 42b21e6a48ddbe18874cd990f0bcfb88 ""
-  "main.aux" 1794980465 13465 374d4dcbc01be83c7559c6ed7b173daf "pdflatex"
-  "main.bbl" 1794980464 4628 8fbaa7dfc2f89a5df421ef0bf8b45be8 "bibtex main"
-  "main.out" 1794980465 3287 87fa95b72ec5c9a344cb62eb86009fa5 "pdflatex"
-  "main.tex" 1794980461 53888 ce5e2765d2a8201d2f1c8a9671d47a42 ""
+  "main.aux" 1795054651 13526 1891f942bfc8a715385410a9b123de0d "pdflatex"
+  "main.bbl" 1795054650 4628 8fbaa7dfc2f89a5df421ef0bf8b45be8 "bibtex main"
+  "main.out" 1795054651 3287 87fa95b72ec5c9a344cb62eb86009fa5 "pdflatex"
+  "main.tex" 1795054629 55672 155ca10cd28e7fcf285b741c50d5ea52 ""
   (generated)
   "main.aux"
   "main.log"
